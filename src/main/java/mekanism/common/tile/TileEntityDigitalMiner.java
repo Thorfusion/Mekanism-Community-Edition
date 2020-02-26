@@ -479,7 +479,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public void start() {
         if (searcher.state == State.IDLE) {
-            searcher.setChunkCache(new ChunkCache(getWorld(), getStartingCoord().getPos(), getStartingCoord().getPos().add(getDiameter(), maxY - minY + 1, getDiameter()), 0));
+            BlockPos startingPos = getStartingCoord().getPos();
+            searcher.setChunkCache(new ChunkCache(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter()), 0));
             searcher.start();
         }
         running = true;
