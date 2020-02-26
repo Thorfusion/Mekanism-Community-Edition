@@ -175,7 +175,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             ChargeUtils.discharge(27, this);
 
-            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
+            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
                 setActive(true);
                 if (delay > 0) {
                     delay--;
