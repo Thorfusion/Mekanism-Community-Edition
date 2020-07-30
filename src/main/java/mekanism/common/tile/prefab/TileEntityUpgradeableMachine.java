@@ -33,12 +33,14 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         if (upgradeTier != BaseTier.BASIC) {
             return false;
         }
+        
+        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
+        
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
-        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-
+        
         //Basic
         factory.facing = facing;
         factory.clientFacing = clientFacing;

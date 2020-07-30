@@ -101,10 +101,14 @@ public interface IFactory {
         }
 
         public static RecipeType getFromMachine(Block block, int meta) {
+        	//Mekanism.logger.debug("Param block: " + block + " || meta:" + meta);      	
             RecipeType type = null;
             for (RecipeType iterType : RecipeType.values()) {
                 ItemStack machineStack = iterType.getStack();
-                if (Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getItemDamage() == meta) {
+                Block machineBlock = Block.getBlockFromItem(machineStack.getItem());
+                int machineMeta = machineStack.getItemDamage();
+               // Mekanism.logger.debug("Search block: " + machineBlock + " || meta:" + machineMeta);
+                if (machineBlock == block && machineMeta == meta) {          	
                     type = iterType;
                     break;
                 }
