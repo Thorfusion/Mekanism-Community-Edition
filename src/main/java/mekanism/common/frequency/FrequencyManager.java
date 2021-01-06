@@ -74,6 +74,8 @@ public class FrequencyManager {
     }
 
     public Frequency update(Coord4D coord, Frequency freq) {
+        // Firestarter start :: O(1)
+        /*
         for (Frequency iterFreq : frequencies) {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
@@ -81,6 +83,13 @@ public class FrequencyManager {
                 return iterFreq;
             }
         }
+         */
+        if (frequencies.contains(freq)) {
+            freq.activeCoords.add(coord);
+            dataHandler.markDirty();
+            return freq;
+        }
+        // Firestarter end
         deactivate(coord);
         return null;
     }
@@ -113,6 +122,8 @@ public class FrequencyManager {
     }
 
     public Frequency validateFrequency(UUID uuid, Coord4D coord, Frequency freq) {
+        // Firestarter start :: O(1)
+        /*
         for (Frequency iterFreq : frequencies) {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
@@ -120,6 +131,13 @@ public class FrequencyManager {
                 return iterFreq;
             }
         }
+         */
+        if (frequencies.contains(freq)) {
+            freq.activeCoords.add(coord);
+            dataHandler.markDirty();
+            return freq;
+        }
+        // Firestarter end
 
         if (uuid.equals(freq.ownerUUID)) {
             freq.activeCoords.add(coord);
