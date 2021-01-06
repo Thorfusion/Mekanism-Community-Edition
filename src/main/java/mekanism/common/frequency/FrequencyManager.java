@@ -1,14 +1,19 @@
 package mekanism.common.frequency;
 
 import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -28,7 +33,7 @@ public class FrequencyManager {
 
     private static Set<FrequencyManager> managers = new HashSet<>();
 
-    private Set<Frequency> frequencies = new HashSet<>();
+    private Int2ObjectMap<Frequency> frequencies = new Int2ObjectOpenHashMap<>();
 
     private FrequencyDataHandler dataHandler;
 
@@ -74,22 +79,12 @@ public class FrequencyManager {
     }
 
     public Frequency update(Coord4D coord, Frequency freq) {
-        // Firestarter start :: O(1)
-        /*
-        for (Frequency iterFreq : frequencies) {
-            if (freq.equals(iterFreq)) {
-                iterFreq.activeCoords.add(coord);
-                dataHandler.markDirty();
-                return iterFreq;
-            }
-        }
-         */
-        if (frequencies.contains(freq)) {
-            freq.activeCoords.add(coord);
+        Frequency iterFreq = frequencies.get(freq.hashCode());
+        if (iterFreq != null) {
+            iterFreq.activeCoords.add(coord);
             dataHandler.markDirty();
-            return freq;
+            return iterFreq;
         }
-        // Firestarter end
         deactivate(coord);
         return null;
     }
@@ -115,34 +110,24 @@ public class FrequencyManager {
     }
 
     public void deactivate(Coord4D coord) {
-        for (Frequency freq : frequencies) {
+        for (Frequency freq : frequencies.values()) {
             freq.activeCoords.remove(coord);
             dataHandler.markDirty();
         }
     }
 
     public Frequency validateFrequency(UUID uuid, Coord4D coord, Frequency freq) {
-        // Firestarter start :: O(1)
-        /*
-        for (Frequency iterFreq : frequencies) {
-            if (freq.equals(iterFreq)) {
-                iterFreq.activeCoords.add(coord);
-                dataHandler.markDirty();
-                return iterFreq;
-            }
-        }
-         */
-        if (frequencies.contains(freq)) {
-            freq.activeCoords.add(coord);
+        Frequency iterFreq = frequencies.get(freq.hashCode());
+        if (iterFreq != null) {
+            iterFreq.activeCoords.add(coord);
             dataHandler.markDirty();
-            return freq;
+            return iterFreq;
         }
-        // Firestarter end
 
         if (uuid.equals(freq.ownerUUID)) {
             freq.activeCoords.add(coord);
             freq.valid = true;
-            frequencies.add(freq);
+            frequencies.put(freq.hashCode(), freq);
             dataHandler.markDirty();
             return freq;
         }
@@ -164,17 +149,17 @@ public class FrequencyManager {
         }
     }
 
-    public Set<Frequency> getFrequencies() {
-        return frequencies;
+    public Collection<Frequency> getFrequencies() {
+        return frequencies.values();
     }
 
     public void addFrequency(Frequency freq) {
-        frequencies.add(freq);
+        frequencies.put(freq.hashCode(), freq);
         dataHandler.markDirty();
     }
 
     public boolean containsFrequency(String name) {
-        for (Frequency freq : frequencies) {
+        for (Frequency freq : frequencies.values()) {
             if (freq.name.equals(name)) {
                 return true;
             }
@@ -183,7 +168,7 @@ public class FrequencyManager {
     }
 
     public void tickSelf(World world) {
-        for (Frequency iterFreq : frequencies) {
+        for (Frequency iterFreq : frequencies.values()) {
             for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
                 Coord4D coord = iter.next();
                 if (coord.dimensionId == world.provider.getDimension()) {
@@ -207,7 +192,7 @@ public class FrequencyManager {
 
     public void writeFrequencies(TileNetworkList data) {
         data.add(frequencies.size());
-        for (Frequency freq : frequencies) {
+        for (Frequency freq : frequencies.values()) {
             freq.write(data);
         }
     }
@@ -248,7 +233,7 @@ public class FrequencyManager {
 
         public void syncManager() {
             if (loadedFrequencies != null) {
-                manager.frequencies = loadedFrequencies;
+                loadedFrequencies.forEach(frequency -> manager.frequencies.put(frequency.hashCode(), frequency));
                 manager.ownerUUID = loadedOwner;
             }
         }
