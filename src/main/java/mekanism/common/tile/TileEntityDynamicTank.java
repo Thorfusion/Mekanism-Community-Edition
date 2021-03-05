@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -13,6 +15,7 @@ import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -27,9 +30,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
+public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IComputerIntegration, IFluidContainerManager {
 
     protected static final int[] SLOTS = {0, 1};
+
+    public static final String[] methods = new String[]{"getAmount", "getCapacity", "getLiquidType"};
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
@@ -228,5 +233,24 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public String[] getMethods() {
+        return methods;
+    }
+
+    @Override
+    public Object[] invoke(int method, Object[] args) throws NoSuchMethodException {
+        switch (method) {
+            case 0:
+                return new Object[]{structure != null ? structure.fluidStored != null ? structure.fluidStored.amount : 0 : 0};
+            case 1:
+                return new Object[]{structure != null ? structure.volume : 0};
+            case 2:
+                return new Object[]{structure != null ? structure.fluidStored != null ? structure.fluidStored.getLocalizedName() : null : null};
+            default:
+                throw new NoSuchMethodException();
+        }
     }
 }
