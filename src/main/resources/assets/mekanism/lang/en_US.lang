@@ -78,7 +78,7 @@ tile.BoundingBlock.name=Bounding Block
 tile.SaltBlock.name=Salt Block
 
 //Basic Block
-tile.BasicBlock.OsmiumBlock.name=Osmium Block
+tile.BasicBlock.OsmiumBlock.name=Platinum Block
 tile.BasicBlock.BronzeBlock.name=Bronze Block
 tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
 tile.BasicBlock.CharcoalBlock.name=Charcoal Block
@@ -118,7 +118,7 @@ tile.BasicBlock2.SecurityDesk.name=Security Desk
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
-tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
+tile.MachineBlock.OsmiumCompressor.name=Platinum Compressor
 tile.MachineBlock.Combiner.name=Combiner
 tile.MachineBlock.Crusher.name=Crusher
 tile.MachineBlock.Factory.name=Factory
@@ -178,7 +178,7 @@ infuse.obsidian=Obsidian
 infuse.bio=Biomass
 
 //Ore Block
-tile.OreBlock.OsmiumOre.name=Osmium Ore
+tile.OreBlock.OsmiumOre.name=Platinum Ore
 tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
@@ -225,7 +225,7 @@ item.ultimateTierInstaller.name=Ultimate Tier Installer
 //Dust
 item.ironDust.name=Iron Dust
 item.goldDust.name=Gold Dust
-item.osmiumDust.name=Osmium Dust
+item.osmiumDust.name=Platinum Dust
 item.obsidianDust.name=Obsidian Dust
 item.refinedobsidianDust.name=Refined Obsidian Dust
 item.diamondDust.name=Diamond Dust
@@ -240,7 +240,7 @@ item.lithiumDust.name=Lithium Dust
 //Clumps
 item.ironClump.name=Iron Clump
 item.goldClump.name=Gold Clump
-item.osmiumClump.name=Osmium Clump
+item.osmiumClump.name=Platinum Clump
 item.copperClump.name=Copper Clump
 item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
@@ -249,7 +249,7 @@ item.leadClump.name=Lead Clump
 //Shards
 item.ironShard.name=Iron Shard
 item.goldShard.name=Gold Shard
-item.osmiumShard.name=Osmium Shard
+item.osmiumShard.name=Platinum Shard
 item.copperShard.name=Copper Shard
 item.tinShard.name=Tin Shard
 item.silverShard.name=Silver Shard
@@ -258,7 +258,7 @@ item.leadShard.name=Lead Shard
 //Crystals
 item.ironCrystal.name=Iron Crystal
 item.goldCrystal.name=Gold Crystal
-item.osmiumCrystal.name=Osmium Crystal
+item.osmiumCrystal.name=Platinum Crystal
 item.copperCrystal.name=Copper Crystal
 item.tinCrystal.name=Tin Crystal
 item.silverCrystal.name=Silver Crystal
@@ -267,7 +267,7 @@ item.leadCrystal.name=Lead Crystal
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
 item.dirtyGoldDust.name=Dirty Gold Dust
-item.dirtyOsmiumDust.name=Dirty Osmium Dust
+item.dirtyOsmiumDust.name=Dirty Platinum Dust
 item.dirtyCopperDust.name=Dirty Copper Dust
 item.dirtyTinDust.name=Dirty Tin Dust
 item.dirtySilverDust.name=Dirty Silver Dust
@@ -275,7 +275,7 @@ item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots
 item.obsidianIngot.name=Refined Obsidian Ingot
-item.osmiumIngot.name=Osmium Ingot
+item.osmiumIngot.name=Platinum Ingot
 item.bronzeIngot.name=Bronze Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
@@ -291,7 +291,7 @@ gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 gas.hydrogenChloride=Hydrogen Chloride
-gas.liquidOsmium=Liquid Osmium
+gas.liquidOsmium=Liquid Platinum
 gas.liquidStone=Liquid Stone
 gas.ethene=Ethylene
 gas.sodium=Sodium
@@ -303,7 +303,7 @@ gas.fusionFuelDT=D-T Fuel
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
-gas.osmium=Osmium Slurry
+gas.osmium=Methane
 gas.copper=Copper Slurry
 gas.tin=Tin Slurry
 gas.silver=Silver Slurry
@@ -344,7 +344,7 @@ fluid.steam=Steam
 //OreGas names
 oregas.iron=Iron Ore
 oregas.gold=Gold Ore
-oregas.osmium=Osmium Ore
+oregas.osmium=Platinum Ore
 oregas.copper=Copper Ore
 oregas.tin=Tin Ore
 oregas.silver=Silver Ore
@@ -675,7 +675,6 @@ gui.digitalMiner.inverse=Inverse mode
 gui.digitalMiner.requireReplace=Require replace
 gui.digitalMiner.fuzzyMode=Fuzzy mode
 gui.digitalMiner.missingBlock=Missing block
-gui.trusted=Trusted
 
 //Recipe names
 recipe.mekanismShaped=Shaped
@@ -802,7 +801,7 @@ tooltip.BoilerValve=A valve that can be placed on a Thermoelectric Boiler multib
 tooltip.SecurityDesk=A central control hub for managing the security of all your owned machinery.
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into two of their dust counterparts, as well as perform many other operations.
-tooltip.OsmiumCompressor=A fairly advanced machine used to compress osmium into various dusts in order to create their ingot counterparts.
+tooltip.OsmiumCompressor=A fairly advanced machine used to compress platinum into various dusts in order to create their ingot counterparts.
 tooltip.Combiner=A machine used to combine dusts and cobblestone to form their ore counterparts.
 tooltip.Crusher=A machine used to crush ingots into their dust counterparts, as well as perform many other operations.
 tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner that can mine whatever block you tell it to within a 32 block (max) radius.
@@ -860,7 +859,7 @@ tooltip.ReactorNeutronCapturePlate=A block that can be used to both block Fusion
 tooltip.ReactorPort=A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.
 tooltip.ReactorLogicAdapter=A block that can be used to allow basic monitoring of a reactor using redstone.
 
-tooltip.OsmiumOre=A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.
+tooltip.OsmiumOre=A strong mineral that can be found at the bottom of deep sea oceans. It is known to have many uses in the construction of machinery.
 tooltip.CopperOre=A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.
 
@@ -1035,16 +1034,16 @@ item.LazuliHoe.name=Lapis Lazuli Hoe
 item.LazuliSword.name=Lapis Lazuli Sword
 
 //Osmium
-item.OsmiumHelmet.name=Osmium Helmet
-item.OsmiumChestplate.name=Osmium Chestplate
-item.OsmiumLeggings.name=Osmium Leggings
-item.OsmiumBoots.name=Osmium Boots
-item.OsmiumPaxel.name=Osmium Paxel
-item.OsmiumPickaxe.name=Osmium Pickaxe
-item.OsmiumAxe.name=Osmium Axe
-item.OsmiumShovel.name=Osmium Shovel
-item.OsmiumHoe.name=Osmium Hoe
-item.OsmiumSword.name=Osmium Sword
+item.OsmiumHelmet.name=Platinum Helmet
+item.OsmiumChestplate.name=Platinum Chestplate
+item.OsmiumLeggings.name=Platinum Leggings
+item.OsmiumBoots.name=Platinum Boots
+item.OsmiumPaxel.name=Platinum Paxel
+item.OsmiumPickaxe.name=Platinum Pickaxe
+item.OsmiumAxe.name=Platinum Axe
+item.OsmiumShovel.name=Platinum Shovel
+item.OsmiumHoe.name=Platinum Hoe
+item.OsmiumSword.name=Platinum Sword
 
 //Bronze
 item.BronzeHelmet.name=Bronze Helmet
