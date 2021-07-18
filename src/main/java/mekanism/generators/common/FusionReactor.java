@@ -568,7 +568,7 @@ public class FusionReactor implements IFusionReactor
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
 
-		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization/400);
+		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization/200);
 	}
 
 	@Override
