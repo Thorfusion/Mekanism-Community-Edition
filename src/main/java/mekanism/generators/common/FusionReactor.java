@@ -53,15 +53,15 @@ public class FusionReactor implements IFusionReactor
 	//Reaction characteristics
 	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8, true);
 	public static double burnRatio = 1;
-	public static double energyPerFuel = 160000;
+	public static double energyPerFuel = 5E6;
 	public int injectionRate = 0;
 
 	//Thermal characteristics
 	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
-	public static double thermocoupleEfficiency = 0.05;
-	public static double steamTransferEfficiency = 0.1;
+	public static double thermocoupleEfficiency = 0.00125;
+	public static double steamTransferEfficiency = 0.0025;
 
 	//Heat transfer metrics
 	public static double plasmaCaseConductivity = 0.2;
@@ -187,7 +187,7 @@ public class FusionReactor implements IFusionReactor
 		int fuelBurned = (int)min(getFuelTank().getStored(), max(0, lastPlasmaTemperature - burnTemperature)*burnRatio);
 		
 		getFuelTank().draw(fuelBurned, true);
-		plasmaTemperature += energyPerFuel *31.25 * fuelBurned / plasmaHeatCapacity;
+		plasmaTemperature += energyPerFuel * fuelBurned / plasmaHeatCapacity;
 		
 		return fuelBurned;
 	}
@@ -530,7 +530,7 @@ public class FusionReactor implements IFusionReactor
 	public int getMinInjectionRate(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
-		double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k+caseAirConductivity) / (energyPerFuel * 31.25 * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+		double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
 		return (int)(2 * Math.ceil(aMin/2D));
 	}
 
@@ -538,21 +538,21 @@ public class FusionReactor implements IFusionReactor
 	public double getMaxPlasmaTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
-		return injectionRate * energyPerFuel * 31.25 /plasmaCaseConductivity * (plasmaCaseConductivity+k+caseAirConductivity) / (k+caseAirConductivity);
+		return injectionRate * energyPerFuel/plasmaCaseConductivity * (plasmaCaseConductivity+k+caseAirConductivity) / (k+caseAirConductivity);
 	}
 
 	@Override
 	public double getMaxCasingTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
-		return injectionRate * energyPerFuel * 31.25 / (k+caseAirConductivity);
+		return injectionRate * energyPerFuel / (k+caseAirConductivity);
 	}
 
 	@Override
 	public double getIgnitionTemperature(boolean active)
 	{
 		double k = active ? caseWaterConductivity : 0;
-		return burnTemperature * energyPerFuel * 31.25 * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * 31.25 * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+		return burnTemperature * energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
 	}
 
 	@Override
@@ -560,7 +560,7 @@ public class FusionReactor implements IFusionReactor
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
 
-		return thermocoupleEfficiency * caseAirConductivity * temperature * 0.025;
+		return thermocoupleEfficiency * caseAirConductivity * temperature;
 	}
 
 	@Override
@@ -568,7 +568,7 @@ public class FusionReactor implements IFusionReactor
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
 
-		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization/40);
+		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
 	}
 
 	@Override
