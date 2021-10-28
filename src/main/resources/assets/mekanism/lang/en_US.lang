@@ -300,10 +300,11 @@ gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
+gas.methane=Methane
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
-gas.osmium=Methane
+gas.osmium=Platinum Slurry
 gas.copper=Copper Slurry
 gas.tin=Tin Slurry
 gas.silver=Silver Slurry

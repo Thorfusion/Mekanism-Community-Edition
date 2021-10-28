@@ -13,7 +13,7 @@ public class OsmiumCompressorRecipe extends AdvancedMachineRecipe<OsmiumCompress
 
 	public OsmiumCompressorRecipe(ItemStack input, ItemStack output)
 	{
-		super(input, "liquidOsmium", output);
+		super(input, "liquidPlatinum", output);
 	}
 
 	@Override

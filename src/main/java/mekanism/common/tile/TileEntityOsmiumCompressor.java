@@ -30,19 +30,19 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	{
 		int amount = 0;
 
-		for(ItemStack ore : OreDictionary.getOres("ingotOsmium"))
+		for(ItemStack ore : OreDictionary.getOres("ingotPlatinum"))
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 200);
+				return new GasStack(GasRegistry.getGas("liquidPlatinum"), 200);
 			}
 		}
 
-		for(ItemStack ore : OreDictionary.getOres("blockOsmium"))
+		for(ItemStack ore : OreDictionary.getOres("blockPlatinum"))
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 1800);
+				return new GasStack(GasRegistry.getGas("liquidPlatinum"), 1800);
 			}
 		}
 
