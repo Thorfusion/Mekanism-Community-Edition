@@ -78,7 +78,7 @@ tile.BoundingBlock.name=Bounding Block
 tile.SaltBlock.name=Salt Block
 
 //Basic Block
-tile.BasicBlock.OsmiumBlock.name=Platinum Block
+tile.BasicBlock.PlatinumBlock.name=Platinum Block
 tile.BasicBlock.BronzeBlock.name=Bronze Block
 tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
 tile.BasicBlock.CharcoalBlock.name=Charcoal Block
@@ -178,7 +178,7 @@ infuse.obsidian=Obsidian
 infuse.bio=Biomass
 
 //Ore Block
-tile.OreBlock.OsmiumOre.name=Platinum Ore
+tile.OreBlock.PlatinumOre.name=Platinum Ore
 tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
@@ -267,7 +267,7 @@ item.leadCrystal.name=Lead Crystal
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
 item.dirtyGoldDust.name=Dirty Gold Dust
-item.dirtyOsmiumDust.name=Dirty Platinum Dust
+item.dirtyPlatinumDust.name=Dirty Platinum Dust
 item.dirtyCopperDust.name=Dirty Copper Dust
 item.dirtyTinDust.name=Dirty Tin Dust
 item.dirtySilverDust.name=Dirty Silver Dust
@@ -291,7 +291,7 @@ gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 gas.hydrogenChloride=Hydrogen Chloride
-gas.liquidOsmium=Liquid Platinum
+gas.liquidPlatinum=Liquid Platinum
 gas.liquidStone=Liquid Stone
 gas.ethene=Ethylene
 gas.sodium=Sodium
@@ -313,7 +313,7 @@ gas.lead=Lead Slurry
 
 gas.cleanIron=Clean Iron Slurry
 gas.cleanGold=Clean Gold Slurry
-gas.cleanOsmium=Clean Osmium Slurry
+gas.cleanPlatinum=Clean Platinum Slurry
 gas.cleanCopper=Clean Copper Slurry
 gas.cleanTin=Clean Tin Slurry
 gas.cleanSilver=Clean Silver Slurry
