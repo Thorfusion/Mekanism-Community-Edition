@@ -12,7 +12,7 @@ public class ItemIngot extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", 
+	public static String[] en_USNames = {"Obsidian", "Platinum", "Bronze", 
 										"Glowstone", "Steel", "Copper", 
 										"Tin"};
 

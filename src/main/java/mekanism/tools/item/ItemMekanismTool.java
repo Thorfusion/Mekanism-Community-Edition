@@ -51,7 +51,7 @@ public class ItemMekanismTool extends ItemTool
     	{
     		return new ItemStack(Items.dye, 1, 4);
     	}
-    	else if(material == MekanismTools.toolOSMIUM || material == MekanismTools.toolOSMIUM2)
+    	else if(material == MekanismTools.toolPLATINUM || material == MekanismTools.toolPLATINUM2)
     	{
     		return new ItemStack(MekanismItems.Ingot, 1, 1);
     	}

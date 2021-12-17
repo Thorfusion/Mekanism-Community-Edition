@@ -47,17 +47,17 @@ public class ToolsItems
 	public static Item BronzeLeggings;
 	public static Item BronzeBoots;
 
-	//Osmium Items
-	public static Item OsmiumPaxel;
-	public static Item OsmiumPickaxe;
-	public static Item OsmiumAxe;
-	public static Item OsmiumShovel;
-	public static Item OsmiumHoe;
-	public static Item OsmiumSword;
-	public static Item OsmiumHelmet;
-	public static Item OsmiumChestplate;
-	public static Item OsmiumLeggings;
-	public static Item OsmiumBoots;
+	//Platinum Items
+	public static Item PlatinumPaxel;
+	public static Item PlatinumPickaxe;
+	public static Item PlatinumAxe;
+	public static Item PlatinumShovel;
+	public static Item PlatinumHoe;
+	public static Item PlatinumSword;
+	public static Item PlatinumHelmet;
+	public static Item PlatinumChestplate;
+	public static Item PlatinumLeggings;
+	public static Item PlatinumBoots;
 
 	//Obsidian Items
 	public static Item ObsidianPaxel;
@@ -122,16 +122,16 @@ public class ToolsItems
 		BronzeChestplate = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 1)).setUnlocalizedName("BronzeChestplate");
 		BronzeLeggings = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 2)).setUnlocalizedName("BronzeLeggings");
 		BronzeBoots = (new ItemMekanismArmor(MekanismTools.armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 3)).setUnlocalizedName("BronzeBoots");
-		OsmiumPaxel = new ItemMekanismPaxel(MekanismTools.toolOSMIUM2).setUnlocalizedName("OsmiumPaxel");
-		OsmiumPickaxe = new ItemMekanismPickaxe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumPickaxe");
-		OsmiumAxe = new ItemMekanismAxe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumAxe");
-		OsmiumShovel = new ItemMekanismShovel(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumShovel");
-		OsmiumHoe = new ItemMekanismHoe(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumHoe");
-		OsmiumSword = new ItemMekanismSword(MekanismTools.toolOSMIUM).setUnlocalizedName("OsmiumSword");
-		OsmiumHelmet = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
-		OsmiumChestplate = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
-		OsmiumLeggings = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 2)).setUnlocalizedName("OsmiumLeggings");
-		OsmiumBoots = (new ItemMekanismArmor(MekanismTools.armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 3)).setUnlocalizedName("OsmiumBoots");
+		PlatinumPaxel = new ItemMekanismPaxel(MekanismTools.toolPLATINUM2).setUnlocalizedName("PlatinumPaxel");
+		PlatinumPickaxe = new ItemMekanismPickaxe(MekanismTools.toolPLATINUM).setUnlocalizedName("PlatinumPickaxe");
+		PlatinumAxe = new ItemMekanismAxe(MekanismTools.toolPLATINUM).setUnlocalizedName("PlatinumAxe");
+		PlatinumShovel = new ItemMekanismShovel(MekanismTools.toolPLATINUM).setUnlocalizedName("PlatinumShovel");
+		PlatinumHoe = new ItemMekanismHoe(MekanismTools.toolPLATINUM).setUnlocalizedName("PlatinumHoe");
+		PlatinumSword = new ItemMekanismSword(MekanismTools.toolPLATINUM).setUnlocalizedName("PlatinumSword");
+		PlatinumHelmet = (new ItemMekanismArmor(MekanismTools.armorPLATINUM, Mekanism.proxy.getArmorIndex("PLATINUM"), 0)).setUnlocalizedName("PlatinumHelmet");
+		PlatinumChestplate = (new ItemMekanismArmor(MekanismTools.armorPLATINUM, Mekanism.proxy.getArmorIndex("PLATINUM"), 1)).setUnlocalizedName("PlatinumChestplate");
+		PlatinumLeggings = (new ItemMekanismArmor(MekanismTools.armorPLATINUM, Mekanism.proxy.getArmorIndex("PLATINUM"), 2)).setUnlocalizedName("PlatinumLeggings");
+		PlatinumBoots = (new ItemMekanismArmor(MekanismTools.armorPLATINUM, Mekanism.proxy.getArmorIndex("PLATINUM"), 3)).setUnlocalizedName("PlatinumBoots");
 		ObsidianPaxel = new ItemMekanismPaxel(MekanismTools.toolOBSIDIAN2).setUnlocalizedName("ObsidianPaxel");
 		ObsidianPickaxe = new ItemMekanismPickaxe(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianPickaxe");
 		ObsidianAxe = new ItemMekanismAxe(MekanismTools.toolOBSIDIAN).setUnlocalizedName("ObsidianAxe");
@@ -171,10 +171,10 @@ public class ToolsItems
 		BronzeAxe.setHarvestLevel("axe", MekanismTools.toolBRONZE.getHarvestLevel());
 		BronzeShovel.setHarvestLevel("shovel", MekanismTools.toolBRONZE.getHarvestLevel());
 
-		setPaxelHarvest(OsmiumPaxel, MekanismTools.toolOSMIUM2);
-		OsmiumPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolOSMIUM.getHarvestLevel());
-		OsmiumAxe.setHarvestLevel("axe", MekanismTools.toolOSMIUM.getHarvestLevel());
-		OsmiumShovel.setHarvestLevel("shovel", MekanismTools.toolOSMIUM.getHarvestLevel());
+		setPaxelHarvest(PlatinumPaxel, MekanismTools.toolPLATINUM2);
+		PlatinumPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolPLATINUM.getHarvestLevel());
+		PlatinumAxe.setHarvestLevel("axe", MekanismTools.toolPLATINUM.getHarvestLevel());
+		PlatinumShovel.setHarvestLevel("shovel", MekanismTools.toolPLATINUM.getHarvestLevel());
 
 		setPaxelHarvest(ObsidianPaxel, MekanismTools.toolOBSIDIAN2);
 		ObsidianPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolOBSIDIAN.getHarvestLevel());
@@ -243,17 +243,17 @@ public class ToolsItems
 		GameRegistry.registerItem(LazuliHoe, "LapisLazuliHoe");
 		GameRegistry.registerItem(LazuliSword, "LapisLazuliSword");
 
-		//Osmium
-		GameRegistry.registerItem(OsmiumHelmet, "OsmiumHelmet");
-		GameRegistry.registerItem(OsmiumChestplate, "OsmiumChestplate");
-		GameRegistry.registerItem(OsmiumLeggings, "OsmiumLeggings");
-		GameRegistry.registerItem(OsmiumBoots, "OsmiumBoots");
-		GameRegistry.registerItem(OsmiumPaxel, "OsmiumPaxel");
-		GameRegistry.registerItem(OsmiumPickaxe, "OsmiumPickaxe");
-		GameRegistry.registerItem(OsmiumAxe, "OsmiumAxe");
-		GameRegistry.registerItem(OsmiumShovel, "OsmiumShovel");
-		GameRegistry.registerItem(OsmiumHoe, "OsmiumHoe");
-		GameRegistry.registerItem(OsmiumSword, "OsmiumSword");
+		//Platinum
+		GameRegistry.registerItem(PlatinumHelmet, "PlatinumHelmet");
+		GameRegistry.registerItem(PlatinumChestplate, "PlatinumChestplate");
+		GameRegistry.registerItem(PlatinumLeggings, "PlatinumLeggings");
+		GameRegistry.registerItem(PlatinumBoots, "PlatinumBoots");
+		GameRegistry.registerItem(PlatinumPaxel, "PlatinumPaxel");
+		GameRegistry.registerItem(PlatinumPickaxe, "PlatinumPickaxe");
+		GameRegistry.registerItem(PlatinumAxe, "PlatinumAxe");
+		GameRegistry.registerItem(PlatinumShovel, "PlatinumShovel");
+		GameRegistry.registerItem(PlatinumHoe, "PlatinumHoe");
+		GameRegistry.registerItem(PlatinumSword, "PlatinumSword");
 
 		//Bronze
 		GameRegistry.registerItem(BronzeHelmet, "BronzeHelmet");

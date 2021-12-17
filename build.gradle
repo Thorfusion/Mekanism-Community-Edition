@@ -5,7 +5,7 @@ buildscript {
 
         // [HTTPS FIX] Replace mavenCentral() with the code block below
         maven {
-            url "https://repo1.maven.org/maven2"
+            url = "https://maven.minecraftforge.net/"
         }
 
         maven {
@@ -41,7 +41,7 @@ repositories {
         }
     maven {
         name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
+        url 'https://maven.minecraftforge.net/'
      }
 }
 

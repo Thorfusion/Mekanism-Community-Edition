@@ -63,7 +63,7 @@ public class ItemMekanismArmor extends ItemArmor
     	{
     		return new ItemStack(Items.dye, 1, 4);
     	}
-    	else if(getArmorMaterial() == MekanismTools.armorOSMIUM)
+    	else if(getArmorMaterial() == MekanismTools.armorPLATINUM)
     	{
     		return new ItemStack(MekanismItems.Ingot, 1, 1);
     	}

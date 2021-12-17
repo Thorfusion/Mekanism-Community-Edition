@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple ore block IDs.
- * 0: Osmium Ore
+ * 0: Platinum Ore
  * 1: Copper Ore
  * 2: Tin Ore
  * @author AidanBrady
@@ -68,7 +68,7 @@ public class ItemBlockOre extends ItemBlock
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
-				name = "OsmiumOre";
+				name = "PlatinumOre";
 				break;
 			case 1:
 				name = "CopperOre";

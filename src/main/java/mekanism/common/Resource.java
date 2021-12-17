@@ -4,7 +4,7 @@ public enum Resource
 {
 	IRON("Iron"),
 	GOLD("Gold"),
-	OSMIUM("Osmium"),
+	PLATINUM("Platinum"),
 	COPPER("Copper"),
 	TIN("Tin"),
 	SILVER("Silver"),

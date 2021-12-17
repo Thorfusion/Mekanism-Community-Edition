@@ -46,8 +46,8 @@ public class MekanismTools implements IModule
 	public static ToolMaterial toolOBSIDIAN2;
 	public static ToolMaterial toolLAZULI;
 	public static ToolMaterial toolLAZULI2;
-	public static ToolMaterial toolOSMIUM;
-	public static ToolMaterial toolOSMIUM2;
+	public static ToolMaterial toolPLATINUM;
+	public static ToolMaterial toolPLATINUM2;
 	public static ToolMaterial toolBRONZE;
 	public static ToolMaterial toolBRONZE2;
 	public static ToolMaterial toolGLOWSTONE;
@@ -58,7 +58,7 @@ public class MekanismTools implements IModule
 	//Enums: Armor
 	public static ArmorMaterial armorOBSIDIAN;
 	public static ArmorMaterial armorLAZULI;
-	public static ArmorMaterial armorOSMIUM;
+	public static ArmorMaterial armorPLATINUM;
 	public static ArmorMaterial armorBRONZE;
 	public static ArmorMaterial armorGLOWSTONE;
 	public static ArmorMaterial armorSTEEL;
@@ -205,36 +205,36 @@ public class MekanismTools implements IModule
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Items.dye, 1, 4), Character.valueOf('T'), Items.stick
 		}));
 		
-		//Osmium
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.OsmiumAxe, Character.valueOf('Y'), ToolsItems.OsmiumPickaxe, Character.valueOf('Z'), ToolsItems.OsmiumShovel, Character.valueOf('T'), Items.stick
+		//Platinum
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumPaxel, 1), new Object[] {
+			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.PlatinumAxe, Character.valueOf('Y'), ToolsItems.PlatinumPickaxe, Character.valueOf('Z'), ToolsItems.PlatinumShovel, Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumPickaxe, 1), new Object[] {
+			"XXX", " T ", " T ", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumAxe, 1), new Object[] {
+			"XX", "XT", " T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumShovel, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumShovel, 1), new Object[] {
+			"X", "T", "T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumHoe, 1), new Object[] {
+			"XX", " T", " T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumSword, 1), new Object[] {
+			"X", "X", "T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Items.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumHelmet, 1), new Object[] {
+			"***", "* *", Character.valueOf('*'), "ingotPlatinum"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumChestplate, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumChestplate, 1), new Object[] {
+			"* *", "***", "***", Character.valueOf('*'), "ingotPlatinum"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumLeggings, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumLeggings, 1), new Object[] {
+			"***", "* *", "* *", Character.valueOf('*'), "ingotPlatinum"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.PlatinumBoots, 1), new Object[] {
+			"* *", "* *", Character.valueOf('*'), "ingotPlatinum"
 		}));
 		
 		//Bronze
@@ -333,14 +333,14 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "damage", 4).getInt()
 				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "enchantability", 10).getInt()
 		);
-		toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM"
+		toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM"
 				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "harvestLevel", 2).getInt()
 				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "maxUses", 500).getInt()
 				, (float)Mekanism.configuration.get("tools.tool-balance.osmium.regular", "efficiency", 10d).getDouble(0)
 				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "damage", 4).getInt()
 				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "enchantability", 12).getInt()
 		);
-		toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2"
+		toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2"
 				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "harvestLevel", 3).getInt()
 				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "maxUses", 700).getInt()
 				, (float)Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "efficiency", 12d).getDouble(0)
@@ -413,7 +413,7 @@ public class MekanismTools implements IModule
 				}
 				, Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8).getInt()
 		);
-		armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM"
+		armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM"
 				, Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30).getInt()
 				, new int[]
 				{
@@ -501,11 +501,11 @@ public class MekanismTools implements IModule
 				}
 				else if(armorType == 2)
 				{
-					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(ToolsItems.OsmiumSword));
-					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(ToolsItems.OsmiumHelmet));
-					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(ToolsItems.OsmiumChestplate));
-					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(ToolsItems.OsmiumLeggings));
-					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(ToolsItems.OsmiumBoots));
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(ToolsItems.PlatinumSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(ToolsItems.PlatinumHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(ToolsItems.PlatinumChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(ToolsItems.PlatinumLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(ToolsItems.PlatinumBoots));
 				}
 				else if(armorType == 3)
 				{

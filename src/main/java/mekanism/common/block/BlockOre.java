@@ -37,7 +37,7 @@ public class BlockOre extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		icons[0] = register.registerIcon("mekanism:OsmiumOre");
+		icons[0] = register.registerIcon("mekanism:PlatinumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
 		icons[2] = register.registerIcon("mekanism:TinOre");
 	}
