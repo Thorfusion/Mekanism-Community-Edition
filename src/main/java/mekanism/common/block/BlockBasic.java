@@ -74,7 +74,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple metal block IDs.
- * 0:0: Osmium Block
+ * 0:0: Platinum Block
  * 0:1: Bronze Block
  * 0:2: Refined Obsidian
  * 0:3: Charcoal Block
@@ -195,7 +195,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[14][1] = new CTMData("ctm/ThermalEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/ThermalEvaporationControllerOn").registerIcons(register);
 				ctms[15][0] = new CTMData("ctm/ThermalEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
-				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
+				icons[0][0] = register.registerIcon("mekanism:PlatinumBlock");
 				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
 				icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
 				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
@@ -1105,7 +1105,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	
 	public static enum BasicType
 	{
-		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false),
+		PLATINUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "PlatinumBlock", null, false),
 		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false),
 		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false),
 		CHARCOAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false),

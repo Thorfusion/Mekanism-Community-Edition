@@ -225,7 +225,7 @@ item.ultimateTierInstaller.name=Ultimate Tier Installer
 //Dust
 item.ironDust.name=Iron Dust
 item.goldDust.name=Gold Dust
-item.osmiumDust.name=Platinum Dust
+item.platinumDust.name=Platinum Dust
 item.obsidianDust.name=Obsidian Dust
 item.refinedobsidianDust.name=Refined Obsidian Dust
 item.diamondDust.name=Diamond Dust
@@ -240,7 +240,7 @@ item.lithiumDust.name=Lithium Dust
 //Clumps
 item.ironClump.name=Iron Clump
 item.goldClump.name=Gold Clump
-item.osmiumClump.name=Platinum Clump
+item.platinumClump.name=Platinum Clump
 item.copperClump.name=Copper Clump
 item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
@@ -249,7 +249,7 @@ item.leadClump.name=Lead Clump
 //Shards
 item.ironShard.name=Iron Shard
 item.goldShard.name=Gold Shard
-item.osmiumShard.name=Platinum Shard
+item.platinumShard.name=Platinum Shard
 item.copperShard.name=Copper Shard
 item.tinShard.name=Tin Shard
 item.silverShard.name=Silver Shard
@@ -258,7 +258,7 @@ item.leadShard.name=Lead Shard
 //Crystals
 item.ironCrystal.name=Iron Crystal
 item.goldCrystal.name=Gold Crystal
-item.osmiumCrystal.name=Platinum Crystal
+item.platinumCrystal.name=Platinum Crystal
 item.copperCrystal.name=Copper Crystal
 item.tinCrystal.name=Tin Crystal
 item.silverCrystal.name=Silver Crystal
@@ -275,7 +275,7 @@ item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots
 item.obsidianIngot.name=Refined Obsidian Ingot
-item.osmiumIngot.name=Platinum Ingot
+item.platinumIngot.name=Platinum Ingot
 item.bronzeIngot.name=Bronze Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
@@ -304,7 +304,7 @@ gas.methane=Methane
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
-gas.osmium=Platinum Slurry
+gas.platinum=Platinum Slurry
 gas.copper=Copper Slurry
 gas.tin=Tin Slurry
 gas.silver=Silver Slurry
@@ -345,7 +345,7 @@ fluid.steam=Steam
 //OreGas names
 oregas.iron=Iron Ore
 oregas.gold=Gold Ore
-oregas.osmium=Platinum Ore
+oregas.platinum=Platinum Ore
 oregas.copper=Copper Ore
 oregas.tin=Tin Ore
 oregas.silver=Silver Ore
@@ -860,7 +860,7 @@ tooltip.ReactorNeutronCapturePlate=A block that can be used to both block Fusion
 tooltip.ReactorPort=A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.
 tooltip.ReactorLogicAdapter=A block that can be used to allow basic monitoring of a reactor using redstone.
 
-tooltip.OsmiumOre=A strong mineral that can be found at the bottom of deep sea oceans. It is known to have many uses in the construction of machinery.
+tooltip.PlatinumOre=A strong mineral that can be found at the bottom of deep sea oceans. It is known to have many uses in the construction of machinery.
 tooltip.CopperOre=A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.
 
@@ -1034,17 +1034,17 @@ item.LazuliShovel.name=Lapis Lazuli Shovel
 item.LazuliHoe.name=Lapis Lazuli Hoe
 item.LazuliSword.name=Lapis Lazuli Sword
 
-//Osmium
-item.OsmiumHelmet.name=Platinum Helmet
-item.OsmiumChestplate.name=Platinum Chestplate
-item.OsmiumLeggings.name=Platinum Leggings
-item.OsmiumBoots.name=Platinum Boots
-item.OsmiumPaxel.name=Platinum Paxel
-item.OsmiumPickaxe.name=Platinum Pickaxe
-item.OsmiumAxe.name=Platinum Axe
-item.OsmiumShovel.name=Platinum Shovel
-item.OsmiumHoe.name=Platinum Hoe
-item.OsmiumSword.name=Platinum Sword
+//Platinum
+item.PlatinumHelmet.name=Platinum Helmet
+item.PlatinumChestplate.name=Platinum Chestplate
+item.PlatinumLeggings.name=Platinum Leggings
+item.PlatinumBoots.name=Platinum Boots
+item.PlatinumPaxel.name=Platinum Paxel
+item.PlatinumPickaxe.name=Platinum Pickaxe
+item.PlatinumAxe.name=Platinum Axe
+item.PlatinumShovel.name=Platinum Shovel
+item.PlatinumHoe.name=Platinum Hoe
+item.PlatinumSword.name=Platinum Sword
 
 //Bronze
 item.BronzeHelmet.name=Bronze Helmet
