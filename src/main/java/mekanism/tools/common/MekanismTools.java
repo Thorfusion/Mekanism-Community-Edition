@@ -89,8 +89,8 @@ public class MekanismTools implements IModule
 		Mekanism.logger.info("Loaded MekanismTools module.");
 	}
 	
-	// public void addRecipes()
-	// {
+	 public void addRecipes()
+	 {
 	// 	//Crafting Recipes
 	// 	//Base
 	// 	CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.WoodPaxel, 1), new Object[] {
@@ -300,7 +300,7 @@ public class MekanismTools implements IModule
 	// 	CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelBoots, 1), new Object[] {
 	// 		"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.iron_ingot
 	// 	}));
-	// }
+	 }
 	
 	public void addItems()
 	{
