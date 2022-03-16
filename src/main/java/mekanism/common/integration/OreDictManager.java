@@ -62,7 +62,7 @@ public final class OreDictManager
 		{
 			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
 			{
-				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 1), 1F);
 			}
 		}
 		
