@@ -282,8 +282,9 @@ public final class OreDictManager
 		for(ItemStack ore : OreDictionary.getOres("ingotSteel"))
 		{
 			RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 1));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.EnrichedAlloy));
+
 		}
-		
 		for(ItemStack ore : OreDictionary.getOres("dustLapis"))
 		{
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.dye, 1, 4), StackUtils.size(ore, 1));
