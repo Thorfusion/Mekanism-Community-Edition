@@ -306,6 +306,11 @@ public final class OreDictManager
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.diamond));
 		}
+
+		for(ItemStack ore : OreDictionary.getOres("gemDiamond"))
+		{
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
+			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedDiamond));		}
 			
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))
 		{
