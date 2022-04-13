@@ -1,3 +1,6 @@
+## Fork notice
+This repo contains the fixes for Mekanism 9 for 1.12.2.
+Right now, the only fix is the updated recipe autodistribution in factories (it now does distribution instantly and respects the count of item needed for the recipe).
 
 [![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
 
