@@ -453,6 +453,7 @@ gui.undefined=Indefinito
 gui.owner=Proprietario
 gui.public=Publico
 gui.private=Privato
+gui.trusted=Confidenziale
 gui.add=Aggiungi
 gui.set=Imposta
 gui.freq=Freq

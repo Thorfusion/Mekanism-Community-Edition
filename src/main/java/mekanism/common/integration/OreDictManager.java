@@ -62,13 +62,18 @@ public final class OreDictManager
 		{
 			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
 			{
-				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 1), 1F);
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 2), 1F);
 			}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustSulfur"))
 		{
 			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
+		}
+
+		for(ItemStack ore : OreDictionary.getOres("dustSaltpeter"))
+		{
+			RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("potassiumNitrate"), 100));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustSalt"))
@@ -222,12 +227,7 @@ public final class OreDictManager
 		{
 			RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 6));
 		}
-		
-		for(ItemStack ore : OreDictionary.getOres("ingotNickel"))
-		{
-			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
-		}
-		
+				
 		for(ItemStack ore : OreDictionary.getOres("ingotRedstone"))
 		{
 			RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(Items.redstone));
