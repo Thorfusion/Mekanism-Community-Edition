@@ -181,6 +181,8 @@ public class MekanismGenerators implements IModule
 		// }));
 
 		FuelHandler.addGas(GasRegistry.getGas("ethene"), general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(GasRegistry.getGas("methane"), general.METHANE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * general.METHANE_BURN_TIME);
+
 	}
 
 	@Override
