@@ -1,4 +1,4 @@
-# Original Mekanism 1.7.10 License
+# Original Mekanism 1.12.2 License
 
 MIT License
 
