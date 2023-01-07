@@ -45,7 +45,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}"
-archivesBaseName = "MekanismAll"
+archivesBaseName = "Mekanism-1.12.2-Community-Edition"
 
 /*
 minecraft {
@@ -134,9 +134,8 @@ jar {
 }
 
 task coreJar(type: Jar) {
-    archiveName = "Mekanism-${project.version}.jar"
     dependsOn 'reobfJar'
-    classifier "core"
+    classifier "Core"
 
     from('etc/core') {
         include '*.info'
@@ -150,10 +149,25 @@ task coreJar(type: Jar) {
     manifest(setMainManifestProps)
 }
 
-task toolsJar(type: Jar) {
-    archiveName = "MekanismTools-${project.version}.jar"
+task alltJar(type: Jar) {
     dependsOn 'reobfJar'
-    classifier "tools"
+    classifier "ALL"
+
+    from('etc/all') {
+        include '*.info'
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+    }
+
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        exclude 'mcmod.info'
+    }
+
+    manifest(setMainManifestProps)
+}
+
+task toolsJar(type: Jar) {
+    dependsOn 'reobfJar'
+    classifier "Tools"
 
     from('etc/tools') {
         include '*.info'
@@ -166,9 +180,8 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    archiveName = "MekanismGenerators-${project.version}.jar"
     dependsOn 'reobfJar'
-    classifier "generators"
+    classifier "Generators"
 
     from('etc/generators') {
         include '*.info'
@@ -181,8 +194,7 @@ task generatorsJar(type: Jar) {
 }
 
 task apiJar(type: Jar) {
-    classifier "api"
-    baseName "Mekanism"
+    classifier "API"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
@@ -194,6 +206,7 @@ artifacts {
     archives coreJar
     archives toolsJar
     archives generatorsJar
+    archives alltJar
 }
 
 task fullBuild(type: Delete) {

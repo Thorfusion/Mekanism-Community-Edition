@@ -1,7 +1,7 @@
 [
   {
     "modid": "mekanism",
-    "name": "Mekanism",
+    "name": "Mekanism Community Edition",
     "description": "Tools and Machines",
     "version": "${version}",
     "mcversion": "${mc_version}",

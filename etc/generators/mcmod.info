@@ -1,7 +1,7 @@
 [
   {
     "modid": "mekanismgenerators",
-    "name": "Mekanism: Generators",
+    "name": "Mekanism Community Edition: Generators",
     "description": "Generators module for Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",

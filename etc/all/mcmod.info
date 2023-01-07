@@ -12,7 +12,7 @@
       "pupnewfster",
       "dizzyd"
     ],
-    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "credits": "unpairedbracket, CyanideX and many others",
     "useDependencyInformation": true,
     "dependencies": [
       "forge",
@@ -32,7 +32,7 @@
       "forge@[14.23.5.2768,)"
     ]
   },
-  {
+    {
     "modid": "mekanismgenerators",
     "name": "Mekanism Community Edition: Generators",
     "description": "Generators module for Mekanism",
@@ -45,7 +45,7 @@
       "pupnewfster",
       "dizzyd"
     ],
-    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "credits": "unpairedbracket, CyanideX and many others",
     "useDependencyInformation": true,
     "dependencies": [
       "mekanism@[${version}]"
@@ -54,7 +54,7 @@
       "mekanism@[${version}]"
     ]
   },
-  {
+    {
     "modid": "mekanismtools",
     "name": "Mekanism Community Edition: Tools",
     "description": "Tools module for Mekanism",
@@ -67,7 +67,7 @@
       "pupnewfster",
       "dizzyd"
     ],
-    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "credits": "unpairedbracket, CyanideX and many others",
     "useDependencyInformation": true,
     "dependencies": [
       "mekanism@[${version}]"
