@@ -1,4 +1,4 @@
-![](https://files.thorfusion.com/mekanism/header1122b.png)
+![](https://files.thorfusion.com/mekanism/MEKBANNERWHITE1122.png)
 
 Originally made for Terralization Modpack with fixes from several different forks. Now with new features, bugfixes and performance enhancement.
 
