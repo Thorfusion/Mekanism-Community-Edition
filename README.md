@@ -42,6 +42,12 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Use O(1) operations where possible in FrequencyManager
 + Rework FrequencyManager
 
+#### sapphi-red
++ limit crystallizer to receive gas mutiples of receipe input
+
+#### [maggi373](https://github.com/maggi373) - Mekanism CE Team
++ Ported config file structure from mek:ce 1.7.10
+
 # License
 
 [LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.12.2/LICENSE.md)
