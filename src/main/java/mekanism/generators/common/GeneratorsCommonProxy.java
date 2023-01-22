@@ -101,10 +101,10 @@ public class GeneratorsCommonProxy implements IGuiProvider {
      * Set and load the mod's common configuration properties.
      */
     public void loadConfiguration() {
-        MekanismConfig.local().generators.load(Mekanism.configuration);
+        MekanismConfig.local().generators.load(Mekanism.configurationgenerators);
         setGasGeneratorMaxEnergy();
-        if (Mekanism.configuration.hasChanged()) {
-            Mekanism.configuration.save();
+        if (Mekanism.configurationgenerators.hasChanged()) {
+            Mekanism.configurationgenerators.save();
         }
     }
 
