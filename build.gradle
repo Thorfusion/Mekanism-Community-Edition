@@ -46,7 +46,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}"
-archivesBaseName = "Mekanism-1.12.2-Community-Edition"
+archivesBaseName = "Mekanism-Community-Edition"
 
 /*
 minecraft {
