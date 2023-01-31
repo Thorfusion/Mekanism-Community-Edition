@@ -9,6 +9,7 @@ buildscript {
         classpath("com.anatawa12.forge:ForgeGradle:2.3-1.0.+") {
             changing = true
         }
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
     }
 }
 
@@ -31,6 +32,8 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: "com.jfrog.artifactory"
+apply plugin: "maven"
 //apply plugin: 'net.minecraftforge.gradle'
 
 
@@ -213,4 +216,61 @@ artifacts {
 task fullBuild(type: Delete) {
     delete jar
     dependsOn "build"
+}
+
+artifactory {
+    contextUrl = System.getenv("MAVEN_URL")
+    publish {
+        repository {
+            repoKey = System.getenv("MAVEN_REPO")
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = false
+        publishArtifacts = true
+        publishPom = true
+    }
+    resolve {
+        repository {
+            repoKey = System.getenv("MAVEN_REPO")
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archivesBaseName
+            groupId = project.group
+            if (System.getenv("BUILD_VER") == null){
+                version = project.version
+            } else {
+                version = project.version + System.getenv("BUILD_VER")
+            }
+            artifacts = [toolsJar, coreJar, generatorsJar, alltJar, apiJar]
+            pom {
+                name.set("Mekanism Community Edition")
+                description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
+                url.set('https://github.com/Thorfusion/Mekanism-Community-Edition')
+                issueManagement {
+                    system.set('github')
+                    url.set('https://github.com/Thorfusion/Mekanism-Community-Edition/issues')
+                }
+                licenses {
+                    license {
+                        name.set('EUPL-1.2')
+                        distribution.set('repo')
+                    }
+                }
+            }
+        }
+    }
 }
