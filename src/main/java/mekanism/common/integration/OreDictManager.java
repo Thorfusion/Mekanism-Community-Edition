@@ -13,6 +13,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.config.MEKCEConfig;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -330,6 +332,8 @@ public final class OreDictManager {
             addIC2BronzeRecipe();
         }
 
+        mekanismce();
+
         oreDict = OreDictionary.getOres("ingotSilver", false);
         if (oreDict.size() > 0) {
             ItemStack ingotSilver = StackUtils.size(oreDict.get(0), 1);
@@ -530,6 +534,58 @@ public final class OreDictManager {
             } else {
                 for (ItemStack gem : gems) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), base, ore);
+                }
+            }
+        }
+    }
+    public static void mekanismce() {
+        if (MekanismConfig.current().mekce.EnableQuartzCompat.val() && MekanismConfig.current().general.machinesManager.isEnabled(BlockStateMachine.MachineType.ENRICHMENT_CHAMBER)) {
+            // Enrich quartz dust into quartz
+            for (ItemStack ore : OreDictionary.getOres("dustQuartz")) {
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.QUARTZ));
+            }
+            for (ItemStack ore : OreDictionary.getOres("dustNetherQuartz")) {
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.QUARTZ));
+            }
+            // Enrich quartz ore into 2 quartz dust
+            for (ItemStack ore : OreDictionary.getOres("dustQuartz")) {
+                RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.QUARTZ_ORE), StackUtils.size(ore, 2));
+            }
+            for (ItemStack ore : OreDictionary.getOres("dustNetherQuartz")) {
+                RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.QUARTZ_ORE), StackUtils.size(ore, 2));
+            }
+        }
+        // Add gemdiamond oredict for compressed diamond
+        if (MekanismConfig.current().mekce.EnableDiamondCompat.val() && MekanismConfig.current().general.machinesManager.isEnabled(BlockStateMachine.MachineType.ENRICHMENT_CHAMBER)) {
+            for (ItemStack ore : OreDictionary.getOres("gemDiamond")) {
+                InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedDiamond));
+            }
+        }
+        if (MekanismConfig.current().mekce.EnablePoorOresCompat.val() && MekanismConfig.current().general.machinesManager.isEnabled(BlockStateMachine.MachineType.PURIFICATION_CHAMBER)) {
+            for (ItemStack ore : OreDictionary.getOres("orePoorIron")) {
+                for (ItemStack ore2 : OreDictionary.getOres("clumpIron")) {
+                    RecipeHandler.addPurificationChamberRecipe(ore, ore2);
+                }
+            }
+            for (ItemStack ore : OreDictionary.getOres("orePoorGold")) {
+                for (ItemStack ore2 : OreDictionary.getOres("clumpGold")) {
+                    RecipeHandler.addPurificationChamberRecipe(ore, ore2);
+                }
+            }
+            for (ItemStack ore : OreDictionary.getOres("orePoorCopper")) {
+                for (ItemStack ore2 : OreDictionary.getOres("clumpCopper")) {
+                    RecipeHandler.addPurificationChamberRecipe(ore, ore2);
+                }
+            }
+            for (ItemStack ore : OreDictionary.getOres("orePoorTin")) {
+                for (ItemStack ore2 : OreDictionary.getOres("clumpTin")) {
+                    RecipeHandler.addPurificationChamberRecipe(ore, ore2);
+                }
+            }
+            for (ItemStack ore : OreDictionary.getOres("orePoorLead")) {
+                for (ItemStack ore2 : OreDictionary.getOres("clumpLead")) {
+                    RecipeHandler.addPurificationChamberRecipe(ore, ore2);
                 }
             }
         }
