@@ -14,7 +14,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.config.MEKCEConfig;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -34,6 +33,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -44,10 +44,19 @@ import net.minecraftforge.oredict.OreDictionary;
 public final class OreDictManager {
 
     private static final List<String> minorCompatIngot = Arrays.asList("Aluminum", "Draconium", "Iridium", "Mithril", "Nickel", "Platinum", "Uranium");
+    private static final List<String> siliconcompat = Arrays.asList("itemSilicon", "silicon");
     private static final List<String> minorCompatGem = Arrays.asList("Amber", "Diamond", "Emerald", "Malachite", "Peridot", "Ruby", "Sapphire", "Tanzanite", "Topaz");
-
+    public static boolean isSiliconLoaded;
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void init(RegistryEvent.Register<IRecipe> event) {
+        //Silicon Module
+        if (MekanismConfig.current().mekce.EnableSiliconCompat.val())
+        {
+            if (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core") || Loader.isModLoaded("appliedenergistics2")) {
+                isSiliconLoaded = true;
+            }
+        }
+
         addLogRecipes();
 
         List<ItemStack> oreDict;
@@ -94,7 +103,7 @@ public final class OreDictManager {
                 RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(),  4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 2), 1F);
             }
         }
-        
+
         for (ItemStack sulfur : OreDictionary.getOres("dustSulfur", false)) {
             sulfur = StackUtils.size(sulfur, 1);
             RecipeHandler.addChemicalOxidizerRecipe(sulfur, new GasStack(MekanismFluids.SulfurDioxide, 100));
@@ -308,11 +317,20 @@ public final class OreDictManager {
         for (ItemStack ingot : OreDictionary.getOres("ingotRefinedObsidian", false)) {
             RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
-
-        InfuseType redstoneInfuseType = InfuseRegistry.get("REDSTONE");
-        for (ItemStack ingot : OreDictionary.getOres("ingotOsmium", false)) {
-            RecipeHandler.addMetallurgicInfuserRecipe(redstoneInfuseType, 10, StackUtils.size(ingot, 1),
-                  new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+        if (isSiliconLoaded) {
+            for (String s : siliconcompat) {
+                InfuseType redstoneInfuseType = InfuseRegistry.get("REDSTONE");
+                for (ItemStack ingot : OreDictionary.getOres(s, false)) {
+                    RecipeHandler.addMetallurgicInfuserRecipe(redstoneInfuseType, 10, StackUtils.size(ingot, 1),
+                            new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+                }
+            }
+        } else {
+            InfuseType redstoneInfuseType = InfuseRegistry.get("REDSTONE");
+            for (ItemStack ingot : OreDictionary.getOres("ingotOsmium", false)) {
+                RecipeHandler.addMetallurgicInfuserRecipe(redstoneInfuseType, 10, StackUtils.size(ingot, 1),
+                        new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+            }
         }
 
         for (ItemStack ingot : OreDictionary.getOres("ingotRedstone", false)) {
