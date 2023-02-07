@@ -42,9 +42,9 @@ public class GuiToolsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.general")).getChildElements(), owningScreen.modID,
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configurationtools.getCategory("tools.general")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
-                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configurationtools.toString()));
         }
     }
 
@@ -56,9 +56,9 @@ public class GuiToolsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.armor-balance")).getChildElements(), owningScreen.modID,
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configurationtools.getCategory("tools.armor-balance")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
-                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configurationtools.toString()));
         }
     }
 
@@ -70,9 +70,9 @@ public class GuiToolsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.tool-balance")).getChildElements(), owningScreen.modID,
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configurationtools.getCategory("tools.tool-balance")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
-                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+                  configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configurationtools.toString()));
         }
     }
 }
