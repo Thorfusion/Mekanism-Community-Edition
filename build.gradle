@@ -44,12 +44,14 @@ repositories {
     }
 }
 
+
+version = "${minecraft_version}-${mod_version}"
+group = "mekanism"
+archivesBaseName = "Mekanism-Community-Edition"
+libsDirName = "../output"
+distsDirName = "../output"
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
-
-group = "mekanism"
-version = "${minecraft_version}-${mod_version}"
-archivesBaseName = "Mekanism-Community-Edition"
 
 /*
 minecraft {

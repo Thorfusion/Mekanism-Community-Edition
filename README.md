@@ -11,7 +11,7 @@ Originally made for Terralization Modpack with fixes from several different fork
 ```bash
 ./gradlew fullBuild
 ```
-You will find the files inside ./build/libs/
+You will find the files inside ./output/
 
 
 
