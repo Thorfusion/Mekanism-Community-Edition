@@ -222,9 +222,9 @@ public class Mekanism {
      * Mekanism configuration instances
      */
     public static Configuration configuration;
+    public static Configuration configurationce;
     public static Configuration configurationgenerators;
     public static Configuration configurationtools;
-    public static Configuration configurationrecipes;
     /**
      * Mekanism version number
      */
@@ -789,6 +789,7 @@ public class Mekanism {
 
         //Set the mod's configuration
         configuration = new Configuration(new File("config/mekanism/Mekanism.cfg"));
+        configurationce = new Configuration(new File("config/mekanism/MekanismCE.cfg"));
         configurationgenerators = new Configuration(new File("config/mekanism/MekanismGenerators.cfg"));
         configurationtools = new Configuration(new File("config/mekanism/MekanismTools.cfg"));
 

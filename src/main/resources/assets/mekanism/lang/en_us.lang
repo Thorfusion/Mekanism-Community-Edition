@@ -411,6 +411,7 @@ entity.BabySkeleton.name=Baby Skeleton
 
 # Config Gui
 mekanism.configgui.ctgy.general=General Settings
+mekanism.configgui.ctgy.mekce=MEK:CE Settings
 mekanism.configgui.ctgy.machines=Machine Settings
 mekanism.configgui.ctgy.tier=Tier Settings
 mekanism.configgui.ctgy.usage=Usage Settings

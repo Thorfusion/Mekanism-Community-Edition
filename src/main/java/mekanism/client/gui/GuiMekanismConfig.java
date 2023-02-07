@@ -25,6 +25,7 @@ public class GuiMekanismConfig extends GuiConfig {
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.mekce"), "mekanism.configgui.ctgy.mekce", MachinesEntry.class));
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tier"), "mekanism.configgui.ctgy.tier", TierEntry.class));
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
@@ -43,6 +44,19 @@ public class GuiMekanismConfig extends GuiConfig {
         protected GuiScreen buildChildScreen() {
             return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+        }
+    }
+
+    public static class MEKCEEntry extends CategoryEntry {
+
+        public MEKCEEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configurationce.getCategory("mekce")).getChildElements(), owningScreen.modID,
+                    Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configurationce.toString()));
         }
     }
 

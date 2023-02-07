@@ -36,6 +36,7 @@ public class MekanismConfig {
     }
 
     public GeneralConfig general = new GeneralConfig();
+    public MEKCEConfig mekce = new MEKCEConfig();
     public ClientConfig client = new ClientConfig();
     public UsageConfig usage = new UsageConfig();
     public StorageConfig storage = new StorageConfig();
