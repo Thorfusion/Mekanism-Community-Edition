@@ -85,15 +85,16 @@ public final class OreDictManager {
             RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 1));
         }
 
-        oreDict = OreDictionary.getOres("itemRubber", false);
-        if (oreDict.size() > 0) {
-            ItemStack itemRubber = StackUtils.size(oreDict.get(0), 1);
-            for (ItemStack rubber : OreDictionary.getOres("woodRubber", false)) {
-                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(rubber, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4),
-                      itemRubber, 1F);
+        if (OreDictionary.getOres("itemRawRubber").size() > 0) {
+            for (ItemStack ore : OreDictionary.getOres("woodRubber")) {
+                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 2), 1F);
+            }
+        } else if (OreDictionary.getOres("itemRubber").size() > 0) {
+            for (ItemStack ore : OreDictionary.getOres("woodRubber")) {
+                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(),  4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 2), 1F);
             }
         }
-
+        
         for (ItemStack sulfur : OreDictionary.getOres("dustSulfur", false)) {
             sulfur = StackUtils.size(sulfur, 1);
             RecipeHandler.addChemicalOxidizerRecipe(sulfur, new GasStack(MekanismFluids.SulfurDioxide, 100));
