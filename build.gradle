@@ -45,7 +45,12 @@ repositories {
 }
 
 
-version = "${minecraft_version}-${mod_version}"
+if (System.getenv("BUILD_VER") == null){
+    mod_version = mod_version
+} else {
+    mod_version = mod_version + "-" + System.getenv("BUILD_VER")
+}
+version = minecraft_version + "-" + mod_version
 group = "mekanism"
 archivesBaseName = "Mekanism-Community-Edition"
 libsDirName = "../output"
@@ -65,7 +70,7 @@ minecraft {
     runDir = "run"
     useDepAts = true
 
-    replace '${version}', project.version
+    replace '${version}', mod_version
     replaceIn "Mekanism.java"
     replaceIn "MekanismGenerators.java"
     replaceIn "MekanismTools.java"
@@ -109,14 +114,14 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", mod_version
     inputs.property "mc_version", minecraft_version
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
 
         // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
+        expand "version": mod_version, "mc_version": minecraft_version
     }
 
     // copy everything else, thats not the mcmod.info
@@ -145,7 +150,7 @@ task coreJar(type: Jar) {
 
     from('etc/core') {
         include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -161,7 +166,7 @@ task alltJar(type: Jar) {
 
     from('etc/all') {
         include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -177,7 +182,7 @@ task toolsJar(type: Jar) {
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -191,7 +196,7 @@ task generatorsJar(type: Jar) {
 
     from('etc/generators') {
         include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -252,11 +257,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = project.archivesBaseName
             groupId = project.group
-            if (System.getenv("BUILD_VER") == null){
-                version = project.version
-            } else {
-                version = project.version + System.getenv("BUILD_VER")
-            }
+            version = project.version
             artifacts = [toolsJar, coreJar, generatorsJar, alltJar, apiJar]
             pom {
                 name.set("Mekanism Community Edition")
