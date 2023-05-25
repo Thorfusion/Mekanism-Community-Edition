@@ -61,6 +61,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
   + ports the recipe change for enriched alloy from iron to steel
   + also adds a new configfile for mek:ce configs
   + fixes gui settings for mek generators and mek tools
++ fixes an npe crash for cables #103
 
 #### KasumiNova
 + New factory sort algorithm for MekCE by KasumiNova
