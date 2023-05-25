@@ -25,7 +25,7 @@ Mekanism CE has continued the use of the update notifier but changed the config 
 Note that changes not by the mekanism ce team has been added by us from their respective forks. any issues with these changes should be directed to us.
 
 #### thedeadferryman
-+ Update auto-sorting in factories, superseeded by Thorfusio#107
++ Update auto-sorting in factories, superseeded by Thorfusion#107
 
 #### Clem-Fern
 + Fix Tier installer NullPointerException onItemUse
@@ -64,7 +64,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + fixes an npe crash for cables Thorfusion#103
 
 #### KasumiNova
-+ New factory sort algorithm for MekCE by KasumiNova Thorfusio#107
++ New factory sort algorithm for MekCE by KasumiNova Thorfusion#107
 
 # License
 
