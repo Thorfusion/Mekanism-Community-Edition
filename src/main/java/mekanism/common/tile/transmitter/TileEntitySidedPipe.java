@@ -262,6 +262,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())) {
             return true;
         }
+        if (Capabilities.BLOCKABLE_CONNECTION_CAPABILITY == null) {
+            return false;
+        }
         return CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
     }
 
