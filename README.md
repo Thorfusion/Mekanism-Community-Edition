@@ -2,7 +2,7 @@
 
 Originally made for Terralization Modpack with fixes from several different forks. Now with new features, bugfixes and performance enhancement.
 
-#### Download at [curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-1-12-2-ce)
+#### Download at [curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce)
 
 #### Builds at our [maven](https://maven.thorfusion.com/ui/repos/tree/General/thorfusion/mekanism/Mekanism-1.12.2-Community-Edition)
 
