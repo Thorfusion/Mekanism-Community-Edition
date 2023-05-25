@@ -25,7 +25,7 @@ Mekanism CE has continued the use of the update notifier but changed the config 
 Note that changes not by the mekanism ce team has been added by us from their respective forks. any issues with these changes should be directed to us.
 
 #### thedeadferryman
-+ Update auto-sorting in factories
++ Update auto-sorting in factories, superseeded by #107
 
 #### Clem-Fern
 + Fix Tier installer NullPointerException onItemUse
@@ -47,6 +47,23 @@ Note that changes not by the mekanism ce team has been added by us from their re
 
 #### [maggi373](https://github.com/maggi373) - Mekanism CE Team
 + Ported config file structure from mek:ce 1.7.10
++ updates gradle to 5.6.4 #83
++ ported mek:ce 1.7.10 config file structure #83
++ fixed versioning
++ add publish to maven for 1.12.2 #93
++ port some changes done in mek:ce 1.7.10 #95
+  + ports terralizationcompat
+    + adds quartzcompat
+    + adds diamondcompat
+    + adds poororescompat
+  + port siliconcompat
+  + port recipechange for rubber in sawmill
+  + ports the recipe change for enriched alloy from iron to steel
+  + also adds a new configfile for mek:ce configs
+  + fixes gui settings for mek generators and mek tools
+
+#### KasumiNova
++ New factory sort algorithm for MekCE by KasumiNova
 
 # License
 
