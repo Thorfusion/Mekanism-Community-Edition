@@ -47,11 +47,11 @@ Note that changes not by the mekanism ce team has been added by us from their re
 
 #### [maggi373](https://github.com/maggi373) - Mekanism CE Team
 + Ported config file structure from mek:ce 1.7.10
-+ updates gradle to 5.6.4 #83
-+ ported mek:ce 1.7.10 config file structure #83
++ updates gradle to 5.6.4 Thorfusion#83
++ ported mek:ce 1.7.10 config file structure Thorfusion#83
 + fixed versioning
-+ add publish to maven for 1.12.2 #93
-+ port some changes done in mek:ce 1.7.10 #95
++ add publish to maven for 1.12.2 Thorfusion#93
++ port some changes done in mek:ce 1.7.10 Thorfusion#95
   + ports terralizationcompat
     + adds quartzcompat
     + adds diamondcompat
@@ -61,7 +61,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
   + ports the recipe change for enriched alloy from iron to steel
   + also adds a new configfile for mek:ce configs
   + fixes gui settings for mek generators and mek tools
-+ fixes an npe crash for cables #103
++ fixes an npe crash for cables Thorfusion#103
 
 #### KasumiNova
 + New factory sort algorithm for MekCE by KasumiNova
