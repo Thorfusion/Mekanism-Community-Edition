@@ -117,8 +117,8 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + fix crash with quantum entangloporter Thorfusion#68
 + Add configurable max radius for digitalminer Thorfusion#55
 + Ic2 compat config Thorfusion#64
-+ Thorfusion#117 bug rendering crash with mariculture infinity water bucket placed in evaporation controller Thorfusion122
-+ fix Thorfusion#100 where oredict for platinum didnt apply to dust and below and fix Thorfusion#120 Thorfusion121
++ Thorfusion#117 bug rendering crash with mariculture infinity water bucket placed in evaporation controller Thorfusion#122
++ fix Thorfusion#100 where oredict for platinum didnt apply to dust and below and fix Thorfusion#120 Thorfusion#121
 + add devJar Thorfusion#102
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
