@@ -142,7 +142,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Adds more configs for Bio-Generator Thorfusion#71
 + add forestry compat to biogen cycle Thorfusion#71
 + Fixes Molasse/Glucose missing texture and langs Thorfusion#71
-+ Reworks how Heavy Water is obtained Thorfsuion#94
++ Reworks how Heavy Water is obtained Thorfusion#94
 + Fixes upgrades vanishing up machines when FactoriesEnabled= false Thorfusion#112
 
 #### leytilera
