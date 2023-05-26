@@ -117,6 +117,9 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + fix crash with quantum entangloporter Thorfusion#68
 + Add configurable max radius for digitalminer Thorfusion#55
 + Ic2 compat config Thorfusion#64
++ Thorfusion#117 bug rendering crash with mariculture infinity water bucket placed in evaporation controller Thorfusion122
++ fix Thorfusion#100 where oredict for platinum didnt apply to dust and below and fix Thorfusion#120 Thorfusion121
++ add devJar Thorfusion#102
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -139,9 +142,14 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Adds more configs for Bio-Generator Thorfusion#71
 + add forestry compat to biogen cycle Thorfusion#71
 + Fixes Molasse/Glucose missing texture and langs Thorfusion#71
++ Reworks how Heavy Water is obtained Thorfsuion#94
++ Fixes upgrades vanishing up machines when FactoriesEnabled= false Thorfusion#112
 
 #### leytilera
 + universal cable connection to IC2
+
+#### ace10102
++ Additional checks for IC2 api and cofhcore in ChargeUtils before using them fixes mekanism#4785 Thorfusion#118
 
 ## All contributors get capes
 
