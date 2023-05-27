@@ -32,7 +32,7 @@ Mekanism CE has continued the use of the update notifier but changed the config 
 | Crash: Fix Tier installer NullPointerException onItemUse                                                                    | :x:                | :heavy_check_mark:                                                |
 | Bug: limit crystallizer to receive gas mutiples of recipe input                                                             | :x:                | :heavy_check_mark:                                                |
 | Performance: Optimize cable emitting                                                                                        | :x:                | :heavy_check_mark:                                                |
-| Performance: New factory sort algorithm                                                                                     | :x:                | :heavy_check_mark:                                                |
+| Performance: [New factory sort algorithm](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/107)              | :x:                | :heavy_check_mark:                                                |
 
 ### Full changelog
 
