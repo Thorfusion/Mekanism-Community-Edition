@@ -25,25 +25,25 @@ Mekanism CE has continued the use of the update notifier but changed the config 
 Note that changes not by the mekanism ce team has been added by us from their respective forks. any issues with these changes should be directed to us.
 
 #### thedeadferryman
-+ Update auto-sorting in factories, superseeded by Thorfusion#107
++ Update auto-sorting in factories, replaced by Thorfusion#107
 
 #### Clem-Fern
-+ Fix Tier installer NullPointerException onItemUse
++ Fix Tier installer NullPointerException onItemUse [crash fix]
 
 #### Addalyn
-+ Check and make sure toolsItem is not a empty stack
++ Check and make sure toolsItem is not a empty stack [bug fix]
 + Fix DigitalMiner to use getDiameter() instead of radius was issue with
 
 #### Gurkonier
-+ Add implementation for dynamic tank
++ Add implementation for dynamic tank [feature]
 
 #### fs-vault
-+ Optimize cable emitting
-+ Use O(1) operations where possible in FrequencyManager
-+ Rework FrequencyManager
++ Optimize cable emitting [Performance improvement on server tick]
++ Use O(1) operations where possible in FrequencyManager [Performance improvement]
++ Rework FrequencyManager [Performance improvement]
 
 #### sapphi-red
-+ limit crystallizer to receive gas mutiples of receipe input
++ limit crystallizer to receive gas mutiples of receipe input [bug fix]
 
 #### [maggi373](https://github.com/maggi373) - Mekanism CE Team
 + Ported config file structure from mek:ce 1.7.10
@@ -64,7 +64,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + fixes an npe crash for cables Thorfusion#103
 
 #### KasumiNova
-+ New factory sort algorithm for MekCE by KasumiNova Thorfusion#107
++ New factory sort algorithm for MekCE by KasumiNova Thorfusion#107 [Performance improvement]
 
 # License
 
