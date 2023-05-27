@@ -46,7 +46,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 
 ### Featured changes
 
-| Some Differences                                                                                                  | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) |
+| MEK:CE 1.7.10 Featured Changes                                                                                    | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) |
 |-------------------------------------------------------------------------------------------------------------------|--------------------|-------------------------------------------------------------------|
 | Open Source                                                                                                       | :heavy_check_mark: | :heavy_check_mark:                                                |
 | Dupe: Chemical Washer                                                                                             | :x:                | :heavy_check_mark:                                                |
