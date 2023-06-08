@@ -1,0 +1,45 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryRight",
+      "front": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryFront",
+      "south": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryBack",
+      "west": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryRight",
+      "east": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryLeft",
+      "up": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryTop",
+      "down": "mekanism:blocks/factory/ultimate/UltimateFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": -90
+      }
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryBackOn",
+          "west": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryRightOn",
+          "east": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/ultimate/enriching/UltimateEnrichingFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [
+      {}
+    ]
+  }
+}
+

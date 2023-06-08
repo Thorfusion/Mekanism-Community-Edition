@@ -162,6 +162,7 @@ tile.MachineBlock3.Oredictionificator.name=矿典转换器
 tile.MachineBlock3.ResistiveHeater.name=电阻加热装置
 tile.MachineBlock3.FormulaicAssemblicator.name=公式装配器
 tile.MachineBlock3.FuelwoodHeater.name=木料加热器
+tile.MachineBlock3.Factory.name=工厂
 
 # Plastic
 tile.PlasticBlock.name=塑料方块

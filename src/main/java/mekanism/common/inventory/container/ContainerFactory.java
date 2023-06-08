@@ -26,14 +26,26 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
     @Override
     protected void addSlots() {
         addSlotToContainer(new SlotDischarge(tileEntity, 1, 7, 13));
-        addSlotToContainer(new Slot(tileEntity, 2, 180, 75) {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                MachineType swapType = MachineType.get(stack);
-                return swapType != null && !swapType.isFactory();
-            }
-        });
-        addSlotToContainer(new SlotOutput(tileEntity, 3, 180, 112));
+
+        if (tileEntity.tier == FactoryTier.ULTIMATE) {
+            addSlotToContainer(new Slot(tileEntity, 2, 180 + 34, 75) {
+                @Override
+                public boolean isItemValid(ItemStack stack) {
+                    MachineType swapType = MachineType.get(stack);
+                    return swapType != null && !swapType.isFactory();
+                }
+            });
+            addSlotToContainer(new SlotOutput(tileEntity, 3, 180 + 34, 112));
+        } else {
+            addSlotToContainer(new Slot(tileEntity, 2, 180, 75) {
+                @Override
+                public boolean isItemValid(ItemStack stack) {
+                    MachineType swapType = MachineType.get(stack);
+                    return swapType != null && !swapType.isFactory();
+                }
+            });
+            addSlotToContainer(new SlotOutput(tileEntity, 3, 180, 112));
+        }
         addSlotToContainer(new Slot(tileEntity, 4, 7, 57));
         if (tileEntity.tier == FactoryTier.BASIC) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
@@ -56,12 +68,41 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 29 + (i * 19), 57));
             }
+        } else if (tileEntity.tier == FactoryTier.ULTIMATE) {
+            for (int i = 0; i < tileEntity.tier.processes; i++) {
+                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 27 + (i * 19), 13, i));
+            }
+            for (int i = 0; i < tileEntity.tier.processes; i++) {
+                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 27 + (i * 19), 57));
+            }
         }
     }
 
     @Override
     protected int getInventoryOffset() {
         return 95;
+    }
+
+    @Override
+    protected void addInventorySlots(InventoryPlayer inventory) {
+        int offset = getInventoryOffset();
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                if (tileEntity.tier == FactoryTier.ULTIMATE) {
+                    addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 27 + slotX * 18, offset + slotY * 18));
+                } else {
+                    addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, offset + slotY * 18));
+                }
+            }
+        }
+        offset += 58;
+        for (int slotY = 0; slotY < 9; slotY++) {
+            if (tileEntity.tier == FactoryTier.ULTIMATE) {
+                addSlotToContainer(new Slot(inventory, slotY, 27 + slotY * 18, offset));
+            } else {
+                addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, offset));
+            }
+        }
     }
 
     @Nonnull

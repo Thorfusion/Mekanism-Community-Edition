@@ -74,6 +74,7 @@ public class MekanismTEFixer extends TEFixer {
         putEntry("ThermalEvaporationValve", "thermal_evaporation_valve");
         putEntry("ThermodynamicConductor", "thermodynamic_conductor");
         putEntry("UltimateSmeltingFactory", "ultimate_smelting_factory");
+        putEntry("EliteSmeltingFactory", "elite_smelting_factory");
         putEntry("UniversalCable", "universal_cable");
     }
 }

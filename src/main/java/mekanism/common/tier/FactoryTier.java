@@ -8,7 +8,8 @@ import net.minecraft.util.ResourceLocation;
 public enum FactoryTier implements ITier {
     BASIC(3, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiBasicFactory.png")),
     ADVANCED(5, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiAdvancedFactory.png")),
-    ELITE(7, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiEliteFactory.png"));
+    ELITE(7, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiEliteFactory.png")),
+    ULTIMATE(9,new ResourceLocation(Mekanism.MODID, "gui/factory/GuiUltimateFactory.png"));
 
     public final int processes;
     public final ResourceLocation guiLocation;
@@ -34,6 +35,9 @@ public enum FactoryTier implements ITier {
         }
         if (MachineType.ELITE_FACTORY.isEnabled()) {
             consumer.accept(FactoryTier.ELITE);
+        }
+        if (MachineType.ULTIMATE_FACTORY.isEnabled()) {
+            consumer.accept(FactoryTier.ULTIMATE);
         }
     }
 }

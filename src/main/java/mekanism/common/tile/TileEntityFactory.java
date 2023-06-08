@@ -171,12 +171,20 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ELITE) {
-            return false;
-        }
+        if (tier == FactoryTier.ELITE || tier == FactoryTier.ULTIMATE) {
+            if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+                return false;
+            }
+            world.setBlockToAir(getPos());
+            world.setBlockState(getPos(), MekanismBlocks.MachineBlock3.getStateFromMeta(4 + tier.ordinal() + 1), 3);
+        } else if (tier == FactoryTier.BASIC || tier == FactoryTier.ADVANCED) {
+            if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+                return false;
+            }
+            world.setBlockToAir(getPos());
+            world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
+        } else return false;
 
-        world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
 
@@ -485,7 +493,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return true;
         } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
             return true;
-        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
+        } else if (tier == FactoryTier.ULTIMATE && slotID >= 14 && slotID <= 22) {
+            return true;
+        }else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
             return true;
         }
         return false;
@@ -503,7 +513,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     private boolean isInputSlot(int slotID) {
-        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE && slotID <= 11);
+        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE ? slotID <= 11 : tier == FactoryTier.ULTIMATE && slotID <= 13);
     }
 
     @Override
@@ -524,6 +534,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             if (slotID >= 12 && slotID <= 18) {
                 return false;
             } else if (slotID >= 5 && slotID <= 11) {
+                return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
+            }
+        }else if (tier == FactoryTier.ULTIMATE) {
+            if (slotID >= 14 && slotID <= 22) {
+                return false;
+            } else if (slotID >= 5 && slotID <= 13) {
                 return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
             }
         }
@@ -1039,6 +1055,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 return new int[]{5, 6, 7, 8, 9};
             case ELITE:
                 return new int[]{5, 6, 7, 8, 9, 10, 11};
+            case ULTIMATE:
+                return new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13};
             default:
                 return null;
         }

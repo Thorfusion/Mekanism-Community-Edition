@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,20 +18,31 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
 
     @Override
     public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + 176, guiHeight + 70, 26, 63);
+        if (this.tileEntity.tier == FactoryTier.ULTIMATE){
+            return new Rectangle4i(guiWidth + 176 + 34, guiHeight + 70, 26, 63);
+        }else return new Rectangle4i(guiWidth + 176, guiHeight + 70, 26, 63);
+
     }
 
     @Override
     protected boolean inBounds(int xAxis, int yAxis) {
-        return xAxis >= 180 && xAxis <= 196 && (yAxis >= 75 && yAxis <= 91 || yAxis >= 112 && yAxis <= 128);
+        if (this.tileEntity.tier == FactoryTier.ULTIMATE){
+            return xAxis >= 180 + 34 && xAxis <= 196 + 34 && (yAxis >= 75 && yAxis <= 91 || yAxis >= 112 && yAxis <= 128);
+        }else return xAxis >= 180 && xAxis <= 196 && (yAxis >= 75 && yAxis <= 91 || yAxis >= 112 && yAxis <= 128);
     }
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
-        int displayInt = tileEntity.getScaledRecipeProgress(15);
-        guiObj.drawTexturedRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+        if (this.tileEntity.tier == FactoryTier.ULTIMATE){
+            guiObj.drawTexturedRect(guiWidth + 176 + 34, guiHeight + 70, 0, 0, 26, 63);
+            int displayInt = tileEntity.getScaledRecipeProgress(15);
+            guiObj.drawTexturedRect(guiWidth + 181 + 34, guiHeight + 94, 26, 0, 10, displayInt);
+        }else {
+            guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
+            int displayInt = tileEntity.getScaledRecipeProgress(15);
+            guiObj.drawTexturedRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+        }
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
