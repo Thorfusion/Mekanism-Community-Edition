@@ -1,0 +1,20 @@
+[
+  {
+    "modid": "mekanismultimate",
+    "name": "Mekanism Community Edition: Ultimate",
+    "description": "Ultimate module for Mekanism",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "maggi373"
+    ],
+    "credits": "",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]"
+    ]
+  }
+]
