@@ -1,0 +1,16 @@
+[
+{
+  "modid": "MekanismUltimate",
+  "name": "Mekanism Community Edition: Ultimate",
+  "description": "Ultimate module of Mekanism CE.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["maggi373", "DrParadox7"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "dependencies": ["Mekanism"],
+  "screenshots": [
+  ]
+}
+]

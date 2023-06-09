@@ -1,4 +1,4 @@
-**
+*.*
 
 !.github/**
 !docs/**
@@ -14,4 +14,5 @@
 !gradle.properties
 !gradlew
 !gradlew.bat
+
 
