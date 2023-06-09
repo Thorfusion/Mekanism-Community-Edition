@@ -74,6 +74,7 @@ minecraft {
     replaceIn "Mekanism.java"
     replaceIn "MekanismGenerators.java"
     replaceIn "MekanismTools.java"
+    replaceIn "MekanismUltimate.java"
 }
 
 dependencies {
@@ -204,6 +205,21 @@ task generatorsJar(type: Jar) {
     }
 }
 
+task ultimateJar(type: Jar) {
+    dependsOn 'reobfJar'
+    classifier "Ultimate"
+
+    from('etc/ultimate') {
+        include '*.info'
+        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+    }
+
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/ultimate/**', 'assets/mekanismultimate/**'
+    }
+}
+
+
 task apiJar(type: Jar) {
     classifier "API"
     dependsOn "sourceMainJava"
@@ -218,6 +234,7 @@ artifacts {
     archives toolsJar
     archives generatorsJar
     archives alltJar
+    archives ultimateJar
 }
 
 task fullBuild(type: Delete) {
@@ -258,7 +275,7 @@ publishing {
             artifactId = project.archivesBaseName
             groupId = project.group
             version = project.version
-            artifacts = [toolsJar, coreJar, generatorsJar, alltJar, apiJar]
+            artifacts = [toolsJar, coreJar, generatorsJar, alltJar, apiJar, ultimateJar]
             pom {
                 name.set("Mekanism Community Edition")
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
