@@ -100,7 +100,7 @@ tile.BasicBlock.DynamicValve.name=动态阀门
 tile.BasicBlock.CopperBlock.name=铜块
 tile.BasicBlock.TinBlock.name=锡块
 tile.BasicBlock.ThermalEvaporationController.name=热力蒸馏控制器
-tile.BasicBlock.ThermalEvaporationValve.name==热力蒸馏阀门
+tile.BasicBlock.ThermalEvaporationValve.name=热力蒸馏阀门
 
 # Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=热力蒸馏方块
@@ -608,6 +608,7 @@ gui.factory.Combining=融合
 gui.factory.Purifying=提纯
 gui.factory.Injecting=压射
 gui.factory.Infusing=灌注
+gui.factory.Sawing=切割
 
 gui.seismicReader.short=地震读取器
 gui.seismicReader.solids=固体
