@@ -1,12 +1,12 @@
 buildscript {
-  repositories {
-      maven {
-          name = "central"
-          url = "https://maven.thorfusion.com/artifactory/central/"
-      }
-  }
+    repositories {
+        maven {
+            name = "central"
+            url = "https://maven.thorfusion.com/artifactory/central/"
+        }
+    }
     dependencies {
-        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
             changing = true
         }
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
@@ -52,7 +52,7 @@ dependencies {
     compile "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
 }
 
-if (System.getenv("BUILD_VER") == null){
+if (System.getenv("BUILD_VER") == null) {
     mod_version = mod_version
 } else {
     mod_version = mod_version + "-" + System.getenv("BUILD_VER")
@@ -119,7 +119,7 @@ task toolsJar(type: Jar) {
     classifier = 'Tools'
     from('etc/tools') {
         include '*.info'
-        expand 'version': mod_version,'mc_version': minecraft_version,'fmp_version': FMP_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -132,7 +132,7 @@ task generatorsJar(type: Jar) {
     classifier = 'Generators'
     from('etc/generators') {
         include '*.info'
-        expand 'version': mod_version,'mc_version': minecraft_version,'fmp_version': FMP_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
