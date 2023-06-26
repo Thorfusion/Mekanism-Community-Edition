@@ -22,7 +22,6 @@ apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: "com.jfrog.artifactory"
 apply plugin: "maven-publish"
-apply plugin: "maven"
 
 defaultTasks 'fullBuild'
 
@@ -43,13 +42,13 @@ idea {
 
 
 dependencies {
-    compile "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:dev"
-    compile "codechicken:ForgeMultipart:${minecraft_version}-${FMP_version}:dev"
-    compile "codechicken:NotEnoughItems:${minecraft_version}-${NEI_version}:dev"
-    compile "codechicken:CodeChickenCore:${minecraft_version}-${CCC_version}:dev"
-    compile "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
-    compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
-    compile "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
+    implementation "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:dev"
+    implementation "codechicken:ForgeMultipart:${minecraft_version}-${FMP_version}:dev"
+    implementation "codechicken:NotEnoughItems:${minecraft_version}-${NEI_version}:dev"
+    implementation "codechicken:CodeChickenCore:${minecraft_version}-${CCC_version}:dev"
+    implementation "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
+    implementation "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
+    implementation "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
 }
 
 if (System.getenv("BUILD_VER") == null) {
@@ -75,6 +74,7 @@ minecraft {
 }
 
 processResources {
+    duplicatesStrategy = 'include'
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
@@ -238,4 +238,3 @@ publishing {
         }
     }
 }
-
