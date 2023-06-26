@@ -74,14 +74,13 @@ minecraft {
     replace "GRADLE_VERSIONMOD", alt_version
 }
 
-processResources
-        {
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-                exclude '**/*.blend*'
-            }
-        }
+processResources {
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+        exclude '**/*.blend*'
+    }
+}
 
 task coreJar(type: Jar) {
     classifier = 'Core'
