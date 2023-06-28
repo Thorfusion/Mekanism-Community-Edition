@@ -33,7 +33,6 @@ idea {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: "com.jfrog.artifactory"
-apply plugin: "maven"
 //apply plugin: 'net.minecraftforge.gradle'
 
 
@@ -82,7 +81,7 @@ dependencies {
     // compileOnly fg.deobf("MCMultiPart2:MCMultiPart:${mcmp_version}")
     deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    // runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
     compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
     // compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
@@ -91,7 +90,7 @@ dependencies {
     // deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
+    // runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
         exclude module: "asm-debug-all"
@@ -114,6 +113,7 @@ dependencies {
 }
 
 processResources {
+    duplicatesStrategy = 'include'
     inputs.property "version", mod_version
     inputs.property "mc_version", minecraft_version
 
