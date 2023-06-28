@@ -1,8 +1,9 @@
 package mekanism.common.inventory.container;
 
 import invtweaks.api.container.ChestContainer;
-import javax.annotation.Nonnull;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +12,9 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ChestContainer(isLargeChest = true)
 public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonalChest> {
@@ -85,12 +89,18 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
         return itemInventory;
     }
 
+    @ParametersAreNonnullByDefault
     @Override
     public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
         if (isBlock) {
-            return tileEntity.isUsableByPlayer(entityplayer);
+            return super.canInteractWith(entityplayer);
         }
-        return true;
+        final ItemStack currentItem = entityplayer.getHeldItemMainhand();
+        if (itemInventory instanceof InventoryPersonalChest) {
+            final ItemStack stack = ((InventoryPersonalChest) itemInventory).getStack();
+            return super.canInteractWith(entityplayer) && !stack.isEmpty() && currentItem == stack && BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.PERSONAL_CHEST;
+        }
+        return false;
     }
 
     @Nonnull
