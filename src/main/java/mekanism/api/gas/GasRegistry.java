@@ -27,10 +27,7 @@ public class GasRegistry {
      * @return gas associated with defined ID
      */
     public static Gas getGas(int id) {
-        if (id == -1) {
-            return null;
-        }
-        return registeredGasses.get(id);
+        return id == -1 ? null : registeredGasses.get(id);
     }
 
     /**
@@ -39,12 +36,10 @@ public class GasRegistry {
      * @return the gas associated with the fluid
      */
     public static Gas getGas(Fluid f) {
-        for (Gas gas : getRegisteredGasses()) {
-            if (gas.hasFluid() && gas.getFluid() == f) {
-                return gas;
-            }
-        }
-        return null;
+        return registeredGasses.stream()
+                .filter(gas -> gas.hasFluid() && gas.getFluid() == f)
+                .findAny()
+                .orElse(null);
     }
 
     /**
@@ -70,12 +65,10 @@ public class GasRegistry {
      * @return gas associated with the name
      */
     public static Gas getGas(String name) {
-        for (Gas gas : registeredGasses) {
-            if (gas.getName().toLowerCase().equals(name.toLowerCase())) {
-                return gas;
-            }
-        }
-        return null;
+        return registeredGasses.stream()
+                .filter(gas -> gas.getName().equalsIgnoreCase(name))
+                .findAny()
+                .orElse(null);
     }
 
     /**
@@ -84,9 +77,6 @@ public class GasRegistry {
      * @return gas ID
      */
     public static int getGasID(Gas gas) {
-        if (gas == null || !containsGas(gas.getName())) {
-            return -1;
-        }
-        return registeredGasses.indexOf(gas);
+        return gas == null || !containsGas(gas.getName()) ? -1 : registeredGasses.indexOf(gas);
     }
 }
