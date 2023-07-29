@@ -290,48 +290,43 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
             double prev = getEnergy();
             secondaryEnergyThisTick = recipeType.fuelEnergyUpgrades() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
 
-            for (int process = 0; process < tier.processes; process++) {
-                if (MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
-                    if ((progress[process] + 1) < ticksRequired) {
-                        progress[process]++;
-                        gasTank.draw(secondaryEnergyThisTick, true);
-                        electricityStored -= energyPerTick;
-                    } else if ((progress[process] + 1) >= ticksRequired) {
-                        operate(getInputSlot(process), getOutputSlot(process));
+            if (MekanismUtils.canFunction(this)) {
+                boolean hasOperation = false;
 
-                        progress[process] = 0;
+                for (int process = 0; process < tier.processes; process++) {
+                    if (canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
+                        if ((progress[process] + 1) >= ticksRequired) {
+                            operate(getInputSlot(process), getOutputSlot(process));
+                            progress[process] = 0;
+                        } else {
+                            progress[process]++;
+                        }
                         gasTank.draw(secondaryEnergyThisTick, true);
                         electricityStored -= energyPerTick;
                     }
-                }
 
-                if (!canOperate(getInputSlot(process), getOutputSlot(process))) {
-                    if (!(recipeType.usesFuel() && recipeType.hasRecipe(inventory[getInputSlot(process)]))) {
-                        progress[process] = 0;
+                    if (!canOperate(getInputSlot(process), getOutputSlot(process))) {
+                        if (!(recipeType.usesFuel() && recipeType.hasRecipe(inventory[getInputSlot(process)]))) {
+                            progress[process] = 0;
+                        }
+                    } else {
+                        hasOperation = true;
+                    }
+                }
+                if (hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
+                    setActive(true);
+                } else {
+                    if (prevEnergy >= getEnergy()) {
+                        setActive(false);
                     }
                 }
             }
 
-            boolean hasOperation = false;
-
-            for (int i = 0; i < tier.processes; i++) {
-                if (canOperate(getInputSlot(i), getOutputSlot(i))) {
-                    hasOperation = true;
-                    break;
-                }
-            }
-
-            if (MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
-                setActive(true);
-            } else {
-                if (prevEnergy >= getEnergy()) {
-                    setActive(false);
-                }
-            }
             if (infuseStored.amount <= 0) {
                 infuseStored.amount = 0;
                 infuseStored.type = null;
             }
+
             lastUsage = prev - getEnergy();
             prevEnergy = getEnergy();
         }
@@ -527,48 +522,35 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         if (inventory[inputSlot] == null) {
             return false;
         }
+
         if (recipeType.usesFuel()) {
             AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
-            if (recipe == null) {
-                return false;
-            }
-            return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
+            return recipe == null ? false : recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
         }
 
         if (recipeType == RecipeType.INFUSING) {
-            InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
-            MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
-            if (recipe == null) {
-                return false;
-            }
-            return recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
+            MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, inventory[inputSlot]));
+            return recipe == null ? false : recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
         }
 
         BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
-        if (recipe == null) {
-            return false;
-        }
-        return recipe.canOperate(inventory, inputSlot, outputSlot);
+        return recipe == null ? false : recipe.canOperate(inventory, inputSlot, outputSlot);
     }
 
     public void operate(int inputSlot, int outputSlot) {
-        if (!canOperate(inputSlot, outputSlot)) {
-            return;
-        }
-
         if (recipeType.usesFuel()) {
             AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
             recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
         } else if (recipeType == RecipeType.INFUSING) {
-            InfusionInput input = new InfusionInput(infuseStored, inventory[inputSlot]);
-            MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
+            MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, inventory[inputSlot]));
             recipe.output(inventory, inputSlot, outputSlot, infuseStored);
 
         } else {
             BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
             recipe.operate(inventory, inputSlot, outputSlot);
         }
+
         markDirty();
         ejectorComponent.outputItems();
     }
