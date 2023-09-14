@@ -80,8 +80,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(mekce.EnableQuartzCompat);
 			dataStream.writeBoolean(mekce.EnableDiamondCompat);
 			dataStream.writeBoolean(mekce.EnablePoorOresCompat);
-			dataStream.writeBoolean(mekce.OreDictOsmium);
-			dataStream.writeBoolean(mekce.OreDictPlatinum);
+			dataStream.writeBoolean(mekce.PlatReplacement);
 			dataStream.writeBoolean(mekce.enableSiliconCompat);
 			dataStream.writeInt(mekce.IC2SinkTier);
 			dataStream.writeInt(mekce.IC2SourceTier);
@@ -276,8 +275,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.EnableQuartzCompat = dataStream.readBoolean();
 			mekce.EnableDiamondCompat = dataStream.readBoolean();
 			mekce.EnablePoorOresCompat = dataStream.readBoolean();
-			mekce.OreDictOsmium = dataStream.readBoolean();
-			mekce.OreDictPlatinum = dataStream.readBoolean();
+			mekce.PlatReplacement = dataStream.readBoolean();
 			mekce.enableSiliconCompat = dataStream.readBoolean();
 			mekce.IC2SinkTier = dataStream.readInt();
 			mekce.IC2SourceTier = dataStream.readInt();

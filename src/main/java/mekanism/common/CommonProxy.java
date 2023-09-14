@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.recipes;
 import mekanism.api.MekanismConfig.machines;
@@ -312,8 +311,7 @@ public class CommonProxy implements IGuiProvider
 		mekce.EnableQuartzCompat = Mekanism.configurationce.get("mekce", "EnableQuartzCompat", true, "Allows quartz dust to be enriched into quartz Also allows quartz ore to be enriched into quartz dust").getBoolean();
 		mekce.EnableDiamondCompat = Mekanism.configurationce.get("mekce", "EnableDiamondCompat", true, "Allows oredict'ed diamonds to be used in the enrichment chamber, like synthetic diamonds.").getBoolean();
 		mekce.EnablePoorOresCompat = Mekanism.configurationce.get("mekce", "EnablePoorOresCompat", true, "Allows poor ores from railcraft to be used in the purification chamber and gives one clump ie one ingot.").getBoolean();
-		mekce.OreDictOsmium = Mekanism.configurationce.get("mekce", "OreDictOsmium", true, "Adds the oredict (osmium) to osmium").getBoolean();
-		mekce.OreDictPlatinum = Mekanism.configurationce.get("mekce", "OreDictPlatinum", false, "Adds the oredict (platinum) to osmium").getBoolean();
+		mekce.PlatReplacement = Mekanism.configurationce.get("mekce", "PlatReplacement", false, "Replaces Mekanism Osmium to Platinum").getBoolean();
 		mekce.enableSiliconCompat = Mekanism.configurationce.get("mekce", "EnableSiliconCompat", true, "When a mod that adds silicon (galacticraft, enderio and projectred) is detected, recipe for control circuit is changed from using iron to silicon in the metalurgic infuser").getBoolean();
 		mekce.digitalMinerMaxRadius = Mekanism.configurationce.get("mekce", "DigitalMinerMaxRadius", 32, "Select range from 1 to 64, we do not recommend going over 32", 1, 64).getInt();
 		mekce.enableSingleUseCardboxes = Mekanism.configurationce.get("mekce", "EnableSingleUseCardboxes", true, "This allows to force single use on cardboxes or not").getBoolean();
