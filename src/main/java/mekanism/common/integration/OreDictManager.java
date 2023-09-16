@@ -195,9 +195,12 @@ public final class OreDictManager
 			}));
 		}
 
-		if (Mekanism.isSiliconLoaded && OreDictionary.doesOreNameExist("itemSilicon")) {
-			for (ItemStack ore : OreDictionary.getOres("itemSilicon")) {
-				RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+		if (Mekanism.isSiliconLoaded && (OreDictionary.doesOreNameExist("itemSilicon") || OreDictionary.doesOreNameExist("silicon"))) {
+			List<String> siliconCompat = Arrays.asList("itemSilicon", "silicon");
+			for (String s : siliconCompat) {
+				for (ItemStack ore : OreDictionary.getOres(s)) {
+					RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+				}
 			}
 		} else {
 
