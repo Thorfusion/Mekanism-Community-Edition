@@ -1496,7 +1496,8 @@ public class Mekanism
 		if (MekanismConfig.mekce.enableSiliconCompat)
 		{
 			if (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core")) {
-				isSiliconLoaded = true;
+				if (OreDictionary.doesOreNameExist("itemSilicon") || OreDictionary.doesOreNameExist("silicon"))
+					isSiliconLoaded = true;
 			}
 		}
 		//Integrate certain OreDictionary recipes

@@ -195,7 +195,7 @@ public final class OreDictManager
 			}));
 		}
 
-		if (Mekanism.isSiliconLoaded && (OreDictionary.doesOreNameExist("itemSilicon") || OreDictionary.doesOreNameExist("silicon"))) {
+		if (Mekanism.isSiliconLoaded) {
 			List<String> siliconCompat = Arrays.asList("itemSilicon", "silicon");
 			for (String s : siliconCompat) {
 				for (ItemStack ore : OreDictionary.getOres(s)) {
