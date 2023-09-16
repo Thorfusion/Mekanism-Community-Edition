@@ -1,5 +1,6 @@
 package mekanism.common.integration;
 
+import cpw.mods.fml.common.Loader;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
@@ -195,7 +196,7 @@ public final class OreDictManager
 			}));
 		}
 
-		if (Mekanism.isSiliconLoaded) {
+		if (MekanismConfig.mekce.enableSiliconCompat && (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core"))) {
 			List<String> siliconCompat = Arrays.asList("itemSilicon", "silicon");
 			for (String s : siliconCompat) {
 				for (ItemStack ore : OreDictionary.getOres(s)) {

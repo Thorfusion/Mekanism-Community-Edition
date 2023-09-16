@@ -212,8 +212,6 @@ public class Mekanism
 
 	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
 
-	public static boolean isSiliconLoaded;
-
 	/**
 	 * Adds all in-game crafting, smelting and machine recipes.
 	 */
@@ -1490,14 +1488,6 @@ public class Mekanism
 				{
 					EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.monster, new BiomeGenBase[] {biome});
 				}
-			}
-		}
-		//Silicon Module
-		if (MekanismConfig.mekce.enableSiliconCompat)
-		{
-			if (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core")) {
-				if (OreDictionary.doesOreNameExist("itemSilicon") || OreDictionary.doesOreNameExist("silicon"))
-					isSiliconLoaded = true;
 			}
 		}
 		//Integrate certain OreDictionary recipes
