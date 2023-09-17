@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import cpw.mods.fml.common.Loader;
+import mekanism.api.MekanismConfig;
 import mekanism.common.item.*;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
@@ -103,7 +105,8 @@ public class MekanismItems
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 		GameRegistry.registerItem(CompressedDiamond, "CompressedDiamond");
 		GameRegistry.registerItem(CompressedObsidian, "CompressedObsidian");
-		GameRegistry.registerItem(CompressedEnder, "CompressedEnder");
+		if (MekanismConfig.mekce.enableBoPProgression && Loader.isModLoaded("BiomesOPlenty"))
+			GameRegistry.registerItem(CompressedEnder, "CompressedEnder");
 		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
 		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
 		GameRegistry.registerItem(Clump, "Clump");

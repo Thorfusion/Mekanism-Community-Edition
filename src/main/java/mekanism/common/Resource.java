@@ -1,10 +1,12 @@
 package mekanism.common;
 
+import static mekanism.api.MekanismConfig.mekce.PlatReplacement;
+
 public enum Resource
 {
 	IRON("Iron"),
 	GOLD("Gold"),
-	OSMIUM("Osmium"),
+	OSMIUM(PlatReplacement ? "Platinum" : "Osmium"),
 	COPPER("Copper"),
 	TIN("Tin"),
 	SILVER("Silver"),

@@ -76,8 +76,7 @@ public class MekanismConfig
 		public static boolean EnableQuartzCompat;
 		public static boolean EnableDiamondCompat;
 		public static boolean EnablePoorOresCompat;
-		public static boolean OreDictOsmium;
-		public static boolean OreDictPlatinum;
+		public static boolean PlatReplacement;
 		public static boolean enableSiliconCompat;
 		public static int IC2SinkTier;
 		public static int IC2SourceTier;
