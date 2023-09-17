@@ -1,14 +1,7 @@
 package mekanism.common;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import cpw.mods.fml.common.event.*;
 import mekanism.api.Coord4D;
@@ -92,6 +85,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -1628,24 +1622,13 @@ public class Mekanism
 	{
 		if(event.getChunk() != null && !event.world.isRemote)
 		{
-			//Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+			HashMap<ChunkPosition, TileEntity> chunkData = new HashMap<ChunkPosition, TileEntity>(event.getChunk().chunkTileEntityMap);
 
-			for(Iterator iter = /*copy*/event.getChunk().chunkTileEntityMap.values().iterator(); iter.hasNext();)
-			{
-				Object obj = iter.next();
-
-				if(obj instanceof TileEntity)
-				{
-					TileEntity tileEntity = (TileEntity)obj;
-
-					if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
-					{
-						((TileEntityElectricBlock)tileEntity).register();
-					}
-					else if(tileEntity instanceof IChunkLoadHandler)
-					{
-						((IChunkLoadHandler)tileEntity).onChunkLoad();
-					}
+			for (TileEntity tileEntity : chunkData.values()) {
+				if (tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2()) {
+					((TileEntityElectricBlock) tileEntity).register();
+				} else if (tileEntity instanceof IChunkLoadHandler) {
+					((IChunkLoadHandler) tileEntity).onChunkLoad();
 				}
 			}
 		}
