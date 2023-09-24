@@ -100,7 +100,8 @@ public class MekanismRenderer
 			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfurTrioxide"));
 			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSulfuricAcid"));
 			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquid" + Resource.OSMIUM.getName()).setIcon(event.map.registerIcon("mekanism:liquid/LiquidOsmium"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOsmium"));
+			GasRegistry.getGas("liquidPlatinum").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOsmium"));
 			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:liquid/LiquidStone"));
 			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:liquid/LiquidEthene"));
 			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
