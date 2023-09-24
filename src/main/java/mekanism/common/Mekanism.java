@@ -1380,7 +1380,11 @@ public class Mekanism
 		configurationrecipes = new Configuration(new File("config/mekanism/MekanismRecipes.cfg"));
 		configurationce = new Configuration(new File("config/mekanism/MekanismCE.cfg"));
 
-        //Register tier information
+		//Load configuration
+		proxy.loadConfiguration();
+		proxy.onConfigSync(false);
+
+		//Register tier information
         Tier.init();
 
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
@@ -1474,10 +1478,6 @@ public class Mekanism
 
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
-
-		//Load configuration
-		proxy.loadConfiguration();
-		proxy.onConfigSync(false);
 
 		//Add baby skeleton spawner
 		if(general.spawnBabySkeletons)
