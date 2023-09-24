@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import li.cil.oc.api.Driver;
-import mekanism.api.MekanismConfig;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -103,7 +102,7 @@ public final class MekanismHooks
 		try {
 			for(Resource resource : Resource.values())
 			{
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clump" + resource.getName()), null, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clump" + resource.getOredictName()), null, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
 			}
 		} catch(Exception e) {}
 

@@ -112,15 +112,17 @@ public class MekanismGenerators implements IModule
 	
 	public void addRecipes()
 	{
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
+
 		if (generatorsrecipes.enableHeatGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[]{
-					"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingot" + Resource.OSMIUM.getName(), Character.valueOf('F'), Blocks.furnace, Character.valueOf('W'), "plankWood"
+					"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingot" + mekanismMaterial, Character.valueOf('F'), Blocks.furnace, Character.valueOf('W'), "plankWood"
 			}));
 		}
 
 		if (generatorsrecipes.enableSolarGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[]{
-					"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron", Character.valueOf('P'), "dust" + Resource.OSMIUM.getName(), Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
+					"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron", Character.valueOf('P'), "dust" + mekanismMaterial, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 			}));
 		}
 
@@ -138,19 +140,19 @@ public class MekanismGenerators implements IModule
 
 		if (generatorsrecipes.enableGasGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[]{
-					"PEP", "ICI", "PEP", Character.valueOf('P'), "ingot" + Resource.OSMIUM.getName(), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
+					"PEP", "ICI", "PEP", Character.valueOf('P'), "ingot" + mekanismMaterial, Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
 			}));
 		}
 
 		if (generatorsrecipes.enableSolarPanel) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[]{
-					"GGG", "RAR", "PPP", Character.valueOf('G'), "paneGlass", Character.valueOf('R'), "dustRedstone", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('P'), "ingot" + Resource.OSMIUM.getName()
+					"GGG", "RAR", "PPP", Character.valueOf('G'), "paneGlass", Character.valueOf('R'), "dustRedstone", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('P'), "ingot" + mekanismMaterial
 			}));
 		}
 
 		if (generatorsrecipes.enableWindGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[]{
-					" O ", "OAO", "ECE", Character.valueOf('O'), "ingot" + Resource.OSMIUM.getName(), Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
+					" O ", "OAO", "ECE", Character.valueOf('O'), "ingot" + mekanismMaterial, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 			}));
 		}
 
@@ -180,7 +182,7 @@ public class MekanismGenerators implements IModule
 
 		if (generatorsrecipes.enableTurbineCasing) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 4, 10), new Object[]{
-					" S ", "SOS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('O'), "ingot" + Resource.OSMIUM.getName()
+					" S ", "SOS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('O'), "ingot" + mekanismMaterial
 			}));
 		}
 

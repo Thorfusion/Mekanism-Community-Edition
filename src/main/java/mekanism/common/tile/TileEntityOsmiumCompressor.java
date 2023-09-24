@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -31,15 +30,17 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		for (ItemStack ore : OreDictionary.getOres("ingot" + Resource.OSMIUM.getName())) {
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
+
+		for (ItemStack ore : OreDictionary.getOres("ingot" + mekanismMaterial)) {
 			if (ore.isItemEqual(itemstack)) {
-				return new GasStack(GasRegistry.getGas("liquid" + Resource.OSMIUM.getName()), 200);
+				return new GasStack(GasRegistry.getGas("liquid" + mekanismMaterial), 200);
 			}
 		}
 
-		for (ItemStack ore : OreDictionary.getOres("block" + Resource.OSMIUM.getName())) {
+		for (ItemStack ore : OreDictionary.getOres("block" + mekanismMaterial)) {
 			if (ore.isItemEqual(itemstack)) {
-				return new GasStack(GasRegistry.getGas("liquid" + Resource.OSMIUM.getName()), 1800);
+				return new GasStack(GasRegistry.getGas("liquid" + mekanismMaterial), 1800);
 			}
 		}
 

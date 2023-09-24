@@ -1,6 +1,5 @@
 package mekanism.common.recipe.machines;
 
-import mekanism.api.MekanismConfig;
 import mekanism.common.Resource;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -15,7 +14,7 @@ public class OsmiumCompressorRecipe extends AdvancedMachineRecipe<OsmiumCompress
 
 	public OsmiumCompressorRecipe(ItemStack input, ItemStack output)
 	{
-		super(input, "liquid" + Resource.OSMIUM.getName(), output);
+		super(input, "liquid" + Resource.OSMIUM.getOredictName(), output);
 	}
 
 	@Override

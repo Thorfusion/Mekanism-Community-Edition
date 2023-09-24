@@ -212,11 +212,14 @@ public class Mekanism
 
 	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
 
+
 	/**
 	 * Adds all in-game crafting, smelting and machine recipes.
 	 */
 	public void addRecipes()
 	{
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
+
 		//Storage Recipes
 
 		if (MekanismConfig.recipes.enableCharcoalBlock) {
@@ -820,7 +823,7 @@ public class Mekanism
 				}));
 
 				MachineType.ADVANCED_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.ADVANCED, type), new Object[]{
-						"ECE", "oOo", "ECE", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('o'), "ingot" + Resource.OSMIUM.getName(), Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.BASIC, type)
+						"ECE", "oOo", "ECE", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('o'), "ingot" + mekanismMaterial, Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.BASIC, type)
 				}));
 
 				MachineType.ELITE_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.ELITE, type), new Object[]{
@@ -979,7 +982,7 @@ public class Mekanism
 						new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.glowstone_dust)
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), new Object[]{
-						" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), Character.valueOf('O'), "dust" + Resource.OSMIUM.getName()
+						" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), Character.valueOf('O'), "dust" + mekanismMaterial
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i), new Object[]{
 						"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.sand, Character.valueOf('P'), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i)
@@ -1222,6 +1225,8 @@ public class Mekanism
 	 */
 	public void registerOreDict()
 	{
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
+
 		//Add specific items to ore dictionary for recipe usage in other mods.
 		OreDictionary.registerOre("universalCable", new ItemStack(MekanismItems.PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", MekanismItems.EnergyTablet.getUnchargedItem());
@@ -1252,7 +1257,7 @@ public class Mekanism
 
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(MekanismItems.Ingot, 1, 0));
 
-		OreDictionary.registerOre("ingot" + Resource.OSMIUM.getName(), new ItemStack(MekanismItems.Ingot, 1, 1));
+		OreDictionary.registerOre("ingot" + mekanismMaterial, new ItemStack(MekanismItems.Ingot, 1, 1));
 		OreDictionary.registerOre("ingotBronze", new ItemStack(MekanismItems.Ingot, 1, 2));
 		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(MekanismItems.Ingot, 1, 3));
 		OreDictionary.registerOre("ingotSteel", new ItemStack(MekanismItems.Ingot, 1, 4));
@@ -1260,7 +1265,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotTin", new ItemStack(MekanismItems.Ingot, 1, 6));
 		OreDictionary.registerOre("ingotRefinedLapis", new ItemStack(MekanismItems.Ingot, 1, 7));
 
-		OreDictionary.registerOre("block" + Resource.OSMIUM.getName(), new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
+		OreDictionary.registerOre("block" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
 		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(MekanismBlocks.BasicBlock, 1, 2));
 		OreDictionary.registerOre("blockCharcoal", new ItemStack(MekanismBlocks.BasicBlock, 1, 3));
@@ -1271,11 +1276,11 @@ public class Mekanism
 
 		for(Resource resource : Resource.values())
 		{
-			OreDictionary.registerOre("dust" + resource.getName(), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
-			OreDictionary.registerOre("dustDirty" + resource.getName(), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
-			OreDictionary.registerOre("clump" + resource.getName(), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
-			OreDictionary.registerOre("shard" + resource.getName(), new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
-			OreDictionary.registerOre("crystal" + resource.getName(), new ItemStack(MekanismItems.Crystal, 1, resource.ordinal()));
+			OreDictionary.registerOre("dust" + resource.getOredictName(), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
+			OreDictionary.registerOre("dustDirty" + resource.getOredictName(), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
+			OreDictionary.registerOre("clump" + resource.getOredictName(), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
+			OreDictionary.registerOre("shard" + resource.getOredictName(), new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
+			OreDictionary.registerOre("crystal" + resource.getOredictName(), new ItemStack(MekanismItems.Crystal, 1, resource.ordinal()));
 		}
 
 		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
@@ -1414,10 +1419,9 @@ public class Mekanism
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
 
 		for(Resource resource : Resource.values()) {
-			String name = resource.getName();
 
-			OreGas clean = (OreGas) GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
-			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
+			OreGas clean = (OreGas) GasRegistry.register(new OreGas("clean" + resource.getOredictName(), "oregas." + resource.getOredictName().toLowerCase()).setVisible(false));
+			GasRegistry.register(new OreGas(resource.getOredictName().toLowerCase(), "oregas." + resource.getOredictName().toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
 
 		//Register Gasifyable Items
