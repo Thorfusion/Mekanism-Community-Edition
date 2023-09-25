@@ -72,7 +72,7 @@ public class MekanismConfig
 
 	}
 	public static class mekce {
-		public static boolean enableBoPProgression = true;
+		public static boolean enableBoPProgression;
 		public static boolean EnableQuartzCompat;
 		public static boolean EnableDiamondCompat;
 		public static boolean EnablePoorOresCompat;
@@ -82,8 +82,9 @@ public class MekanismConfig
 		public static int IC2SourceTier;
 		public static int digitalMinerMaxRadius;
 		public static boolean enableSingleUseCardboxes;
-		public static boolean accurateHeavyWaterCapture = true;
-		public static int heavyWaterChance = 4;
+		public static boolean enablePersonalChestPocketAccess;
+		public static boolean accurateHeavyWaterCapture;
+		public static int heavyWaterChance;
 	}
 
 
