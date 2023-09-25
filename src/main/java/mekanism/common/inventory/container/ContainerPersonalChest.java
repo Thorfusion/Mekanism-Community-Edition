@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import invtweaks.api.container.ChestContainer;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
@@ -90,8 +91,15 @@ public class ContainerPersonalChest extends Container
 		if(isBlock) {
 			return tileEntity.isUseableByPlayer(entityplayer);
 		} else {
-			return slot == entityplayer.inventory.currentItem;
+			if (slot == entityplayer.inventory.currentItem && itemInventory instanceof InventoryPersonalChest) {
+				ItemStack currentHeldItem = entityplayer.getHeldItem();
+				ItemStack stack = ((InventoryPersonalChest) itemInventory).getStack();
+
+				if (stack != null)
+					return stack == currentHeldItem;
+			}
 		}
+		return false;
 	}
 
 	@Override
@@ -143,7 +151,7 @@ public class ContainerPersonalChest extends Container
 		{
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
 			
-			if(MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
+			if(itemStack != null && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
 				return null;
 			}
