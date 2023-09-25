@@ -17,12 +17,14 @@ public class ContainerPersonalChest extends Container
 	private TileEntityPersonalChest tileEntity;
 	private IInventory itemInventory;
 	private boolean isBlock;
+	private int slot;
 
-	public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv, boolean b)
+	public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv, boolean b, int i)
 	{
 		tileEntity = tentity;
 		itemInventory = inv;
 		isBlock = b;
+		slot = i;
 
 		if(isBlock)
 		{
@@ -56,7 +58,6 @@ public class ContainerPersonalChest extends Container
 			addSlotToContainer(new SlotPersonalChest(inventory, slotX, 8 + slotX * 18, 206));
 		}
 	}
-
 	public IInventory getInv()
 	{
 		if(isBlock)
@@ -86,12 +87,11 @@ public class ContainerPersonalChest extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		if(isBlock)
-		{
+		if(isBlock) {
 			return tileEntity.isUseableByPlayer(entityplayer);
+		} else {
+			return slot == entityplayer.inventory.currentItem;
 		}
-
-		return true;
 	}
 
 	@Override

@@ -122,10 +122,12 @@ public class ClientProxy extends CommonProxy
 			else if (enablePersonalChestPocketAccess)
 			{
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				int hotbarSlot = entityplayer.inventory.currentItem;
+
 				if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
 				{
 					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer);
-					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory, hotbarSlot));
 					entityplayer.openContainer.windowId = windowId;
 				}
 			}
