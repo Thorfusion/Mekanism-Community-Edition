@@ -227,7 +227,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 			if(isViableNode(coord.xCoord, coord.yCoord, coord.zCoord))
 			{
-				if(!iteratedNodes.contains(tileEntity))
+				if(tileEntity != null && !iteratedNodes.contains(tileEntity))
 				{
 					loopThrough(tileEntity);
 				}
