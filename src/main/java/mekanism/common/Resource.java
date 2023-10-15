@@ -1,12 +1,14 @@
 package mekanism.common;
 
-import static mekanism.api.MekanismConfig.mekce.PlatReplacement;
+import mekanism.api.MekanismConfig;
+
+import java.util.Objects;
 
 public enum Resource
 {
 	IRON("Iron"),
 	GOLD("Gold"),
-	OSMIUM(PlatReplacement ? "Platinum" : "Osmium"),
+	OSMIUM("Osmium"),
 	COPPER("Copper"),
 	TIN("Tin"),
 	SILVER("Silver"),
@@ -19,11 +21,17 @@ public enum Resource
 		name = s;
 	}
 
+	/**
+	 * Returns resource from a String.
+	 * Used to convert Oregas into their physical output
+	 *
+	 */
 	public static Resource getFromName(String s)
 	{
 		for(Resource r : values())
 		{
-			if(r.name.toLowerCase().equals(s.toLowerCase()))
+			String resourceName = r.getOredictName().toLowerCase();
+			if(resourceName.equals(s.toLowerCase()))
 			{
 				return r;
 			}
@@ -32,8 +40,24 @@ public enum Resource
 		return null;
 	}
 
+	/**
+	 * Returns the name of a resource.
+	 *
+	 */
 	public String getName()
 	{
 		return name;
+	}
+
+	/**
+	 * Returns the oredictionary name of a resource.
+	 *
+	 */
+	public String getOredictName() {
+		String oreName = name;
+		if (MekanismConfig.mekce.PlatReplacement && Objects.equals(oreName, "Osmium"))
+			oreName = "Platinum";
+
+		return oreName;
 	}
 }
