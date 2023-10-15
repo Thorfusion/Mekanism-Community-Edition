@@ -19,10 +19,10 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage, IMessage>
 {
 	@Override
-	public IMessage onMessage(PersonalChestMessage message, MessageContext context) 
+	public IMessage onMessage(PersonalChestMessage message, MessageContext context)
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		
+
 		if(message.packetType == PersonalChestPacketType.SERVER_OPEN)
 		{
 			try {
@@ -58,65 +58,68 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 				e.printStackTrace();
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public static class PersonalChestMessage implements IMessage
 	{
 		public PersonalChestPacketType packetType;
-	
+
 		public boolean isBlock;
-	
+
 		public int guiType;
 		public int windowId;
-	
+
 		public Coord4D coord4D;
-		
+		public int hotbarSlot;
+
 		public PersonalChestMessage() {}
-	
+
 		//This is a really messy implementation...
-		public PersonalChestMessage(PersonalChestPacketType type, boolean b1, int i1, int i2, Coord4D c1)
+		public PersonalChestMessage(PersonalChestPacketType type, boolean b1, int i1, int i2, Coord4D c1, int slot)
 		{
 			packetType = type;
-	
-			switch(packetType)
+
+			switch (packetType)
 			{
 				case CLIENT_OPEN:
 					guiType = i1;
 					windowId = i2;
 					isBlock = b1;
-	
-					if(isBlock)
-					{
+
+					if (isBlock) {
 						coord4D = c1;
+					} else {
+						hotbarSlot = slot;
 					}
-	
+
 					break;
 				case SERVER_OPEN:
 					isBlock = b1;
-	
-					if(isBlock)
-					{
+
+					if (isBlock) {
 						coord4D = c1;
+					} else {
+						hotbarSlot = slot;
 					}
-	
+
 					break;
 			}
 		}
-	
+
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
 			dataStream.writeInt(packetType.ordinal());
-	
+
 			switch(packetType)
 			{
 				case CLIENT_OPEN:
 					dataStream.writeInt(guiType);
 					dataStream.writeInt(windowId);
 					dataStream.writeBoolean(isBlock);
-	
+
 					if(isBlock)
 					{
 						dataStream.writeInt(coord4D.xCoord);
@@ -124,11 +127,11 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 						dataStream.writeInt(coord4D.zCoord);
 						dataStream.writeInt(coord4D.dimensionId);
 					}
-	
+
 					break;
 				case SERVER_OPEN:
 					dataStream.writeBoolean(isBlock);
-	
+
 					if(isBlock)
 					{
 						dataStream.writeInt(coord4D.xCoord);
@@ -136,16 +139,16 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 						dataStream.writeInt(coord4D.zCoord);
 						dataStream.writeInt(coord4D.dimensionId);
 					}
-	
+
 					break;
 			}
 		}
-	
+
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
 			packetType = PersonalChestPacketType.values()[dataStream.readInt()];
-	
+
 			if(packetType == PersonalChestPacketType.SERVER_OPEN)
 			{
 				isBlock = dataStream.readBoolean();
@@ -168,7 +171,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 			}
 		}
 	}
-	
+
 	public static enum PersonalChestPacketType
 	{
 		CLIENT_OPEN,

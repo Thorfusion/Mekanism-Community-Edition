@@ -86,7 +86,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(mekce.IC2SourceTier);
 			dataStream.writeInt(mekce.digitalMinerMaxRadius);
 			dataStream.writeBoolean(mekce.enableSingleUseCardboxes);
-			
+			dataStream.writeBoolean(mekce.enablePersonalChestPocketAccess);
+
 			for(MachineType type : MachineType.getValidMachines())
 			{
 				dataStream.writeBoolean(machines.isEnabled(type.name));
@@ -281,7 +282,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.IC2SourceTier = dataStream.readInt();
 			mekce.digitalMinerMaxRadius = dataStream.readInt();
 			mekce.enableSingleUseCardboxes = dataStream.readBoolean();
-			
+			mekce.enablePersonalChestPocketAccess = dataStream.readBoolean();
+
 			for(MachineType type : MachineType.getValidMachines())
 			{
 				machines.setEntry(type.name, dataStream.readBoolean());

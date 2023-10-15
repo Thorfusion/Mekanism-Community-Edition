@@ -315,7 +315,7 @@ public class CommonProxy implements IGuiProvider
 		mekce.enableSiliconCompat = Mekanism.configurationce.get("mekce", "EnableSiliconCompat", true, "When a mod that adds silicon (galacticraft, enderio and projectred) is detected, recipe for control circuit is changed from using iron to silicon in the metalurgic infuser").getBoolean();
 		mekce.digitalMinerMaxRadius = Mekanism.configurationce.get("mekce", "DigitalMinerMaxRadius", 32, "Select range from 1 to 64, we do not recommend going over 32", 1, 64).getInt();
 		mekce.enableSingleUseCardboxes = Mekanism.configurationce.get("mekce", "EnableSingleUseCardboxes", true, "This allows to force single use on cardboxes or not").getBoolean();
-
+		mekce.enablePersonalChestPocketAccess = Mekanism.configurationce.get("mekce", "enablePersonalChestPocketAccess", true, "This allows opening Personal Chests from your inventory without having to place them").getBoolean();
 
 		mekce.IC2SinkTier = Mekanism.configurationce.get("mekce", "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 		mekce.IC2SourceTier = Mekanism.configurationce.get("mekce", "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();

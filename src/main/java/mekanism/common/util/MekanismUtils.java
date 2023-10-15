@@ -941,23 +941,24 @@ public final class MekanismUtils
 	 * @param player - player to open GUI
 	 * @param tileEntity - TileEntity of the chest, if it's not an item
 	 * @param inventory - IInventory of the item, if it's not a block
-	 * @param isBlock - whether or not this electric chest is in it's block form
+	 * @param isBlock - whether this electric chest is in itss block form
 	 */
 	public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, IInventory inventory, boolean isBlock)
 	{
 		player.getNextWindowId();
 		player.closeContainer();
 		int id = player.currentWindowId;
+		int hotbarSlot = player.inventory.currentItem;
 
 		if(isBlock)
 		{
-			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity)), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), -1), player);
 		}
 		else {
-			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null), player);
+			Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, hotbarSlot), player);
 		}
 
-		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
+		player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock, hotbarSlot);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
 	}
