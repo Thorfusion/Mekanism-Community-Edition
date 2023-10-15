@@ -27,10 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static mekanism.client.sound.SoundHandler.Channel.*;
 
@@ -155,7 +152,8 @@ public class ClientTickHandler
 
 			if(client.enablePlayerSounds)
 			{
-				for(String username : Mekanism.jetpackOn)
+				Set<String> jetpackPlayers = new HashSet<String>(Mekanism.jetpackOn);
+				for(String username : jetpackPlayers)
 				{
 					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
 
@@ -170,7 +168,8 @@ public class ClientTickHandler
 					}
 				}
 
-				for(String username : Mekanism.gasmaskOn)
+				Set<String> gasmaskPlayers = new HashSet<String>(Mekanism.gasmaskOn);
+				for(String username : gasmaskPlayers)
 				{
 					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
 
@@ -185,7 +184,8 @@ public class ClientTickHandler
 					}
 				}
 
-				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
+				List<EntityPlayer> worldPlayers = new ArrayList<>((List<EntityPlayer>)mc.theWorld.playerEntities);
+				for(EntityPlayer player : worldPlayers)
 				{
 					if(hasFlamethrower(player))
 					{

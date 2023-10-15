@@ -109,8 +109,9 @@ public class TransmitterNetworkRegistry
 		{
 			logger.info("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
-		
-		for(IGridTransmitter invalid : invalidTransmitters)
+
+		HashSet<IGridTransmitter> orphanTransmitterCopy = new HashSet<>(invalidTransmitters);
+		for(IGridTransmitter invalid : orphanTransmitterCopy)
 		{
 			if(!(invalid.isOrphan() && invalid.isValid()))
 			{
@@ -132,8 +133,9 @@ public class TransmitterNetworkRegistry
 		{
 			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
-		
-		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
+
+		HashMap<Coord4D, IGridTransmitter> orphanTransmitterCopy = new HashMap<Coord4D, IGridTransmitter>(orphanTransmitters);
+		for(IGridTransmitter orphanTransmitter : orphanTransmitterCopy.values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
 			
