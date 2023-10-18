@@ -89,7 +89,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         if (button == 0) {
             int xAxis = x - guiLeft;
             int yAxis = y - guiTop;
-            if (xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82) {
+            if (xAxis > 144 && xAxis < 169 && yAxis > 72 && yAxis < 82) {
                 TileNetworkList data = TileNetworkList.withContents(0);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

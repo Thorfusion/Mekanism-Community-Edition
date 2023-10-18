@@ -65,7 +65,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.add(this.infuserDumpButton = new GuiButtonImage(1, this.guiLeft+6, this.guiTop+44, 21, 10, 147, 72, 0, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")){
+        this.buttonList.add(this.infuserDumpButton = new GuiButtonImage(1, this.guiLeft+6, this.guiTop+44, 24, 9, 145, 73, 0, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")){
             @Override
             public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
                 if (GuiFactory.this.tileEntity.getRecipeType() == RecipeType.INFUSING) {
