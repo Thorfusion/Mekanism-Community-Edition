@@ -162,14 +162,19 @@ public class BlockBounding extends Block {
     @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
-        TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
-        if (tileEntity != null) {
-            tileEntity.onNeighborChange(state.getBlock());
+        if (world.getTileEntity(pos) instanceof TileEntityBoundingBlock) {
+            TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
+            if (tileEntity != null) {
+                tileEntity.onNeighborChange(state.getBlock());
+            }
+            BlockPos mainPos = getMainBlockPos(world, pos);
+            if (mainPos != null) {
+                IBlockState state1 = world.getBlockState(mainPos);
+                state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
+            }
         }
-        BlockPos mainPos = getMainBlockPos(world, pos);
-        if (mainPos != null) {
-            IBlockState state1 = world.getBlockState(mainPos);
-            state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
+        else {
+            System.out.print("\nCant cast exception\n");
         }
     }
 
