@@ -49,19 +49,24 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 | MEK:CE 1.7.10 Featured Changes                                                                                    | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) |
 |-------------------------------------------------------------------------------------------------------------------|--------------------|-------------------------------------------------------------------|
 | Open Source                                                                                                       | :heavy_check_mark: | :heavy_check_mark:                                                |
-| Dupe: Chemical Washer                                                                                             | :x:                | :heavy_check_mark:                                                |
-| Dupe: Fluidtank                                                                                                   | :x:                | :heavy_check_mark:                                                |
-| Dupe: [Fluidstack](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/49)                            | :x:                | :heavy_check_mark:                                                |
-| Dupe: Factories                                                                                                   | :x:                | :heavy_check_mark:                                                |
-| Dupe: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
-| Dupe: [Moving Players](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/62)                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: Chemical Washer                                                                                             | :x:                | :heavy_check_mark:                                                |
+| DUPE: Fluidtank                                                                                                   | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Fluidstack](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/49)                            | :x:                | :heavy_check_mark:                                                |
+| DUPE: Factories                                                                                                   | :x:                | :heavy_check_mark:                                                |
+| DUPE: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Personal chest dupe](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/130)                  | :x:                | :heavy_check_mark:                                                |
 | BUG: [Osmium Compressor](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/32)                      | :x:                | :heavy_check_mark:                                                |
 | BUG: [Storage Meter](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/40)                          | :x:                | :heavy_check_mark:                                                |
-| BUG: [Looping crash MK+RR+BC](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/33)                 | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Looping crash MK+RR+BC](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/33)               | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Render crash with too much water](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/122)      | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Jetpack and chunk CME](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141)                 | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: [Fix Gas Registry Lookup](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138)         | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [TerralizationCompat](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/30)                | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Biofuel cycle rework](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/48)                 | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Configurable radius digitalminer](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/55)   | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Whitelist dimension's for windmill](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/16) | :x:                | :heavy_check_mark:                                                |
+| FEATURE: [Immersive Deuterium](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/94)                  | :x:                | :heavy_check_mark:                                                |
 | NEW FEATURES, BUGFIXES & MORE!                                                                                    | :x:                | :heavy_check_mark:                                                |
 
 ### Full changelog
