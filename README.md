@@ -54,7 +54,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 | DUPE: [Fluidstack](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/49)                            | :x:                | :heavy_check_mark:                                                |
 | DUPE: Factories                                                                                                   | :x:                | :heavy_check_mark:                                                |
 | DUPE: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
-| DUPE: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Moving Players](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/62)                        | :x:                | :heavy_check_mark:                                                |
 | DUPE: [Personal chest dupe](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/130)                  | :x:                | :heavy_check_mark:                                                |
 | BUG: [Osmium Compressor](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/32)                      | :x:                | :heavy_check_mark:                                                |
 | BUG: [Storage Meter](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/40)                          | :x:                | :heavy_check_mark:                                                |
