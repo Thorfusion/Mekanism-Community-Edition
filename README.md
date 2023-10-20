@@ -144,16 +144,16 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Fixes Molasse/Glucose missing texture and langs Thorfusion#71
 + Reworks how Heavy Water is obtained Thorfusion#94
 + Fixes upgrades vanishing up machines when FactoriesEnabled= false Thorfusion#112
-+ Fixes CMEs by @DrParadox7 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141
-+ Plat Compat Shenanigans by @DrParadox7 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
-+ Patch Personal Chest dupe by @DrParadox7 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
++ Fixes CMEs crashes in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141
++ Plat Compat Shenanigans in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
++ Patch Personal Chest dupe in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
 
 #### leytilera
 + universal cable connection to IC2
 
-#### ace10102
+#### ace10102 - Mekanism CE Team
 + Additional checks for IC2 api and cofhcore in ChargeUtils before using them fixes mekanism#4785 Thorfusion#118
-+ Fix Gas Registry Lookup Performance  by @ace10102 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138
++ Fix Gas Registry Lookup Performance in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138
 
 ## All contributors get capes
 
