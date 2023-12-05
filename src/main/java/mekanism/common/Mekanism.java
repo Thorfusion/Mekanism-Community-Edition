@@ -1277,6 +1277,7 @@ public class Mekanism
 			OreDictionary.registerOre("crystal" + resource.getOredictName(), new ItemStack(MekanismItems.Crystal, 1, resource.ordinal()));
 		}
 
+		OreDictionary.registerOre("ore" + mekanismMaterial, new ItemStack(MekanismBlocks.OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
 
