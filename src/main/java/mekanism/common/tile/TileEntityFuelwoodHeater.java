@@ -82,20 +82,21 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 				burning = true;
 			}
 			else {
-				if(inventory[0] != null)
-				{
-					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[0])/2;
-					
-					if(burnTime > 0)
-					{
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+				if(inventory[0] != null) {
+					int fuelTime = TileEntityFurnace.getItemBurnTime(inventory[0]);
+
+					if (fuelTime > 0) {
+						maxBurnTime = burnTime = fuelTime / 2;
+
+						if (burnTime > 0) {
+							inventory[0].stackSize--;
+
+							if (inventory[0].stackSize == 0) {
+								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							}
+
+							burning = true;
 						}
-						
-						burning = true;
 					}
 				}
 			}
