@@ -1380,12 +1380,14 @@ public class Mekanism
 		configurationrecipes = new Configuration(new File("config/mekanism/MekanismRecipes.cfg"));
 		configurationce = new Configuration(new File("config/mekanism/MekanismCE.cfg"));
 
-		//Load configuration
-		proxy.loadConfiguration();
-		proxy.onConfigSync(false);
+
 
 		//Register tier information
         Tier.init();
+
+		//Load configuration
+		proxy.loadConfiguration();
+		proxy.onConfigSync(false);
 
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
