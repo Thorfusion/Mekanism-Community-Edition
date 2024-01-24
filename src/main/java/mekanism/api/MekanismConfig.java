@@ -234,7 +234,7 @@ public class MekanismConfig
 		public static boolean enableChemicalInfuser = true;
 		public static boolean enableChemicalInjection = true;
 		public static boolean enableElectrolyticSeparator = true;
-		public static  boolean enableElectroliticCore = true;
+		public static boolean enableElectroliticCore = true;
 		public static boolean enableCardboardBox = true;
 		public static boolean enableSawdusttoPaper = true;
 		public static boolean enablePrecisionSawmill = true;
