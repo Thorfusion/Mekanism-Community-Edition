@@ -25,10 +25,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 {
 	public double temperature;
 	public double heatToAbsorb = 0;
-	
+
 	public int burnTime;
 	public int maxBurnTime;
-	
+	public ItemStack nonBurnable;
+
+
 	/** Whether this machine is in its active state. */
 	public boolean isActive;
 
@@ -73,19 +75,20 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
-			
+
 			boolean burning = false;
-			
+
 			if(burnTime > 0)
 			{
 				burnTime--;
 				burning = true;
 			}
 			else {
-				if(inventory[0] != null) {
+				if (inventory[0] != null && inventory[0] != nonBurnable) {
 					int fuelTime = TileEntityFurnace.getItemBurnTime(inventory[0]);
 
 					if (fuelTime > 0) {
+						nonBurnable = null;
 						maxBurnTime = burnTime = fuelTime / 2;
 
 						if (burnTime > 0) {
@@ -97,10 +100,13 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 
 							burning = true;
 						}
+					} else {
+						nonBurnable = inventory[0];
 					}
 				}
 			}
-			
+
+
 			if(burning)
 			{
 				heatToAbsorb += general.heatPerFuelTick;
@@ -114,13 +120,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 				applyTemperatureChange();
 				lastEnvironmentLoss = loss[1];
 			}
-			
-			double[] loss = simulateHeat();
-			applyTemperatureChange();
-			
-			lastEnvironmentLoss = loss[1];
-			
-			setActive(burning);
 		}
 	}
 	
