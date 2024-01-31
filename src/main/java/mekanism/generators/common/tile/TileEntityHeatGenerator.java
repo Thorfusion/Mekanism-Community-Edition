@@ -437,7 +437,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public double applyTemperatureChange()
 	{
-		temperature += invHeatCapacity * heatToAbsorb;
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + (invHeatCapacity * heatToAbsorb);
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += invHeatCapacity * heatToAbsorb;
+		}
+
 		heatToAbsorb = 0;
 		return temperature;
 	}

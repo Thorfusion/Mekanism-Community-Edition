@@ -67,6 +67,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 | FEATURE: [Configurable radius digitalminer](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/55)   | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Whitelist dimension's for windmill](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/16) | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Immersive Deuterium](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/94)                  | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: [Fix Infinite Heat Transfers](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158)     | :x:                | :heavy_check_mark:                                                |
 | NEW FEATURES, BUGFIXES & MORE!                                                                                    | :x:                | :heavy_check_mark:                                                |
 
 ### Full changelog
@@ -152,6 +153,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Fixes CMEs crashes in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141
 + Plat Compat Shenanigans in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
 + Patch Personal Chest dupe in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
++ Fixed lag with in heat transferring devices https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158
 
 #### leytilera
 + universal cable connection to IC2

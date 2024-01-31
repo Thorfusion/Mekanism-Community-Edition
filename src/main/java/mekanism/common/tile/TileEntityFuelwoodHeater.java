@@ -25,11 +25,13 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 {
 	public double temperature;
 	public double heatToAbsorb = 0;
-	
+
 	public int burnTime;
 	public int maxBurnTime;
-	
-	/** Whether or not this machine is in it's active state. */
+	public ItemStack nonBurnable;
+
+
+	/** Whether this machine is in its active state. */
 	public boolean isActive;
 
 	/** The client's current active state. */
@@ -73,44 +75,51 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
-			
+
 			boolean burning = false;
-			
+
 			if(burnTime > 0)
 			{
 				burnTime--;
 				burning = true;
 			}
 			else {
-				if(inventory[0] != null)
-				{
-					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[0])/2;
-					
-					if(burnTime > 0)
-					{
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+				if (inventory[0] != null && inventory[0] != nonBurnable) {
+					int fuelTime = TileEntityFurnace.getItemBurnTime(inventory[0]);
+
+					if (fuelTime > 0) {
+						nonBurnable = null;
+						maxBurnTime = burnTime = fuelTime / 2;
+
+						if (burnTime > 0) {
+							inventory[0].stackSize--;
+
+							if (inventory[0].stackSize == 0) {
+								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							}
+
+							burning = true;
 						}
-						
-						burning = true;
+					} else {
+						nonBurnable = inventory[0];
 					}
 				}
 			}
-			
+
+
 			if(burning)
 			{
 				heatToAbsorb += general.heatPerFuelTick;
+				setActive(true);
+			} else if (isActive) {
+				setActive(false);
 			}
-			
-			double[] loss = simulateHeat();
-			applyTemperatureChange();
-			
-			lastEnvironmentLoss = loss[1];
-			
-			setActive(burning);
+
+			if (burning || temperature > 0) {
+				double[] loss = simulateHeat();
+				applyTemperatureChange();
+				lastEnvironmentLoss = loss[1];
+			}
 		}
 	}
 	
@@ -251,7 +260,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public double applyTemperatureChange() 
 	{
-		temperature += heatToAbsorb;
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + heatToAbsorb;
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += heatToAbsorb;
+		}
 		heatToAbsorb = 0;
 		
 		return temperature;
