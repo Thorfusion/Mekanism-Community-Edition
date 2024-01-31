@@ -241,11 +241,16 @@ public class TileEntityResistiveHeater extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public double applyTemperatureChange() 
+	public double applyTemperatureChange()
 	{
-		temperature += heatToAbsorb;
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + heatToAbsorb;
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += heatToAbsorb;
+		}
 		heatToAbsorb = 0;
-		
+
 		return temperature;
 	}
 

@@ -29,7 +29,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	public int burnTime;
 	public int maxBurnTime;
 	
-	/** Whether or not this machine is in it's active state. */
+	/** Whether this machine is in its active state. */
 	public boolean isActive;
 
 	/** The client's current active state. */
@@ -104,6 +104,15 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			if(burning)
 			{
 				heatToAbsorb += general.heatPerFuelTick;
+				setActive(true);
+			} else if (isActive) {
+				setActive(false);
+			}
+
+			if (burning || temperature > 0) {
+				double[] loss = simulateHeat();
+				applyTemperatureChange();
+				lastEnvironmentLoss = loss[1];
 			}
 			
 			double[] loss = simulateHeat();
@@ -252,7 +261,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 	@Override
 	public double applyTemperatureChange() 
 	{
-		temperature += heatToAbsorb;
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + heatToAbsorb;
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += heatToAbsorb;
+		}
 		heatToAbsorb = 0;
 		
 		return temperature;

@@ -610,7 +610,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		if(hasFrequency())
 		{
-			frequency.temperature += heatToAbsorb;
+			if (heatToAbsorb < 0) { // Heat subtraction
+				double newTemperature = frequency.temperature + heatToAbsorb;
+				frequency.temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+			} else {
+				frequency.temperature += heatToAbsorb;
+			}
 		}
 		
 		heatToAbsorb = 0;

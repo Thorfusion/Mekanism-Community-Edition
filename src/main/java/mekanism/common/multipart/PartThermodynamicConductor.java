@@ -215,7 +215,12 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@Override
 	public double applyTemperatureChange()
 	{
-		temperature += tier.inverseHeatCapacity * heatToAbsorb;
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + (tier.inverseHeatCapacity * heatToAbsorb);
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += tier.inverseHeatCapacity * heatToAbsorb;
+		}
 		heatToAbsorb = 0;
 		
 		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
