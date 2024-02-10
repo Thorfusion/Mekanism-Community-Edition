@@ -33,6 +33,7 @@ item.Dictionary.name=辞典
 item.ElectrolyticCore.name=电解核心
 item.Sawdust.name=锯屑
 item.Salt.name=盐
+item.Yeast.name=酵母
 item.BrineBucket.name=盐水桶
 item.LithiumBucket.name=锂桶
 item.HeavyWaterBucket.name=重水桶
@@ -85,7 +86,7 @@ tile.BasicBlock.RefinedObsidian.name=强化黑曜石
 tile.BasicBlock.CharcoalBlock.name=煤炭方块
 tile.BasicBlock.RefinedGlowstone.name=强化荧石
 tile.BasicBlock.SteelBlock.name=钢方块
-tile.BasicBlock.Bin.name=基础箱柜
+tile.BasicBlock.BinBasic.name=基础箱柜
 tile.BasicBlock.BinAdvanced.name=高级箱柜
 tile.BasicBlock.BinElite.name=精英箱柜
 tile.BasicBlock.BinUltimate.name=终极箱柜
@@ -128,6 +129,7 @@ tile.MachineBlock.PurificationChamber.name=净化仓
 tile.MachineBlock.EnergizedSmelter.name=充能冶炼炉
 tile.MachineBlock.Teleporter.name=传送机
 tile.MachineBlock.ElectricPump.name=电动泵
+tile.MachineBlock.PersonalChest.name=私人箱子
 tile.MachineBlock.ElectricChest.name=电动箱子
 tile.MachineBlock.Chargepad.name=充电台
 tile.MachineBlock.LogisticalSorter.name=物流整理机
@@ -215,10 +217,11 @@ tile.EnergyCubeAdvanced.name=高级能量立方
 tile.EnergyCubeElite.name=精英能量立方
 tile.EnergyCubeUltimate.name=终极能量立方
 tile.EnergyCubeCreative.name=创造能量立方
-//Factory Installers
-item.basicFactoryInstaller.name=基础工厂安装器
-item.advancedFactoryInstaller.name=高级工厂安装器
-item.eliteFactoryInstaller.name=精英工厂安装器
+//Tier Installers
+item.basicTierInstaller.name=基础工厂安装器
+item.advancedTierInstaller.name=高级工厂安装器
+item.eliteTierInstaller.name=精英工厂安装器
+item.ultimateTierInstaller.name=终极工厂安装器
 
 //Dust
 item.ironDust.name=铁粉
@@ -387,8 +390,8 @@ key.mode=模式切换
 key.armorMode=装甲模式切换
 key.voice=声音
 //Entities
-entity.Robit.name=机器人
-entity.BabySkeleton.name=骷髅射手宝宝
+entity.Mekanism.Robit.name=机器人
+entity.Mekanism.BabySkeleton.name=骷髅射手宝宝
 
 //Config Gui
 mekanism.configgui.ctgy.general=通用机械常规设定
@@ -941,13 +944,14 @@ tile.Generator.SolarGenerator.name=太阳能发电机
 tile.Generator.GasGenerator.name=燃气发电机
 tile.Generator.BioGenerator.name=生物能发电机
 tile.Generator.AdvancedSolarGenerator.name=高级太阳能发电机
-tile.Generator.WindTurbine.name=风力涡轮机
+tile.Generator.WindGenerator.name=风力发电机
 tile.Generator.TurbineRotor.name=涡轮转子
 tile.Generator.RotationalComplex.name=复杂旋钮装置
 tile.Generator.ElectromagneticCoil.name=电磁线圈
 tile.Generator.TurbineCasing.name=涡轮外壳
 tile.Generator.TurbineValve.name=涡轮阀门
 tile.Generator.TurbineVent.name=涡轮排气口
+tile.Generator.SaturatingCondenser.name=饱和冷凝器
 
 tile.Reactor.ReactorController.name=反应控制器
 tile.Reactor.ReactorFrame.name=反应堆框架
