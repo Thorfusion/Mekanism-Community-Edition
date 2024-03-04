@@ -126,6 +126,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Thorfusion#117 bug rendering crash with mariculture infinity water bucket placed in evaporation controller Thorfusion#122
 + fix Thorfusion#100 where oredict for platinum didnt apply to dust and below and fix Thorfusion#120 Thorfusion#121
 + add devJar Thorfusion#102
++ Fix hold in tooltip not being translated https://github.com/Thorfusion/Mekanism-Community-Edition/pull/167
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -154,7 +155,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Plat Compat Shenanigans in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
 + Patch Personal Chest dupe in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
 + Fixed lag with in heat transferring devices https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158
-+ Fix hold in tooltip not being translated https://github.com/Thorfusion/Mekanism-Community-Edition/pull/167
+
 
 #### leytilera
 + universal cable connection to IC2
