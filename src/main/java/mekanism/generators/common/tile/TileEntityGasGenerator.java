@@ -4,14 +4,18 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
@@ -22,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, IGasTankInfoProvider, ITubeConnection, ISustainedData
 {
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 18000;
@@ -349,6 +353,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {fuelTank};
 	}
 
 	@Override

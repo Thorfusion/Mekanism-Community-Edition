@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -13,7 +15,9 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
@@ -37,7 +41,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer, IConfigurable
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, IGasTankInfoProvider, ITubeConnection, IHeatTransfer, IConfigurable
 {
 	public boolean fluidEject;
 	
@@ -218,6 +222,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return (type == GasRegistry.getGas("steam"));
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return getReactor() != null ? new GasTankInfo[] {getReactor().getDeuteriumTank(), getReactor().getTritiumTank(), getReactor().getFuelTank()} : IGasTankInfoProvider.NONE;
 	}
 
 	@Override
