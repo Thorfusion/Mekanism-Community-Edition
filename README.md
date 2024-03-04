@@ -165,7 +165,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Fix Gas Registry Lookup Performance in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138
 
 #### Omgise
-* Update zh_CN.lang in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/162
+* Update zh_CN.lang by NealDeal34 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/162
 
 #### Bedrockbreaker
 * Add missing Gas API methods in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/166
