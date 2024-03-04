@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig;
 import mekanism.api.Range4D;
@@ -13,9 +15,11 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -50,7 +54,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IGasTankInfoProvider, IUpgradeTile, IUpgradeInfoHandler, ITankManager, IRedstoneControl, IActiveState, ISecurityTile
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -745,6 +749,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {leftTank, rightTank};
 	}
 
     @Override

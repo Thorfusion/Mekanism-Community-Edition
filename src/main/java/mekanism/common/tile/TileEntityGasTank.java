@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -11,9 +13,11 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -38,7 +42,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, IGasTankInfoProvider, ITubeConnection, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable
 {
 	public enum GasMode
 	{
@@ -242,6 +246,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		}
 
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {gasTank};
 	}
 
 	@Override

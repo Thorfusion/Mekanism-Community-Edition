@@ -6,11 +6,15 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -42,7 +46,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile
+public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandler, IFrequencyHandler, IGasHandler, IGasTankInfoProvider, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile
 {
 	public InventoryFrequency frequency;
 	
@@ -541,6 +545,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		}
 		
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return hasFrequency() ? new GasTankInfo[] {frequency.storedGas} : IGasTankInfoProvider.NONE;
 	}
 	
 	@Override

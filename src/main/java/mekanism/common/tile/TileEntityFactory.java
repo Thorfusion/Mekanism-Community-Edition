@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -15,9 +17,11 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
@@ -65,7 +69,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData, ISecurityTile, ITierUpgradeable
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, IGasTankInfoProvider, ITubeConnection, ISpecialConfigData, ISecurityTile, ITierUpgradeable
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -1159,6 +1163,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {gasTank};
 	}
 
 	@Override

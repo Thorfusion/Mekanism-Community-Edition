@@ -2,13 +2,17 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Tier;
@@ -26,7 +30,7 @@ import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
+public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler, IGasTankInfoProvider
 {
 	public Tier.TubeTier tier = Tier.TubeTier.BASIC;
 	
@@ -301,6 +305,20 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		if (getTransmitter().hasTransmitterNetwork())
+		{
+			GasNetwork network = getTransmitter().getTransmitterNetwork();
+			GasTank networkTank = new GasTank(network.getCapacity());
+			networkTank.setGas(network.buffer);
+			return new GasTankInfo[] {networkTank};
+		}
+		return new GasTankInfo[] {buffer};
 	}
 
 	public int takeGas(GasStack gasStack, boolean doEmit)

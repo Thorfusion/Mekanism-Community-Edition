@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.MekanismConfig.mekce_generators;
@@ -16,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityBioGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
+public class TileEntityBioGenerator extends TileEntityGenerator implements IGasHandler, IGasTankInfoProvider, ITubeConnection, ISustainedData
 {
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 18000;
@@ -322,6 +324,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {fuelTank};
 	}
 
 	@Override
