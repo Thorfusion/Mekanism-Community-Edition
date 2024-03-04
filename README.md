@@ -154,6 +154,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Plat Compat Shenanigans in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
 + Patch Personal Chest dupe in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
 + Fixed lag with in heat transferring devices https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158
++ Fix hold in tooltip not being translated https://github.com/Thorfusion/Mekanism-Community-Edition/pull/167
 
 #### leytilera
 + universal cable connection to IC2
@@ -161,6 +162,14 @@ Note that changes not by the mekanism ce team has been added by us from their re
 #### ace10102 - Mekanism CE Team
 + Additional checks for IC2 api and cofhcore in ChargeUtils before using them fixes mekanism#4785 Thorfusion#118
 + Fix Gas Registry Lookup Performance in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138
+
+#### Omgise
+* Update zh_CN.lang in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/162
+
+#### Bedrockbreaker
+* Add missing Gas API methods in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/166
+
+
 
 ## All contributors get capes
 
