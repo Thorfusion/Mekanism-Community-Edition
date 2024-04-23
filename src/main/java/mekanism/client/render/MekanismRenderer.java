@@ -12,6 +12,7 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.*;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.Resource;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;

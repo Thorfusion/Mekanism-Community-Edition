@@ -142,9 +142,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	@Override
 	public double applyTemperatureChange()
 	{
-		temperature += heatToAbsorb / locations.size();
+		if (heatToAbsorb < 0) { // Heat subtraction
+			double newTemperature = temperature + (heatToAbsorb / locations.size());
+			temperature = newTemperature >= 0.01 ? newTemperature : 0.0;
+		} else {
+			temperature += heatToAbsorb / locations.size();
+		}
 		heatToAbsorb = 0;
-		
+
 		return temperature;
 	}
 

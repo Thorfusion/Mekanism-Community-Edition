@@ -60,6 +60,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.io.File;
 
+import static mekanism.api.MekanismConfig.mekce.enablePersonalChestPocketAccess;
+
 /**
  * Client proxy for the Mekanism mod.
  * @author AidanBrady
@@ -117,13 +119,15 @@ public class ClientProxy extends CommonProxy
 				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, tileEntity));
 				entityplayer.openContainer.windowId = windowId;
 			}
-			else {
+			else if (enablePersonalChestPocketAccess)
+			{
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				int hotbarSlot = entityplayer.inventory.currentItem;
 
 				if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
 				{
 					InventoryPersonalChest inventory = new InventoryPersonalChest(entityplayer);
-					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory, hotbarSlot));
 					entityplayer.openContainer.windowId = windowId;
 				}
 			}
@@ -386,29 +390,29 @@ public class ClientProxy extends CommonProxy
 			case 58:
 				return new GuiFuelwoodHeater(player.inventory, (TileEntityFuelwoodHeater)tileEntity);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void handleTeleporterUpdate(PortableTeleporterMessage message)
 	{
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-		
+
 		if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
 		{
 			GuiTeleporter teleporter = (GuiTeleporter)screen;
-			
+
 			teleporter.clientStatus = message.status;
 			teleporter.clientFreq = message.frequency;
 			teleporter.clientPublicCache = message.publicCache;
 			teleporter.clientPrivateCache = message.privateCache;
 			teleporter.clientProtectedCache = message.protectedCache;
-			
+
 			teleporter.updateButtons();
 		}
 	}
-	
+
 	@Override
 	public void addHitEffects(Coord4D coord, MovingObjectPosition mop)
 	{
@@ -417,7 +421,7 @@ public class ClientProxy extends CommonProxy
 			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.xCoord, coord.yCoord, coord.zCoord, mop);
 		}
 	}
-	
+
 	@Override
 	public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker)
 	{
@@ -432,7 +436,7 @@ public class ClientProxy extends CommonProxy
 				@Override
 				public boolean isNode(TileEntity tile)
 				{
-				return MultiblockManager.areEqual(tile, tileEntity);
+					return MultiblockManager.areEqual(tile, tileEntity);
 				}
 			}).run();
 		}
@@ -442,11 +446,11 @@ public class ClientProxy extends CommonProxy
 	public void loadUtilities()
 	{
 		super.loadUtilities();
-		
+
 		FMLCommonHandler.instance().bus().register(new ClientPlayerTracker());
 		FMLCommonHandler.instance().bus().register(new ClientTickHandler());
 		FMLCommonHandler.instance().bus().register(new RenderTickHandler());
-		
+
 		new MekanismKeyHandler();
 
 		HolidayManager.init();
@@ -522,7 +526,7 @@ public class ClientProxy extends CommonProxy
 	{
 		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
 	}
-	
+
 	@Override
 	public FontRenderer getFontRenderer()
 	{

@@ -49,19 +49,25 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 | MEK:CE 1.7.10 Featured Changes                                                                                    | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) |
 |-------------------------------------------------------------------------------------------------------------------|--------------------|-------------------------------------------------------------------|
 | Open Source                                                                                                       | :heavy_check_mark: | :heavy_check_mark:                                                |
-| Dupe: Chemical Washer                                                                                             | :x:                | :heavy_check_mark:                                                |
-| Dupe: Fluidtank                                                                                                   | :x:                | :heavy_check_mark:                                                |
-| Dupe: [Fluidstack](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/49)                            | :x:                | :heavy_check_mark:                                                |
-| Dupe: Factories                                                                                                   | :x:                | :heavy_check_mark:                                                |
-| Dupe: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
-| Dupe: [Moving Players](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/62)                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: Chemical Washer                                                                                             | :x:                | :heavy_check_mark:                                                |
+| DUPE: Fluidtank                                                                                                   | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Fluidstack](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/49)                            | :x:                | :heavy_check_mark:                                                |
+| DUPE: Factories                                                                                                   | :x:                | :heavy_check_mark:                                                |
+| DUPE: Bins                                                                                                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Moving Players](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/62)                        | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Personal chest dupe](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/130)                  | :x:                | :heavy_check_mark:                                                |
 | BUG: [Osmium Compressor](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/32)                      | :x:                | :heavy_check_mark:                                                |
 | BUG: [Storage Meter](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/40)                          | :x:                | :heavy_check_mark:                                                |
-| BUG: [Looping crash MK+RR+BC](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/33)                 | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Looping crash MK+RR+BC](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/33)               | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Render crash with too much water](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/122)      | :x:                | :heavy_check_mark:                                                |
+| CRASH: [Jetpack and chunk CME](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141)                 | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: [Fix Gas Registry Lookup](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138)         | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: [Fix Infinite Heat Transfers](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158)     | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [TerralizationCompat](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/30)                | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Biofuel cycle rework](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/48)                 | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Configurable radius digitalminer](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/55)   | :x:                | :heavy_check_mark:                                                |
 | FEATURE: [Whitelist dimension's for windmill](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/16) | :x:                | :heavy_check_mark:                                                |
+| FEATURE: [Immersive Deuterium](https://github.com/Thorfusion/Mekanism-Community-Edition/pull/94)                  | :x:                | :heavy_check_mark:                                                |
 | NEW FEATURES, BUGFIXES & MORE!                                                                                    | :x:                | :heavy_check_mark:                                                |
 
 ### Full changelog
@@ -120,6 +126,7 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Thorfusion#117 bug rendering crash with mariculture infinity water bucket placed in evaporation controller Thorfusion#122
 + fix Thorfusion#100 where oredict for platinum didnt apply to dust and below and fix Thorfusion#120 Thorfusion#121
 + add devJar Thorfusion#102
++ Fix hold in tooltip not being translated https://github.com/Thorfusion/Mekanism-Community-Edition/pull/167
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -144,12 +151,26 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + Fixes Molasse/Glucose missing texture and langs Thorfusion#71
 + Reworks how Heavy Water is obtained Thorfusion#94
 + Fixes upgrades vanishing up machines when FactoriesEnabled= false Thorfusion#112
++ Fixes CMEs crashes in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/141
++ Plat Compat Shenanigans in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/142
++ Patch Personal Chest dupe in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/143
++ Fixed lag with in heat transferring devices https://github.com/Thorfusion/Mekanism-Community-Edition/pull/158
+
 
 #### leytilera
 + universal cable connection to IC2
 
-#### ace10102
+#### ace10102 - Mekanism CE Team
 + Additional checks for IC2 api and cofhcore in ChargeUtils before using them fixes mekanism#4785 Thorfusion#118
++ Fix Gas Registry Lookup Performance in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/138
+
+#### Omgise
+* Update zh_CN.lang by NealDeal34 in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/162
+
+#### Bedrockbreaker
+* Add missing Gas API methods in https://github.com/Thorfusion/Mekanism-Community-Edition/pull/166
+
+
 
 ## All contributors get capes
 

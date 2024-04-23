@@ -27,8 +27,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class RenderTickHandler
@@ -106,19 +105,17 @@ public class RenderTickHandler
 
 				synchronized(Mekanism.jetpackOn)
 				{
-					for(String s : Mekanism.jetpackOn)
-					{
+					Set<String> jetpackPlayers = new HashSet<String>(Mekanism.jetpackOn);
+					for (String s : jetpackPlayers) {
 						EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
 
-						if(p == null)
-						{
+						if (p == null) {
 							continue;
 						}
 
 						Pos3D playerPos = new Pos3D(p);
 
-						if(p != mc.thePlayer)
-						{
+						if (p != mc.thePlayer) {
 							playerPos.translate(0, 1.7, 0);
 						}
 
@@ -173,7 +170,9 @@ public class RenderTickHandler
 				{
 					if(world.getWorldTime() % 4 == 0)
 					{
-						for(String s : Mekanism.gasmaskOn)
+						Set<String> gasmaskPlayers = new HashSet<String>(Mekanism.gasmaskOn);
+
+						for(String s : gasmaskPlayers)
 						{
 							EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
 	
@@ -201,50 +200,42 @@ public class RenderTickHandler
 					}
 				}
 				
-				if(world.getWorldTime() % 4 == 0)
-				{
-					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
-					{
-						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
-						{
-							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
-							{
+				if(world.getWorldTime() % 4 == 0) {
+					List<EntityPlayer> flamethrowerPlayers = new ArrayList<>((List<EntityPlayer>) world.playerEntities);
+					for (EntityPlayer p : flamethrowerPlayers) {
+						if (!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower) {
+							if (((ItemFlamethrower) p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null) {
 								Pos3D playerPos = new Pos3D(p);
 								Pos3D flameVec = new Pos3D();
-								
-								if(p.isSneaking())
-								{
+
+								if (p.isSneaking()) {
 									flameVec.yPos -= 0.35F;
 									flameVec.zPos -= 0.15F;
 								}
-								
+
 								Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
-								
-								if(player == p && mc.gameSettings.thirdPersonView == 0)
-								{
+
+								if (player == p && mc.gameSettings.thirdPersonView == 0) {
 									flameVec = new Pos3D(0.8, 0.8, 0.8);
-									
+
 									flameVec.multiply(new Pos3D(p.getLook(90)));
 									flameVec.rotateYaw(15);
-								}
-								else {
+								} else {
 									flameVec.xPos -= 0.45F;
-									
-									if(player == p)
-									{
+
+									if (player == p) {
 										flameVec.yPos -= 0.5F;
-									}
-									else {
+									} else {
 										flameVec.yPos += 1F;
 									}
-									
+
 									flameVec.zPos += 1.05F;
-									
+
 									flameVec.rotateYaw(p.renderYawOffset);
 								}
-								
+
 								Pos3D mergedVec = playerPos.clone().translate(flameVec);
-								
+
 								spawnAndSetParticle("flame", world, mergedVec.xPos, mergedVec.yPos, mergedVec.zPos, flameMotion.xPos, flameMotion.yPos, flameMotion.zPos);
 							}
 						}
@@ -258,17 +249,16 @@ public class RenderTickHandler
 	{
 		EntityFX fx = null;
 
-		if(s.equals("flame"))
-		{
-			fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
-		}
-		else if(s.equals("smoke"))
-		{
-			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
-		}
-		else if(s.equals("bubble"))
-		{
-			fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
+		switch (s) {
+			case "flame":
+				fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
+				break;
+			case "smoke":
+				fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
+				break;
+			case "bubble":
+				fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
+				break;
 		}
 
 		mc.effectRenderer.addEffect(fx);

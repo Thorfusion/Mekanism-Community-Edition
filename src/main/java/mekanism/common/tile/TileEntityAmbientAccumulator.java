@@ -5,10 +5,14 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
@@ -16,7 +20,7 @@ import mekanism.common.recipe.machines.AmbientGasRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
+public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, IGasTankInfoProvider, ITubeConnection
 {
 	public GasTank collectedGas = new GasTank(1000);
 
@@ -84,6 +88,13 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return type == collectedGas.getGasType();
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {collectedGas};
 	}
 
 	@Override

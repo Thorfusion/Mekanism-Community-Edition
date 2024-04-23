@@ -12,6 +12,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
+import mekanism.common.Resource;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.ShapedMekanismRecipe;
@@ -92,6 +93,8 @@ public class MekanismTools implements IModule
 	
 	public void addRecipes()
 	{
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
+
 		//Crafting Recipes
 		//Base
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.WoodPaxel, 1), new Object[] {
@@ -206,37 +209,37 @@ public class MekanismTools implements IModule
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Items.dye, 1, 4), Character.valueOf('T'), Items.stick
 		}));
 
-		if(OreDictionary.doesOreNameExist("ingotOsmium")) {
+		if(OreDictionary.doesOreNameExist("ingot" + mekanismMaterial)) {
 			//Osmium
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPaxel, 1), new Object[]{
 					"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.OsmiumAxe, Character.valueOf('Y'), ToolsItems.OsmiumPickaxe, Character.valueOf('Z'), ToolsItems.OsmiumShovel, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumPickaxe, 1), new Object[]{
-					"XXX", " T ", " T ", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+					"XXX", " T ", " T ", Character.valueOf('X'), "ingot" + mekanismMaterial, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumAxe, 1), new Object[]{
-					"XX", "XT", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+					"XX", "XT", " T", Character.valueOf('X'), "ingot" + mekanismMaterial, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumShovel, 1), new Object[]{
-					"X", "T", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+					"X", "T", "T", Character.valueOf('X'), "ingot" + mekanismMaterial, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHoe, 1), new Object[]{
-					"XX", " T", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+					"XX", " T", " T", Character.valueOf('X'), "ingot" + mekanismMaterial, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumSword, 1), new Object[]{
-					"X", "X", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Items.stick
+					"X", "X", "T", Character.valueOf('X'), "ingot" + mekanismMaterial, Character.valueOf('T'), Items.stick
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumHelmet, 1), new Object[]{
-					"***", "* *", Character.valueOf('*'), "ingotOsmium"
+					"***", "* *", Character.valueOf('*'), "ingot" + mekanismMaterial
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumChestplate, 1), new Object[]{
-					"* *", "***", "***", Character.valueOf('*'), "ingotOsmium"
+					"* *", "***", "***", Character.valueOf('*'), "ingot" + mekanismMaterial
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumLeggings, 1), new Object[]{
-					"***", "* *", "* *", Character.valueOf('*'), "ingotOsmium"
+					"***", "* *", "* *", Character.valueOf('*'), "ingot" + mekanismMaterial
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.OsmiumBoots, 1), new Object[]{
-					"* *", "* *", Character.valueOf('*'), "ingotOsmium"
+					"* *", "* *", Character.valueOf('*'), "ingot" + mekanismMaterial
 			}));
 		}
 		//Bronze

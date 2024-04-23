@@ -19,7 +19,7 @@ public class GuiPersonalChest extends GuiMekanism
 
 	public GuiPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity)
 	{
-		super(tentity, new ContainerPersonalChest(inventory, tentity, null, true));
+		super(tentity, new ContainerPersonalChest(inventory, tentity, null, true, -1));
 
 		xSize+=26;
 		ySize+=64;
@@ -28,9 +28,9 @@ public class GuiPersonalChest extends GuiMekanism
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png")));
 	}
 
-	public GuiPersonalChest(InventoryPlayer inventory, IInventory inv)
+	public GuiPersonalChest(InventoryPlayer inventory, IInventory inv, int hotbarSlot)
 	{
-		super(new ContainerPersonalChest(inventory, null, inv, false));
+		super(new ContainerPersonalChest(inventory, null, inv, false, hotbarSlot));
 
 		xSize+=26;
 		ySize+=64;

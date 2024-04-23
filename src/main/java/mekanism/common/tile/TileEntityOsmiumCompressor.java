@@ -2,11 +2,11 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.common.Resource;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
@@ -30,34 +30,19 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		int amount = 0;
-		boolean replaceWithPlat = MekanismConfig.mekce.OreDictPlatinum && !MekanismConfig.mekce.OreDictOsmium;
-		
-		if (replaceWithPlat) {
-			for (ItemStack ore : OreDictionary.getOres("ingotPlatinum")) {
-				if (ore.isItemEqual(itemstack)) {
-					return new GasStack(GasRegistry.getGas("liquidPlatinum"), 200);
-				}
-			}
+		String mekanismMaterial = Resource.OSMIUM.getOredictName();
 
-			for (ItemStack ore : OreDictionary.getOres("blockPlatinum")) {
-				if (ore.isItemEqual(itemstack)) {
-					return new GasStack(GasRegistry.getGas("liquidPlatinum"), 1800);
-				}
-			}
-		} else {
-		for (ItemStack ore : OreDictionary.getOres("ingotOsmium")) {
+		for (ItemStack ore : OreDictionary.getOres("ingot" + mekanismMaterial)) {
 			if (ore.isItemEqual(itemstack)) {
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 200);
+				return new GasStack(GasRegistry.getGas("liquid" + mekanismMaterial), 200);
 			}
 		}
 
-		for (ItemStack ore : OreDictionary.getOres("blockOsmium")) {
+		for (ItemStack ore : OreDictionary.getOres("block" + mekanismMaterial)) {
 			if (ore.isItemEqual(itemstack)) {
-				return new GasStack(GasRegistry.getGas("liquidOsmium"), 1800);
+				return new GasStack(GasRegistry.getGas("liquid" + mekanismMaterial), 1800);
 			}
 		}
-	}
 
 		return null;
 	}

@@ -5,14 +5,18 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasTankInfoProvider;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -40,7 +44,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler
+public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, IGasTankInfoProvider, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler
 {
 	public GasTank inputTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -329,6 +333,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public boolean canDrawGas(ForgeDirection side, Gas type) 
 	{
 		return side == ForgeDirection.getOrientation(facing) && outputTank.canDraw(type);
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[] {inputTank, outputTank};
 	}
 	
 	@Override
