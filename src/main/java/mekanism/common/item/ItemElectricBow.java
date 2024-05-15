@@ -1,8 +1,6 @@
 package mekanism.common.item;
 
 import io.netty.buffer.ByteBuf;
-import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
@@ -16,24 +14,42 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     public ItemElectricBow() {
         super(120000);
         setFull3D();
+        this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
+            @SideOnly(Side.CLIENT)
+            public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+                if (entityIn == null) {
+                    return 0.0F;
+                }else {
+                    return !(entityIn.getActiveItemStack().getItem() instanceof ItemElectricBow) ? 0.0F : (float) (stack.getMaxItemUseDuration() - entityIn.getItemInUseCount()) / 20.0F;
+                }
+            }
+        });
+        this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
+            @SideOnly(Side.CLIENT)
+            public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+                return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
+            }
+        });
     }
 
     @Override
@@ -45,7 +61,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Override
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityLivingBase entityLiving, int itemUseCount) {
-        if (entityLiving instanceof EntityPlayer && getEnergy(itemstack) > 0) {
+         if (entityLiving instanceof EntityPlayer && getEnergy(itemstack) > 0) {
             EntityPlayer player = (EntityPlayer) entityLiving;
             boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
             ItemStack ammo = findAmmo(player);
@@ -87,7 +103,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                 }
 
                 world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,
-                      1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                        1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                 if (!noConsume) {
                     ammo.shrink(1);
