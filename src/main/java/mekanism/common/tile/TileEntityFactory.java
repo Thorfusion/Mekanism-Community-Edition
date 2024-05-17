@@ -1,7 +1,10 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +49,9 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -67,15 +72,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ISpecialConfigData, ITierUpgradeable,
       ISustainedData, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final MachineRecipe[] cachedRecipe;
+    private final FactoryInvSorter inventorySorter = new FactoryInvSorter(this);
     /**
      * This Factory's tier.
      */
@@ -235,7 +241,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             ChargeUtils.discharge(1, this);
 
             handleSecondaryFuel();
-            sortInventory();
+            inventorySorter.sort();
             ItemStack machineSwapItem = inventory.get(2);
             if (!machineSwapItem.isEmpty() && machineSwapItem.getItem() instanceof ItemBlockMachine && inventory.get(3).isEmpty()) {
 
@@ -347,51 +353,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public boolean sideIsConsumer(EnumFacing side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
-    }
-
-    public void sortInventory() {
-        if (sorting) {
-            int[] inputSlots;
-            if (tier == FactoryTier.BASIC) {
-                inputSlots = new int[]{5, 6, 7};
-            } else if (tier == FactoryTier.ADVANCED) {
-                inputSlots = new int[]{5, 6, 7, 8, 9};
-            } else if (tier == FactoryTier.ELITE) {
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
-            } else {
-                //If something went wrong finding the tier don't sort it
-                return;
-            }
-            for (int i = 0; i < inputSlots.length; i++) {
-                int slotID = inputSlots[i];
-                ItemStack stack = inventory.get(slotID);
-                int count = stack.getCount();
-                ItemStack output = inventory.get(tier.processes + slotID);
-                for (int j = i + 1; j < inputSlots.length; j++) {
-                    int checkSlotID = inputSlots[j];
-                    ItemStack checkStack = inventory.get(checkSlotID);
-                    if (Math.abs(count - checkStack.getCount()) < 2 ||
-                        !InventoryUtils.areItemsStackable(stack, checkStack)) {
-                        continue;
-                    }
-                    //Output/Input will not match
-                    // Only check if the input spot is empty otherwise assume it works
-                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
-                        checkStack.isEmpty() && !inputProducesOutput(slotID, stack, inventory.get(tier.processes + checkSlotID), true)) {
-                        continue;
-                    }
-
-                    //Balance the two slots
-                    int total = count + checkStack.getCount();
-                    ItemStack newStack = stack.isEmpty() ? checkStack : stack;
-                    inventory.set(slotID, StackUtils.size(newStack, (total + 1) / 2));
-                    inventory.set(checkSlotID, StackUtils.size(newStack, total / 2));
-
-                    markDirty();
-                    return;
-                }
-            }
-        }
     }
 
     /**
@@ -999,5 +960,326 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public int getRedstoneLevel() {
         return Container.calcRedstoneFromInventory(this);
+    }
+
+    public MachineRecipe<?, ?, ?> getSlotRecipe(int slotID, ItemStack fallbackInput, ItemStack output) {
+        int process = getOperation(slotID);
+        //cached recipe may be invalid
+        MachineRecipe<?, ?, ?> cached = cachedRecipe[process];
+        ItemStack extra = inventory.get(4);
+        if (cached == null) {
+            cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+            if (cached == null) { // We have not enough input probably
+                cached = recipeType.getAnyRecipe(StackUtils.size(fallbackInput, fallbackInput.getMaxStackSize()), extra, gasTank.getGasType(), infuseStored);
+            }
+        } else {
+            ItemStack recipeInput = ItemStack.EMPTY;
+            boolean secondaryMatch = true;
+            if (cached.recipeInput instanceof ItemStackInput) {
+                recipeInput = ((ItemStackInput) cached.recipeInput).ingredient;
+            } else if (cached.recipeInput instanceof AdvancedMachineInput) {
+                AdvancedMachineInput advancedInput = (AdvancedMachineInput) cached.recipeInput;
+                recipeInput = advancedInput.itemStack;
+                secondaryMatch = gasTank.getGasType() == null || advancedInput.gasType == gasTank.getGasType();
+            } else if (cached.recipeInput instanceof DoubleMachineInput) {
+                DoubleMachineInput doubleMachineInput = (DoubleMachineInput) cached.recipeInput;
+                recipeInput = doubleMachineInput.itemStack;
+                secondaryMatch = extra.isEmpty() || ItemStack.areItemsEqual(doubleMachineInput.extraStack, extra);
+            } else if (cached.recipeInput instanceof InfusionInput) {
+                InfusionInput infusionInput = (InfusionInput) cached.recipeInput;
+                recipeInput = infusionInput.inputStack;
+                secondaryMatch = infuseStored.getAmount() == 0 || infuseStored.getType() == infusionInput.infuse.getType();
+            }
+            //If there is no cached item input or it doesn't match our fallback
+            // then it is an out of date cache so we compare against the new one
+            // and update the cache while we are at it
+            if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
+                cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+            }
+        }
+
+        if (cached != null) {
+            ItemStack recipeOutput = ItemStack.EMPTY;
+            if (cached.recipeOutput instanceof ItemStackOutput) {
+                recipeOutput = ((ItemStackOutput) cached.recipeOutput).output;
+            } else if (cached.recipeOutput instanceof ChanceOutput) {
+                recipeOutput = ((ChanceOutput) cached.recipeOutput).primaryOutput;
+            } if (cached.recipeOutput instanceof PressurizedOutput) {
+                recipeOutput = ((PressurizedOutput) cached.recipeOutput).getItemOutput();
+            }
+            if (!recipeOutput.isEmpty()) {
+                InventoryUtils.areItemsStackable(recipeOutput, output);
+            }
+        }
+        return cached;
+    }
+
+    public static ItemStack getRecipeInput(MachineRecipe<?, ?, ?> recipe) {
+        if (recipe.recipeInput instanceof ItemStackInput) {
+            return ((ItemStackInput) recipe.recipeInput).ingredient;
+        } else if (recipe.recipeInput instanceof AdvancedMachineInput) {
+            AdvancedMachineInput advancedInput = (AdvancedMachineInput) recipe.recipeInput;
+            return advancedInput.itemStack;
+        } else if (recipe.recipeInput instanceof DoubleMachineInput) {
+            DoubleMachineInput doubleMachineInput = (DoubleMachineInput) recipe.recipeInput;
+            return doubleMachineInput.itemStack;
+        } else if (recipe.recipeInput instanceof InfusionInput) {
+            InfusionInput infusionInput = (InfusionInput) recipe.recipeInput;
+            return infusionInput.inputStack;
+        } else {
+            return ItemStack.EMPTY;
+        }
+    }
+
+    private static int[] getSlotsWithTier(FactoryTier tier) {
+        switch (tier) {
+            case BASIC:
+                return new int[]{5, 6, 7};
+            case ADVANCED:
+                return new int[]{5, 6, 7, 8, 9};
+            case ELITE:
+                return new int[]{5, 6, 7, 8, 9, 10, 11};
+            default:
+                return null;
+        }
+    }
+
+    public static ItemStack copyStackWithSize(ItemStack stack, int amount) {
+        if (stack.isEmpty() || amount <= 0) return ItemStack.EMPTY;
+        ItemStack s = stack.copy();
+        s.setCount(amount);
+        return s;
+    }
+
+    public static boolean matchStacks(@Nonnull ItemStack stack, @Nonnull ItemStack other) {
+        if (!ItemStack.areItemsEqual(stack, other)) return false;
+        return ItemStack.areItemStackTagsEqual(stack, other);
+    }
+
+    /**
+     * <p>Efficient, intelligent factory sequencing.</p>
+     * <p><strong>Non-thread safe。</strong></p>
+     * <p>In fact, it still has a lot of room for optimization, limited by the structure of the code, these features are sufficient.</p>
+     */
+    public static class FactoryInvSorter {
+        private final TileEntityFactory factory;
+        // Reusable List
+        private final List<Tuple<MachineRecipe<?, ?, ?>, ItemStack>> vaildRecipeItemStackList = new ArrayList<>();
+        // Reusable List
+        private final List<ItemStack> invaildRecipeItemStackList = new ArrayList<>();
+        // Reusable List
+        private final List<ItemStack> sorted = new ArrayList<>();
+
+        public FactoryInvSorter(TileEntityFactory factory) {
+            this.factory = factory;
+        }
+
+        /**
+         * <p>Add an ItemStack to the item list. </p
+         *
+         * @param willBeAdded The item that will be added to the list, or merged if the item already exists in the list and has not reached its maximum stack value.
+         * @param stackList The list of items.
+         */
+        private static void addItemStackToList(ItemStack willBeAdded, List<ItemStack> stackList) {
+            boolean isAdded = false;
+            for (ItemStack stack : stackList) {
+                int maxStackSize = stack.getMaxStackSize();
+                int invStackCount = willBeAdded.getCount();
+
+                if (!matchStacks(stack, willBeAdded)) {
+                    continue;
+                }
+                if (stack.getCount() >= maxStackSize) {
+                    continue;
+                }
+                if (stack.getCount() + invStackCount > maxStackSize) {
+                    int added = maxStackSize - stack.getCount();
+                    stack.setCount(maxStackSize);
+                    willBeAdded.setCount(invStackCount - added);
+                    continue;
+                }
+                stack.setCount(stack.getCount() + invStackCount);
+                isAdded = true;
+            }
+            if (!isAdded) {
+                stackList.add(willBeAdded);
+            }
+        }
+
+        /**
+         * <p>Add an ItemStack to the item list. </p
+         *
+         * @param willBeAdded The item that will be added to the list, or merged if the item already exists in the list and has not reached the maximum stack value.
+         * @param tupleList The list of items.
+         * @return Returns true if the addition was successful, or false if the list is full.
+         */
+        private static boolean addItemStackToTupleList(ItemStack willBeAdded, List<Tuple<MachineRecipe<?, ?, ?>, ItemStack>> tupleList) {
+            for (Tuple<MachineRecipe<?, ?, ?>, ItemStack> collected : tupleList) {
+                ItemStack stack = collected.getSecond();
+                int maxStackSize = stack.getMaxStackSize();
+                int invStackCount = willBeAdded.getCount();
+
+                if (!matchStacks(stack, willBeAdded)) {
+                    continue;
+                }
+                if (stack.getCount() >= maxStackSize) {
+                    continue;
+                }
+                if (stack.getCount() + invStackCount > maxStackSize) {
+                    int added = maxStackSize - stack.getCount();
+                    stack.setCount(maxStackSize);
+                    willBeAdded.setCount(invStackCount - added);
+                    continue;
+                }
+                stack.setCount(stack.getCount() + invStackCount);
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * <h2>Sorting Process Introduction</h2>
+         * <ol>
+         *     <li>First detects if there is at least one item in the factory, and if there is no item, ends the process early.</li>
+         *     <li>When the above condition is met, start sorting the contents into two lists (see {@link FactoryInvSorter#collectInvToList(int[] slotIds)} for the workflow.</li>
+         *     <li>After sorting, execute {@link FactoryInvSorter#doSort(int)} to sort the results further and output the results to {@link FactoryInvSorter#sorted}.</li>
+         *     <li>Finally, execute {@link FactoryInvSorter#applyResult(List sorted, int[] slotIds)} to apply the result to the machine inventory.</li>
+         * </ol>
+         */
+        public void sort() {
+            if (!factory.sorting || factory.getWorld().getWorldTime() % 20 != 0) {
+                return;
+            }
+            int[] slotIds = getSlotsWithTier(factory.tier);
+            if (slotIds == null || !hasItem(slotIds)) {
+                return;
+            }
+
+            vaildRecipeItemStackList.clear();
+            invaildRecipeItemStackList.clear();
+            sorted.clear();
+
+            collectInvToList(slotIds);
+
+            if (vaildRecipeItemStackList.size() + invaildRecipeItemStackList.size() >= slotIds.length) {
+                //The collection size is bigger than equals slotIds size, end sort.
+                return;
+            }
+
+            doSort(slotIds.length - (vaildRecipeItemStackList.size() + invaildRecipeItemStackList.size()));
+            applyResult(sorted, slotIds);
+        }
+
+        /**
+         * Check if at least one item exists in the mechanical item bar.
+         *
+         * @param slotIds The slot to check.
+         * @return Returns true if at least one item is present, false if neither is present.
+         */
+        private boolean hasItem(int[] slotIds) {
+            for (int slotId : slotIds) {
+                if (factory.inventory.get(slotId) != ItemStack.EMPTY) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Apply items from the specified item list to the mechanical item bar, which <strong>must</strong> be larger or equal to the list size.
+         *
+         * @param sorted  Sorted item list
+         * @param slotIds slotIdArray
+         */
+        private void applyResult(List<ItemStack> sorted, int[] slotIds) {
+            if (sorted.isEmpty()) {
+                return;
+            }
+
+            int index = 0;
+            for (int slotId : slotIds) {
+                factory.inventory.set(slotId, ItemStack.EMPTY);
+                if (index >= sorted.size()) {
+                    continue;
+                }
+                factory.inventory.set(slotId, sorted.get(index));
+                index++;
+            }
+            sorted.clear();
+            factory.markDirty();
+        }
+
+        /**
+         * <p>Sort the sorted results to return a list of items available for use by {@link FactoryInvSorter#applyResult(List itemStackList, int[] slotIds)}.</p>
+         * <h2>Additional Features:</h2>
+         * <ul>
+         *     <li>Automatically calculates the product of the corresponding item and limits the number of divisions to the minimum number of recipes.</li>
+         *     <li>Maximize the application of each item slot while implementing the features above.</li>
+         *     <li>Minimize the number of slots occupied by invalid items and merge these invalid items where allowed.</li>
+         * </ul>
+         *
+         * @param emptySlotAmount Available empty slots.
+         */
+        private void doSort(int emptySlotAmount) {
+            int availableEmptySlotAmount = emptySlotAmount;
+            for (Tuple<MachineRecipe<?, ?, ?>, ItemStack> recipeAndInput : vaildRecipeItemStackList) {
+                MachineRecipe<?, ?, ?> recipe = recipeAndInput.getFirst();
+                ItemStack invStack = recipeAndInput.getSecond();
+                ItemStack recipeInput = TileEntityFactory.getRecipeInput(recipe);
+
+                int invCount = invStack.getCount();
+                int minCount = recipeInput.getCount();
+                if (invCount <= minCount) {
+                    sorted.add(invStack);
+                    continue;
+                }
+
+                int splitCount = Math.min(availableEmptySlotAmount + 1, invCount / minCount);
+                int countAfterSplit = invCount / splitCount;
+                int extra = invCount % splitCount;
+
+                sorted.add(copyStackWithSize(invStack, countAfterSplit + extra));
+
+                while (splitCount > 1) {
+                    sorted.add(copyStackWithSize(invStack, countAfterSplit));
+                    availableEmptySlotAmount--;
+                    splitCount--;
+                }
+            }
+            sorted.addAll(invaildRecipeItemStackList);
+        }
+
+        /**
+         * <p>Iterate through the contents of the mechanical item column with the incoming slot array and sort it into two item lists.</p>
+         * <h2>Feature:</h2>
+         * <ul>
+         *     <li>Automatically determines if an item is ready to run a recipe and adds it to the list {@link FactoryInvSorter#vaildRecipeItemStackList}.</li>
+         *     <li>Automatically determines items that cannot perform a recipe or are invalid and adds them to the list {@link FactoryInvSorter#invaildRecipeItemStackList}.</li>
+         * </ul>
+         *
+         * @param slotIds slotIDArray
+         */
+        private void collectInvToList(int[] slotIds) {
+            for (int slotId : slotIds) {
+                ItemStack invTmp = factory.inventory.get(slotId);
+                if (invTmp == ItemStack.EMPTY) {
+                    continue;
+                }
+                ItemStack invStack = invTmp.copy();
+
+                if (addItemStackToTupleList(invStack, vaildRecipeItemStackList)) {
+                    continue;
+                }
+
+                ItemStack outStack = factory.inventory.get(slotId + factory.tier.processes);
+                MachineRecipe<?, ?, ?> recipe = factory.getSlotRecipe(slotId, invStack, outStack);
+                if (recipe != null) {
+                    vaildRecipeItemStackList.add(new Tuple<>(recipe, invStack));
+                } else {
+                    addItemStackToList(invStack, invaildRecipeItemStackList);
+                }
+            }
+        }
     }
 }
