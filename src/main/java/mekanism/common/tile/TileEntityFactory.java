@@ -35,6 +35,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.recipe.GasConversionHandler;
@@ -241,7 +242,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             ChargeUtils.discharge(1, this);
 
             handleSecondaryFuel();
-            inventorySorter.sort();
+            if (MekanismConfig.current().mekce.EnableNewSortAlgorithm.val()) {
+                inventorySorter.sort();
+            } else {
+                sortInventory();
+            }
             ItemStack machineSwapItem = inventory.get(2);
             if (!machineSwapItem.isEmpty() && machineSwapItem.getItem() instanceof ItemBlockMachine && inventory.get(3).isEmpty()) {
 
@@ -353,6 +358,51 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public boolean sideIsConsumer(EnumFacing side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+    }
+
+    public void sortInventory() {
+        if (sorting) {
+            int[] inputSlots;
+            if (tier == FactoryTier.BASIC) {
+                inputSlots = new int[]{5, 6, 7};
+            } else if (tier == FactoryTier.ADVANCED) {
+                inputSlots = new int[]{5, 6, 7, 8, 9};
+            } else if (tier == FactoryTier.ELITE) {
+                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
+            } else {
+                //If something went wrong finding the tier don't sort it
+                return;
+            }
+            for (int i = 0; i < inputSlots.length; i++) {
+                int slotID = inputSlots[i];
+                ItemStack stack = inventory.get(slotID);
+                int count = stack.getCount();
+                ItemStack output = inventory.get(tier.processes + slotID);
+                for (int j = i + 1; j < inputSlots.length; j++) {
+                    int checkSlotID = inputSlots[j];
+                    ItemStack checkStack = inventory.get(checkSlotID);
+                    if (Math.abs(count - checkStack.getCount()) < 2 ||
+                            !InventoryUtils.areItemsStackable(stack, checkStack)) {
+                        continue;
+                    }
+                    //Output/Input will not match
+                    // Only check if the input spot is empty otherwise assume it works
+                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
+                            checkStack.isEmpty() && !inputProducesOutput(slotID, stack, inventory.get(tier.processes + checkSlotID), true)) {
+                        continue;
+                    }
+
+                    //Balance the two slots
+                    int total = count + checkStack.getCount();
+                    ItemStack newStack = stack.isEmpty() ? checkStack : stack;
+                    inventory.set(slotID, StackUtils.size(newStack, (total + 1) / 2));
+                    inventory.set(checkSlotID, StackUtils.size(newStack, total / 2));
+
+                    markDirty();
+                    return;
+                }
+            }
+        }
     }
 
     /**
