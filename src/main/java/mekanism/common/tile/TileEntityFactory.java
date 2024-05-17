@@ -124,6 +124,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public boolean sorting;
 
     public boolean upgraded;
+    public boolean NewSortAlgo = MekanismConfig.current().mekce.EnableNewSortAlgorithm.val();
 
     public double lastUsage;
 
@@ -242,7 +243,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             ChargeUtils.discharge(1, this);
 
             handleSecondaryFuel();
-            if (MekanismConfig.current().mekce.EnableNewSortAlgorithm.val()) {
+            if (NewSortAlgo) {
                 inventorySorter.sort();
             } else {
                 sortInventory();
