@@ -81,9 +81,6 @@ public class MekanismConfig {
         public static boolean enablePersonalChestPocketAccess;
         public static boolean accurateHeavyWaterCapture;
         public static int heavyWaterChance;
-        public static int atomicDisassemblerPoweredDamage;
-        public static int atomicDisassemblerUnpoweredDamage;
-        public static int atomicDisassemblerAttackPowerCost;
     }
 
     public static class client {

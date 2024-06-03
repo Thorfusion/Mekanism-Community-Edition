@@ -312,9 +312,6 @@ public class CommonProxy implements IGuiProvider {
         mekce.digitalMinerMaxRadius = Mekanism.configurationce.get("mekce", "DigitalMinerMaxRadius", 32, "Select range from 1 to 64, we do not recommend going over 32", 1, 64).getInt();
         mekce.enableSingleUseCardboxes = Mekanism.configurationce.get("mekce", "EnableSingleUseCardboxes", true, "This allows to force single use on cardboxes or not").getBoolean();
         mekce.enablePersonalChestPocketAccess = Mekanism.configurationce.get("mekce", "enablePersonalChestPocketAccess", true, "This allows opening Personal Chests from your inventory without having to place them").getBoolean();
-        mekce.atomicDisassemblerPoweredDamage = Mekanism.configurationce.get("mekce", "atomicDisassemblerPoweredDamage", 20, "Attack Damage of a powered Atomic Disassembler. Default is 20").getInt();
-        mekce.atomicDisassemblerUnpoweredDamage = Mekanism.configurationce.get("mekce", "atomicDisassemblerUnpoweredDamage", 4, "Attack Damage of an unpowered Atomic Disassembler. Default is 4").getInt();
-        mekce.atomicDisassemblerAttackPowerCost = Mekanism.configurationce.get("mekce", "atomicDisassemblerAttackPowerCost", 2000, "Energy cost of attacking entities with the Atomic Disassembler. Default is 2000").getInt();
 
         mekce.IC2SinkTier = Mekanism.configurationce.get("mekce", "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
         mekce.IC2SourceTier = Mekanism.configurationce.get("mekce", "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();

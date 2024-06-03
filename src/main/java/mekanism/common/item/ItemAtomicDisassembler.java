@@ -9,7 +9,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.MekanismConfig.mekce;
 import mekanism.api.util.ListUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -55,10 +54,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean hitEntity(ItemStack itemstack, EntityLivingBase hitEntity, EntityLivingBase player) {
         if(getEnergy(itemstack) > 0) {
-            hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), mekce.atomicDisassemblerPoweredDamage);
-            setEnergy(itemstack, getEnergy(itemstack) - mekce.atomicDisassemblerAttackPowerCost);
+            hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 20);
+            setEnergy(itemstack, getEnergy(itemstack) - 2000);
         } else {
-            hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), mekce.atomicDisassemblerUnpoweredDamage);
+            hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
         }
         return false;
     }
