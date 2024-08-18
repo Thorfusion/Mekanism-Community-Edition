@@ -1,4 +1,7 @@
-**
+*
+!*/
+
+!/.gitignore
 
 !.github/**
 !docs/**
@@ -6,7 +9,7 @@
 !gradle/**
 !libs/**
 !src/**
-!.gitignore
+
 !LICENSE.md
 !Mekanism.txt
 !README.md
