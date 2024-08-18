@@ -87,6 +87,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(mekce.digitalMinerMaxRadius);
 			dataStream.writeBoolean(mekce.enableSingleUseCardboxes);
 			dataStream.writeBoolean(mekce.enablePersonalChestPocketAccess);
+            dataStream.writeInt(mekce.atomicDisassemblerPoweredDamage);
+            dataStream.writeInt(mekce.atomicDisassemblerUnpoweredDamage);
+            dataStream.writeInt(mekce.atomicDisassemblerAttackPowerCost);
 
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -211,6 +214,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableFlamethrower);
 			dataStream.writeBoolean(recipes.enableGaugeDropper);
 			dataStream.writeBoolean(recipes.enableTierInstaller);
+            mekce.atomicDisassemblerPoweredDamage = dataStream.readInt();
+            mekce.atomicDisassemblerUnpoweredDamage = dataStream.readInt();
+            mekce.atomicDisassemblerAttackPowerCost = dataStream.readInt();
 			
 			Tier.writeConfig(dataStream);
 	
