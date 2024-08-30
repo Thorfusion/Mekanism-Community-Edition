@@ -1,3 +1,5 @@
+[![fullBuild](https://github.com/Thorfusion/Mekanism-Community-Edition/actions/workflows/gradle.yml/badge.svg)](https://github.com/Thorfusion/Mekanism-Community-Edition/actions/workflows/gradle.yml) [![Publish to Maven](https://github.com/Thorfusion/Mekanism-Community-Edition/actions/workflows/maven.yml/badge.svg)](https://github.com/Thorfusion/Mekanism-Community-Edition/actions/workflows/maven.yml)
+
 ![](https://files.thorfusion.com/mekanism/MEKBANNERWHITE1710.png)
 
 Originally made for Terralization Modpack with fixes from several different forks. Now with new features, bugfixes and performance enhancement.
