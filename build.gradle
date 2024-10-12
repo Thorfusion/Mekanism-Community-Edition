@@ -6,7 +6,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
             changing = true
         }
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.33.1"
