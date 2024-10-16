@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0: Osmium Ore
  * 1: Copper Ore
  * 2: Tin Ore
+ * 3: Deepslate Osmium Ore
  * @author AidanBrady
  *
  */
@@ -40,6 +41,7 @@ public class BlockOre extends Block
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
 		icons[2] = register.registerIcon("mekanism:TinOre");
+		icons[3] = register.registerIcon("mekanism:DeepslateOsmiumOre");
 	}
 
 	@Override
@@ -62,5 +64,6 @@ public class BlockOre extends Block
 		list.add(new ItemStack(item, 1, 0));
 		list.add(new ItemStack(item, 1, 1));
 		list.add(new ItemStack(item, 1, 2));
+		list.add(new ItemStack(item, 1, 3));
 	}
 }

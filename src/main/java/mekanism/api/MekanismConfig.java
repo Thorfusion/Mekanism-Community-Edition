@@ -75,6 +75,7 @@ public class MekanismConfig
 
 		public static boolean enableoregen;
 		public static boolean enableBoPProgression;
+		public static boolean enabledeepslateosmium;
 		public static boolean EnableQuartzCompat;
 		public static boolean EnableDiamondCompat;
 		public static boolean EnablePoorOresCompat;

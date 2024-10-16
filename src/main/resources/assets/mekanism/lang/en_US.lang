@@ -185,6 +185,7 @@ infuse.lead=Lead
 tile.OreBlock.OsmiumOre.name=Osmium Ore
 tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
+tile.OreBlock.DeepslateOsmiumOre.name=Deepslate Osmium Ore
 
 //Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=Basic Pressurized Tube
