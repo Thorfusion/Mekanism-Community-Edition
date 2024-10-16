@@ -1452,7 +1452,9 @@ public class Mekanism
 		Mekanism.proxy.Cape();
 
 		//Register the mod's world generators
-		GameRegistry.registerWorldGenerator(genHandler, 1);
+		if (MekanismConfig.mekce.enableoregen) {
+			GameRegistry.registerWorldGenerator(genHandler, 1);
+		}
 
 		//Register the mod's GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
