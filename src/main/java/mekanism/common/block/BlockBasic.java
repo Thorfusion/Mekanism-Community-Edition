@@ -100,6 +100,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:7: Boiler Casing
  * 1:8: Boiler Valve
  * 1:9: Security Desk
+ * 1:10: Raw Osmium Block
  * @author AidanBrady
  *
  */
@@ -258,6 +259,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[8][0] = ctms[8][0].mainTextureData.icon;
 				
 				icons[9][0] = register.registerIcon(ICON_BASE);
+
+				icons[10][0] = register.registerIcon("mekanism:RawOsmiumBlock");
 				
 				break;
 		}
@@ -1130,7 +1133,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser.class, true),
 		BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true),
 		BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true),
-		SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true);
+		SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true),
+		RAW_OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_2, 10, "RawOsmiumBlock", null, false);
 		
 		public BasicBlock typeBlock;
 		public int meta;

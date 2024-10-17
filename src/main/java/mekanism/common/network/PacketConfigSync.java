@@ -120,6 +120,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
 			dataStream.writeDouble(usage.formulaicAssemblicatorUsage);
 			dataStream.writeBoolean(recipes.enableOsmiumBlock);
+			dataStream.writeBoolean(recipes.enableRawOsmiumBlock);
 			dataStream.writeBoolean(recipes.enableBronzeBlock);
 			dataStream.writeBoolean(recipes.enableRefinedObsidianBlock);
 			dataStream.writeBoolean(recipes.enableCharcoalBlock);
@@ -319,6 +320,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
 			usage.formulaicAssemblicatorUsage = dataStream.readDouble();
 			recipes.enableOsmiumBlock = dataStream.readBoolean();
+			recipes.enableRawOsmiumBlock = dataStream.readBoolean();
 			recipes.enableBronzeBlock = dataStream.readBoolean();
 			recipes.enableRefinedObsidianBlock = dataStream.readBoolean();
 			recipes.enableCharcoalBlock = dataStream.readBoolean();

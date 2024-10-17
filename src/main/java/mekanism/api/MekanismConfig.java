@@ -196,6 +196,7 @@ public class MekanismConfig
 	public static class recipes
 	{
 		public static boolean enableOsmiumBlock = true;
+		public static boolean enableRawOsmiumBlock = true;
 		public static boolean enableBronzeBlock = true;
 		public static boolean enableRefinedObsidianBlock = true;
 		public static boolean enableCharcoalBlock = true;

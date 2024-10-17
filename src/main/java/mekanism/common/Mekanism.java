@@ -127,7 +127,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "GRADLE_MODVERSION", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
-				"after:ComputerCraft;after:Galacticraft;after:MineTweaker3")
+				"after:ComputerCraft;after:Galacticraft;after:MineTweaker3;after:etfuturum")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -246,6 +246,12 @@ public class Mekanism
 		if (MekanismConfig.recipes.enableOsmiumBlock) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.Ingot, 9, 1), new Object[]{
 					"*", Character.valueOf('*'), new ItemStack(MekanismBlocks.BasicBlock, 1, 0)
+			}));
+		}
+
+		if (MekanismConfig.recipes.enableRawOsmiumBlock){
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.RawOsmiumOre, 9, 1), new Object[]{
+					"*", Character.valueOf('*'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 10)
 			}));
 		}
 
@@ -997,6 +1003,7 @@ public class Mekanism
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.OtherDust, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 4), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.COPPER.ordinal()), new ItemStack(MekanismItems.Ingot, 1, 5), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.TIN.ordinal()), new ItemStack(MekanismItems.Ingot, 1, 6), 0.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.RawOsmiumOre), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
 
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.redstone_ore), new ItemStack(Items.redstone, 12));
@@ -1230,6 +1237,8 @@ public class Mekanism
 		OreDictionary.registerOre("pulpWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("blockSalt", MekanismBlocks.SaltBlock);
+		OreDictionary.registerOre("rawOsmium", MekanismItems.RawOsmiumOre);
+		OreDictionary.registerOre("oreOsmium", MekanismItems.RawOsmiumOre);
 
 
 		//Alloys!
@@ -1263,6 +1272,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotRefinedLapis", new ItemStack(MekanismItems.Ingot, 1, 7));
 
 		OreDictionary.registerOre("block" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
+		OreDictionary.registerOre("blockRawOsmium", new ItemStack(MekanismBlocks.BasicBlock2, 1, 10));
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
 		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(MekanismBlocks.BasicBlock, 1, 2));
 		OreDictionary.registerOre("blockCharcoal", new ItemStack(MekanismBlocks.BasicBlock, 1, 3));

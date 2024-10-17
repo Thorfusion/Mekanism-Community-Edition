@@ -412,6 +412,7 @@ public class CommonProxy implements IGuiProvider
 		Tier.loadConfig();
 
 		recipes.enableOsmiumBlock = Mekanism.configurationrecipes.get("recipes","enableOsmiumBlock", true).getBoolean();
+		recipes.enableRawOsmiumBlock = Mekanism.configurationrecipes.get("recipes","enableRawOsmiumBlock", true).getBoolean();
 		recipes.enableBronzeBlock = Mekanism.configurationrecipes.get("recipes","enableBronzeBlock", true).getBoolean();
 		recipes.enableRefinedObsidianBlock = Mekanism.configurationrecipes.get("recipes","enableRefinedObsidianBlock", true).getBoolean();
 		recipes.enableCharcoalBlock = Mekanism.configurationrecipes.get("recipes","enableCharcoalBlock", true).getBoolean();
