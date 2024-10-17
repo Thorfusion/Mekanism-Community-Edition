@@ -997,6 +997,7 @@ public class Mekanism
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.OtherDust, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 4), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.COPPER.ordinal()), new ItemStack(MekanismItems.Ingot, 1, 5), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.TIN.ordinal()), new ItemStack(MekanismItems.Ingot, 1, 6), 0.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.RawOsmiumOre), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
 
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.redstone_ore), new ItemStack(Items.redstone, 12));
@@ -1230,6 +1231,8 @@ public class Mekanism
 		OreDictionary.registerOre("pulpWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("blockSalt", MekanismBlocks.SaltBlock);
+		OreDictionary.registerOre("rawOsmium", MekanismItems.RawOsmiumOre);
+		OreDictionary.registerOre("oreOsmium", MekanismItems.RawOsmiumOre);
 
 
 		//Alloys!

@@ -26,6 +26,7 @@ import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import dan200.computercraft.api.ComputerCraftAPI;
 import ganymedes01.etfuturum.api.DeepslateOreRegistry;
+import ganymedes01.etfuturum.api.RawOreRegistry;
 import mekanism.api.MekanismConfig.mekce;
 
 /**
@@ -80,6 +81,7 @@ public final class MekanismHooks
 	@Method(modid = "etfuturum")
 	public void hookEFRRecipes() {
 		DeepslateOreRegistry.addOre(MekanismBlocks.OreBlock, 0, MekanismBlocks.DeepslateOreBlock, 0);
+		RawOreRegistry.addOre("oreOsmium", MekanismItems.RawOsmiumOre);
 	}
 	@Method(modid = "IC2")
 	public void hookIC2Recipes()

@@ -51,6 +51,7 @@ item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
 item.BioFuel.name=Biomass
 item.CraftingFormula.name=Crafting Formula
+item.RawOsmiumOre.name=Raw Osmium
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit

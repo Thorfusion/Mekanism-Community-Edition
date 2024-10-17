@@ -63,6 +63,7 @@ public class MekanismItems
 	public static final ItemJetpack ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
 	public static final ItemFreeRunners FreeRunners = (ItemFreeRunners)new ItemFreeRunners().setUnlocalizedName("FreeRunners");
 	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
+	public static final Item RawOsmiumOre = new ItemMekanism().setUnlocalizedName("RawOsmiumOre");
 
 	//Multi-ID Items
 	public static final Item OtherDust = new ItemOtherDust();
@@ -141,6 +142,7 @@ public class MekanismItems
 		GameRegistry.registerItem(GaugeDropper, "GaugeDropper");
 		GameRegistry.registerItem(TierInstaller, "FactoryInstaller");
 		GameRegistry.registerItem(OtherDust, "OtherDust");
+		GameRegistry.registerItem(RawOsmiumOre, "RawOsmiumOre");
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
