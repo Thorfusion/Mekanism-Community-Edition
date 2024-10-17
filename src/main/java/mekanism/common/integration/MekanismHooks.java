@@ -79,7 +79,7 @@ public final class MekanismHooks
 
 	@Method(modid = "etfuturum")
 	public void hookEFRRecipes() {
-		DeepslateOreRegistry.addOre(MekanismBlocks.OreBlock, 0, MekanismBlocks.OreBlock, 3);
+		DeepslateOreRegistry.addOre(MekanismBlocks.OreBlock, 0, MekanismBlocks.DeepslateOreBlock, 0);
 	}
 	@Method(modid = "IC2")
 	public void hookIC2Recipes()
