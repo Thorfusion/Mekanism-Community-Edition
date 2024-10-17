@@ -249,6 +249,12 @@ public class Mekanism
 			}));
 		}
 
+		if (MekanismConfig.recipes.enableRawOsmiumBlock){
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.RawOsmiumOre, 9, 1), new Object[]{
+					"*", Character.valueOf('*'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 10)
+			}));
+		}
+
 		if (MekanismConfig.recipes.enableBronzeBlock) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 1), new Object[]{
 					"***", "***", "***", Character.valueOf('*'), "ingotBronze"
@@ -1266,6 +1272,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotRefinedLapis", new ItemStack(MekanismItems.Ingot, 1, 7));
 
 		OreDictionary.registerOre("block" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
+		OreDictionary.registerOre("blockRaw" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock2, 1, 10));
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
 		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(MekanismBlocks.BasicBlock, 1, 2));
 		OreDictionary.registerOre("blockCharcoal", new ItemStack(MekanismBlocks.BasicBlock, 1, 3));

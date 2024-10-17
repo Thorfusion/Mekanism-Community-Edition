@@ -118,6 +118,7 @@ tile.BasicBlock2.PressureDisperser.name=Pressure Disperser
 tile.BasicBlock2.BoilerCasing.name=Boiler Casing
 tile.BasicBlock2.BoilerValve.name=Boiler Valve
 tile.BasicBlock2.SecurityDesk.name=Security Desk
+tile.BasicBlock2.RawOsmiumBlock.name=Raw Osmium Block
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber

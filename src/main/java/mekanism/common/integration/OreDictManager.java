@@ -123,6 +123,11 @@ public final class OreDictManager
 					"XXX", "XXX", "XXX", Character.valueOf('X'), "ingot" + mekanismMaterial
 			}));
 		}
+		if (MekanismConfig.recipes.enableRawOsmiumBlock) {
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 10), new Object[]{
+					"XXX", "XXX", "XXX", Character.valueOf('X'), "raw" + mekanismMaterial
+			}));
+		}
 		if (MekanismConfig.recipes.enableMachineUpgrades) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.SpeedUpgrade), new Object[]{
 					" G ", "ADA", " G ", Character.valueOf('G'), "blockGlass", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('D'), "dust" + mekanismMaterial
