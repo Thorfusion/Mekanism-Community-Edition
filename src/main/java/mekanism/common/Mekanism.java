@@ -988,6 +988,9 @@ public class Mekanism
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 5), 1.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 6), 1.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 5), 1.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 6), 1.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()), new ItemStack(MekanismItems.Ingot, 1, 1), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.IRON.ordinal()), new ItemStack(Items.iron_ingot), 0.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, Resource.GOLD.ordinal()), new ItemStack(Items.gold_ingot), 0.0F);
@@ -1280,6 +1283,12 @@ public class Mekanism
 		OreDictionary.registerOre("ore" + mekanismMaterial, new ItemStack(MekanismBlocks.OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
+		OreDictionary.registerOre("ore" + mekanismMaterial, new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 0));
+		OreDictionary.registerOre("oreDeepslateOsmium", new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 0));
+		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 1));
+		OreDictionary.registerOre("oreDeepslateCopper", new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 1));
+		OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 2));
+		OreDictionary.registerOre("oreDeepslateTin", new ItemStack(MekanismBlocks.DeepslateOreBlock, 1, 2));
 
 		if(general.controlCircuitOreDict)
 		{
@@ -1452,7 +1461,9 @@ public class Mekanism
 		Mekanism.proxy.Cape();
 
 		//Register the mod's world generators
-		GameRegistry.registerWorldGenerator(genHandler, 1);
+		if (MekanismConfig.mekce.enableoregen) {
+			GameRegistry.registerWorldGenerator(genHandler, 1);
+		}
 
 		//Register the mod's GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());

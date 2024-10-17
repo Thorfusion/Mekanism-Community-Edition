@@ -251,6 +251,7 @@ public class CommonProxy implements IGuiProvider
 	public void loadConfiguration()
 	{
 		general.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotificationsv2", true).getBoolean();
+		mekce.enableoregen = Mekanism.configuration.get("mekce", "EnableOreGen", true, "disables completely the oregen").getBoolean();
 		general.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean();
 		general.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean();
 		general.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean();
@@ -262,6 +263,7 @@ public class CommonProxy implements IGuiProvider
 		general.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
 		general.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
 		general.osmiumPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumPerChunk", 12).getInt();
+		mekce.enabledeepslateosmium = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableDeepslateOsmiumOreInEFR", true, "adds deepslate osmium ore entry to efr if et futurum requiem is present").getBoolean();
 		general.copperPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperPerChunk", 16).getInt();
 		general.tinPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinPerChunk", 14).getInt();
 		general.saltPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SaltPerChunk", 2).getInt();

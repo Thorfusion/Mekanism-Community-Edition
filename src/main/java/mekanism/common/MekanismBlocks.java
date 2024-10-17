@@ -35,7 +35,8 @@ public class MekanismBlocks
 	public static final Block MachineBlock = new BlockMachine(MACHINE_BLOCK_1).setBlockName("MachineBlock");
 	public static final Block MachineBlock2 = new BlockMachine(MACHINE_BLOCK_2).setBlockName("MachineBlock2");
 	public static final Block MachineBlock3 = new BlockMachine(MACHINE_BLOCK_3).setBlockName("MachineBlock3");
-	public static final Block OreBlock = new BlockOre().setBlockName("OreBlock");
+	public static final Block OreBlock = new BlockOre("stone").setBlockName("OreBlock");
+	public static final Block DeepslateOreBlock = new BlockOre("deepslate").setBlockName("DeepslateOreBlock");
 	public static final Block ObsidianTNT = new BlockObsidianTNT().setBlockName("ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
 	public static final Block EnergyCube = new BlockEnergyCube().setBlockName("EnergyCube");
 	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setBlockName("BoundingBlock");
@@ -60,6 +61,7 @@ public class MekanismBlocks
 		GameRegistry.registerBlock(MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
 		GameRegistry.registerBlock(MachineBlock3, ItemBlockMachine.class, "MachineBlock3");
 		GameRegistry.registerBlock(OreBlock, ItemBlockOre.class, "OreBlock");
+		GameRegistry.registerBlock(DeepslateOreBlock, ItemBlockOre.class, "DeepslateOreBlock");
 		GameRegistry.registerBlock(EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");

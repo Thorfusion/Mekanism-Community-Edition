@@ -76,6 +76,9 @@ public class ItemBlockOre extends ItemBlock
 			case 2:
 				name = "TinOre";
 				break;
+			case 3:
+				name = "DeepslateOsmiumOre";
+				break;
 			default:
 				name = "Unknown";
 				break;

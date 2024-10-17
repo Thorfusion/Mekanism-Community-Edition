@@ -12,6 +12,7 @@ import java.util.Map;
 import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.multipart.TransmitterType;
@@ -24,6 +25,8 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import dan200.computercraft.api.ComputerCraftAPI;
+import ganymedes01.etfuturum.api.DeepslateOreRegistry;
+import mekanism.api.MekanismConfig.mekce;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -41,6 +44,7 @@ public final class MekanismHooks
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
 	public boolean RRLoaded = false;
+	public boolean EFRLoaded = false;
 
 	public void hook()
 	{
@@ -51,6 +55,12 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
 		if(Loader.isModLoaded("RefinedRelocation")) RRLoaded = true;
+		if(Loader.isModLoaded("etfuturum")) EFRLoaded = true;
+
+		if(EFRLoaded && mekce.enabledeepslateosmium){
+			hookEFRRecipes();
+			Mekanism.logger.info("Hooked into EFR api successfully.");
+		}
 
 		if(IC2Loaded)
 		{
@@ -63,9 +73,14 @@ public final class MekanismHooks
 			loadCCPeripheralProviders();
 		}
 
+
 		
 	}
 
+	@Method(modid = "etfuturum")
+	public void hookEFRRecipes() {
+		DeepslateOreRegistry.addOre(MekanismBlocks.OreBlock, 0, MekanismBlocks.DeepslateOreBlock, 0);
+	}
 	@Method(modid = "IC2")
 	public void hookIC2Recipes()
 	{

@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,10 +26,10 @@ public class BlockOre extends Block
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public BlockOre()
+	public BlockOre(String type)
 	{
 		super(Material.rock);
-		setHardness(3F);
+		setHardness(type == "deepslate" ? 4.5F : 3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -37,9 +38,17 @@ public class BlockOre extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		icons[0] = register.registerIcon("mekanism:OsmiumOre");
-		icons[1] = register.registerIcon("mekanism:CopperOre");
-		icons[2] = register.registerIcon("mekanism:TinOre");
+		if(this == MekanismBlocks.OreBlock)
+		{
+			icons[0] = register.registerIcon("mekanism:OsmiumOre");
+			icons[1] = register.registerIcon("mekanism:CopperOre");
+			icons[2] = register.registerIcon("mekanism:TinOre");
+		}
+		if(this == MekanismBlocks.DeepslateOreBlock) {
+			icons[0] = register.registerIcon("mekanism:DeepslateOsmiumOre");
+			icons[1] = register.registerIcon("mekanism:DeepslateCopperOre");
+			icons[2] = register.registerIcon("mekanism:DeepslateTinOre");
+		}
 	}
 
 	@Override
