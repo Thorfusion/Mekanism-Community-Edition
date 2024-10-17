@@ -1272,7 +1272,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotRefinedLapis", new ItemStack(MekanismItems.Ingot, 1, 7));
 
 		OreDictionary.registerOre("block" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
-		OreDictionary.registerOre("blockRaw" + mekanismMaterial, new ItemStack(MekanismBlocks.BasicBlock2, 1, 10));
+		OreDictionary.registerOre("blockRawOsmium", new ItemStack(MekanismBlocks.BasicBlock2, 1, 10));
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
 		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(MekanismBlocks.BasicBlock, 1, 2));
 		OreDictionary.registerOre("blockCharcoal", new ItemStack(MekanismBlocks.BasicBlock, 1, 3));
