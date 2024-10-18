@@ -419,29 +419,29 @@ entity.Mekanism.BabySkeleton.name=骷髅射手宝宝
 //Config Gui
 mekanism.configgui.ctgy.general=通用机械常规设定
 mekanism.configgui.ctgy.machines=机器设定
-mekanism.configgui.ctgy.tier=Tier Settings
+mekanism.configgui.ctgy.tier=等级设定
 mekanism.configgui.ctgy.usage=使用设定
 mekanism.configgui.ctgy.client=客户端设定
-mekanism.configgui.ctgy.mekce=MEK:CE General Settings
-mekanism.configgui.ctgy.gengeneral=Mekanism Generators Settings
-mekanism.configgui.ctgy.mekcegen=MEK:CE Generators Settings
-mekanism.configgui.ctgy.recipe=MEK:CE Recipe Settings
-mekanism.configgui.ctgy.mekce_client=MEK:CE Client Settings
-mekanism.configgui.ctgy.recipegen=MEK:CE Generators Recipe Settings
+mekanism.configgui.ctgy.mekce=通用机械社区版：通用设定
+mekanism.configgui.ctgy.gengeneral=通用机械发电机设定
+mekanism.configgui.ctgy.mekcegen=通用机械社区版：发电机设定
+mekanism.configgui.ctgy.recipe=通用机械社区版：配方设定
+mekanism.configgui.ctgy.mekce_client=通用机械社区版：客户端设定
+mekanism.configgui.ctgy.recipegen=通用机械社区版：发电机配方设定
 
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=通用机械及其下所有模块的常规设定
 mekanism.configgui.ctgy.machines.tooltip=是否启用特定机器的设定
-mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanism tiers and their corresponding values
+mekanism.configgui.ctgy.tier.tooltip=有关通用机械等级及其对应值的设定
 mekanism.configgui.ctgy.usage.tooltip=有关机械以及能耗的设定
 mekanism.configgui.ctgy.client.tooltip=通用机械及其下所有模块在客户端的特殊设定
-mekanism.configgui.ctgy.mekce.tooltip=General settings added by MEK:CE
-mekanism.configgui.ctgy.gengeneral.tooltip=General settings regarding Mekanism Generators
-mekanism.configgui.ctgy.mekcegen.tooltip=Generators settings added by MEK:CE
-mekanism.configgui.ctgy.recipe.tooltip=Recipe settings added by MEK:CE
-mekanism.configgui.ctgy.mekce_client.tooltip=Client settings added by MEK:CE
-mekanism.configgui.ctgy.recipegen.tooltip=Recipe settings added by MEK:CE
+mekanism.configgui.ctgy.mekce.tooltip=由通用机械社区版添加的通用设定
+mekanism.configgui.ctgy.gengeneral.tooltip=关于通用机械发电机的通用设定
+mekanism.configgui.ctgy.mekcegen.tooltip=由通用机械社区版添加的发电机设定
+mekanism.configgui.ctgy.recipe.tooltip=由通用机械社区版添加的配方设定
+mekanism.configgui.ctgy.mekce_client.tooltip=由通用机械社区版添加的客户端设定
+mekanism.configgui.ctgy.recipegen.tooltip=由通用机械社区版添加的配方设定
 
 //Gui text
 gui.condensentrating=凝聚液体中...
@@ -530,7 +530,7 @@ gui.index=列表
 gui.producing=产出
 gui.maxOutput=最大输出
 gui.storing=存量
-gui.skyBlocked=Sky blocked
+gui.skyBlocked=天空受阻
 gui.using=消耗
 gui.needed=需要
 gui.noRecipe=没有配方
@@ -593,9 +593,9 @@ gui.frequency=频率
 gui.mode=模式
 gui.burnRate=消耗速度
 gui.entityDetection=实体检测
-gui.energyContents=Energy Contents
-gui.redstoneOutput=Redstone Output
-gui.maxWaterOutput=Max Water Output
+gui.energyContents=能量含量
+gui.redstoneOutput=红石输出
+gui.maxWaterOutput=最大水输出
 
 gui.reactor.injectionRate=输入速率
 
@@ -608,7 +608,7 @@ gui.upgrades.effect=效果
 
 gui.chemicalInfuser.short=化学灌注器
 gui.chemicalDissolutionChamber.short=化学溶解室
-gui.thermalEvaporationController.short=Thermal E. Controller
+gui.thermalEvaporationController.short=热力蒸馏控制器
 
 gui.dictionary.noKey=无关键字.
 
@@ -711,7 +711,7 @@ gui.digitalMiner.inverse=反选模式
 gui.digitalMiner.requireReplace=需要重新放置
 gui.digitalMiner.fuzzyMode=模糊模式
 gui.digitalMiner.missingBlock=缺失方块
-gui.trusted=Trusted
+gui.trusted=专用
 
 //Recipe names
 recipe.mekanismShaped=有序
@@ -729,8 +729,8 @@ tooltip.configurator.rotate=旋转
 tooltip.configurator.wrench=扳手
 tooltip.configurator.pumpReset=重置电力泵计数
 tooltip.configurator.toggleDiverter=分流模式更改为
-tooltip.configurator.toggleMode=%s behavior bumped to
-tooltip.configurator.viewMode=Current %s behavior
+tooltip.configurator.toggleMode=将%s的行为提升为
+tooltip.configurator.viewMode=当前%s的行为
 tooltip.configurator.noLink=无链接
 tooltip.configurator.linkMsg=绑定到
 tooltip.configurator.dim=位面
@@ -739,8 +739,7 @@ tooltip.configurator.plenisherReset=重置流体装填机计算结果
 tooltip.configurator.inductionPortMode=将端口传输模式调为
 tooltip.configurator.toggleColor=颜色切换为
 tooltip.configurator.viewColor=当前颜色
-tooltip.configurator.reactorPortEject=Toggled Reactor Port eject mode to
-
+tooltip.configurator.reactorPortEject=切换反应堆端口的喷射模式为
 tooltip.upgrade.speed=速度
 tooltip.upgrade.energy=能量
 
@@ -847,7 +846,7 @@ tooltip.PurificationChamber=一台能够将矿石加工成三块矿石疙瘩的�
 tooltip.EnergizedSmelter=一台简单的消耗通用机器能量的熔炉.
 tooltip.Teleporter=一台能够将玩家传送到其他传送器标定的各种位置的设备.
 tooltip.ElectricPump=一台能支持升级,过滤,自动弹射的高级泵
-tooltip.PersonalChest=A 54-slot chest that can be opened anywhere- even from your own inventory.
+tooltip.PersonalChest=一个有54个格子的箱子，可以在任何地方打开——甚至可以从你自己的背包中打开.
 tooltip.Chargepad=通用充能板,能够为各种模组中的物品补充能量.
 tooltip.LogisticalSorter=一台以过滤为基础功能的高级整理机器, 能够自动将指定物品弹射到依附的物品栏或物流管道中.
 tooltip.RotaryCondensentrator=一台能够将气体和其液态形式,相互转化的机器.
@@ -861,7 +860,7 @@ tooltip.ChemicalOxidizer=一台能够将固态材料氧化成气态产物的机�
 tooltip.ChemicalInfuser=一台能够通过注入其它两种气体产生新的气体的机器.
 tooltip.SeismicVibrator=一台能够利用地震震动提供关于这个世界地质结构的机器.
 tooltip.PressurizedReactionChamber=一台能够处理固体,液体和气体混合物,并且能产生气态和固态产物的高级机器.
-tooltip.FluidTank=A handy, sturdy, portable tank that lets you carry multiple buckets of fluid wherever you please. Also doubles as a bucket!
+tooltip.FluidTank=一个方便、坚固、便携的储液罐，让您可以随心所欲地携带多桶液体。同时也可以作为桶使用!
 tooltip.FluidicPlenisher=一台能够用液体填充沟壑从而产生一整个湖的机器.
 tooltip.Laser=一种高级的能量传输形式,利用平行光线实现能量的直线传输.
 tooltip.LaserAmplifier=一个能用于合并,转向和增幅激光的方块,易于控制.
@@ -872,21 +871,21 @@ tooltip.Factory=一台经过工业化升级的机器,能够一次同时处理多
 tooltip.ResistiveHeater=一台能直接将能量转化成热能的机器
 tooltip.FormulaicAssemblicator=一台快速制作成品的机器
 tooltip.FuelwoodHeater=一台通过燃烧可燃物来生产热量的机器
-tooltip.QuantumEntangloporter=A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.
+tooltip.QuantumEntangloporter=一个高度先进的方块，能够将任何实用资源跨长距离和维度传输.
 
 tooltip.HeatGenerator=一台使用岩浆热量或者其它可燃资源产生能量的发电机.
 tooltip.SolarGenerator=一台使用太阳能量发电的发电机.
 tooltip.GasGenerator=一台利用不同的气体供能的发电机.
 tooltip.BioGenerator=一台利用燃烧有机材料产生能量的发电机.
 tooltip.AdvancedSolarGenerator=一台直接吸收大部分太阳光产生能量的高级发电机.
-tooltip.WindGenerator=A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.
+tooltip.WindGenerator=一个利用风力产生能量的发电机，在更高级别时效率更高.
 tooltip.TurbineRotor=放置在工业涡轮中的钢制转子
 tooltip.RotationalComplex=放置在涡轮转子上方的转化元件,能够将转子的动能转化.
 tooltip.ElectromagneticCoil=一块类似磁铁的装置,能使得动能在其中转化为电磁能,它必须放置在旋钮装置的上方并保证它们是相连的.
 tooltip.TurbineCasing=用于工业涡轮的耐压外壳
 tooltip.TurbineValve=用于输送蒸汽并导出能量的工业涡轮阀门
 tooltip.TurbineVent=用于将剩余蒸汽排出的涡轮外壳,它们必须安装在旋钮装置以上的位置.
-tooltip.SaturatingCondenser=A block that condenses steam processed by an Industrial Turbine into reusable water. These can be placed in any arrangement above your rotational complex.
+tooltip.SaturatingCondenser=一个可以将工业涡轮处理过的蒸汽凝结成可再利用水的方块。这些方块可以放置在您的旋转装置上方的任何排列中.
 
 tooltip.ReactorGlass=能用于聚变反应结构的强化玻璃.
 tooltip.ReactorLaserFocusMatrix=一个可吸收光能并加热聚变反应堆的强化玻璃板.
@@ -894,11 +893,14 @@ tooltip.ReactorController=整个聚变反应结构的控制方块.
 tooltip.ReactorFrame=能用于聚变反映结构的强化框架.
 tooltip.ReactorNeutronCapturePlate=一个能用于阻隔聚变辐射或协助氚生成的方块.
 tooltip.ReactorPort=一个强化的框架方块,能处理聚变反应堆中气体和能量的输送.
-tooltip.ReactorLogicAdapter=A block that can be used to allow basic monitoring of a reactor using redstone.
+tooltip.ReactorLogicAdapter=一个可以用来通过红石进行基本监控的反应堆的方块.
 
 tooltip.OsmiumOre=一种牢固的材料,它能够在这个世界任何高度被发现. 它因经常用于机器建造而闻名.
 tooltip.CopperOre=一种常见的导电材料,能够用于线缆的产出. 它耐高温的特性也使它成为生成高级机械的重要材料.
 tooltip.TinOre=一种轻盈, 但牢固的导电材料, 比铜要略微稀有点.
+tooltip.tile.DeepslateOreBlock.OsmiumOre=一种牢固的材料,它能够在这个世界任何高度被发现. 它因经常用于机器建造而闻名.
+tooltip.tile.DeepslateOreBlock.CopperOre=一种常见的导电材料,能够用于线缆的产出. 它耐高温的特性也使它成为生成高级机械的重要材料.
+tooltip.tile.DeepslateOreBlock.TinOre=一种轻盈, 但牢固的导电材料, 比铜要略微稀有点.
 
 //Side data
 sideData.None=无
