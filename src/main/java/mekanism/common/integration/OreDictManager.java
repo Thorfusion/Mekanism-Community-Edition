@@ -535,6 +535,31 @@ public final class OreDictManager
 					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
 				}
 			}
+			for (ItemStack ore : OreDictionary.getOres("rawPoorIron")) {
+				for (ItemStack ore2 : OreDictionary.getOres("clumpIron")) {
+					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
+				}
+			}
+			for (ItemStack ore : OreDictionary.getOres("rawPoorGold")) {
+				for (ItemStack ore2 : OreDictionary.getOres("clumpGold")) {
+					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
+				}
+			}
+			for (ItemStack ore : OreDictionary.getOres("rawPoorCopper")) {
+				for (ItemStack ore2 : OreDictionary.getOres("clumpCopper")) {
+					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
+				}
+			}
+			for (ItemStack ore : OreDictionary.getOres("rawPoorTin")) {
+				for (ItemStack ore2 : OreDictionary.getOres("clumpTin")) {
+					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
+				}
+			}
+			for (ItemStack ore : OreDictionary.getOres("rawPoorLead")) {
+				for (ItemStack ore2 : OreDictionary.getOres("clumpLead")) {
+					RecipeHelper.addPurificationChamberRecipe(ore, ore2);
+				}
+			}
 		}
 	}
 }
