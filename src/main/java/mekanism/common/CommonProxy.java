@@ -251,7 +251,7 @@ public class CommonProxy implements IGuiProvider
 	public void loadConfiguration()
 	{
 		general.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotificationsv2", true).getBoolean();
-		mekce.enableoregen = Mekanism.configuration.get("mekce", "EnableOreGen", true, "disables completely the oregen").getBoolean();
+		mekce.enableoregen = Mekanism.configurationce.get("mekce", "EnableOreGen", true, "disables completely the oregen").getBoolean();
 		general.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean();
 		general.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean();
 		general.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean();
@@ -263,7 +263,7 @@ public class CommonProxy implements IGuiProvider
 		general.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
 		general.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
 		general.osmiumPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumPerChunk", 12).getInt();
-		mekce.enabledeepslateosmium = Mekanism.configuration.get("mekce", "EnableDeepslateOsmiumOreInEFR", true, "adds deepslate osmium ore entry to efr if et futurum requiem is present").getBoolean();
+		mekce.enabledeepslateosmium = Mekanism.configurationce.get("mekce", "EnableDeepslateOsmiumOreInEFR", true, "adds deepslate osmium ore entry to efr if et futurum requiem is present").getBoolean();
 		general.copperPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperPerChunk", 16).getInt();
 		general.tinPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinPerChunk", 14).getInt();
 		general.saltPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SaltPerChunk", 2).getInt();
@@ -303,8 +303,8 @@ public class CommonProxy implements IGuiProvider
 		general.heatPerFuelTick = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HeatPerFuelTick", 4D).getDouble();
 		general.allowTransmitterAlloyUpgrade = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowTransmitterAlloyUpgrade", true).getBoolean();
 		general.allowProtection = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowProtection", true).getBoolean();
-		mekce.accurateHeavyWaterCapture = Mekanism.configuration.get("mekce", "AccurateHeavyWater", false).getBoolean();
-		mekce.heavyWaterChance = Mekanism.configuration.get("mekce", "AccurateHeavyWaterGen", 5).getInt();
+		mekce.accurateHeavyWaterCapture = Mekanism.configurationce.get("mekce", "AccurateHeavyWater", false).getBoolean();
+		mekce.heavyWaterChance = Mekanism.configurationce.get("mekce", "AccurateHeavyWaterGen", 5).getInt();
 
 
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
