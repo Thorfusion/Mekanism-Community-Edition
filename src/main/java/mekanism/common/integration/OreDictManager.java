@@ -376,7 +376,9 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
-			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.obsidian));
+			if (MekanismConfig.recipes.enableCombiner) {
+				RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.obsidian));
+			}
 			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
 		}
 		
