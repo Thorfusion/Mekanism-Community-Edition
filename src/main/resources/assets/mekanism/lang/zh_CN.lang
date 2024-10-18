@@ -292,6 +292,7 @@ item.copperIngot.name=铜锭
 item.tinIngot.name=锡锭
 item.lazuliIngot.name=青金石锭
 
+
 //Gasses
 gas.hydrogen=氢气
 gas.oxygen=氧气
