@@ -1238,7 +1238,9 @@ public class Mekanism
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("blockSalt", MekanismBlocks.SaltBlock);
 		OreDictionary.registerOre("rawOsmium", MekanismItems.RawOsmiumOre);
-		OreDictionary.registerOre("oreOsmium", MekanismItems.RawOsmiumOre);
+		if (MekanismConfig.recipes.enableRawOsmiumOreDictOreOsmium){
+			OreDictionary.registerOre("oreOsmium", MekanismItems.RawOsmiumOre);
+		}
 
 
 		//Alloys!
