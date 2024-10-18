@@ -197,6 +197,7 @@ public class MekanismConfig
 	{
 		public static boolean enableOsmiumBlock = true;
 		public static boolean enableRawOsmiumBlock = true;
+		public static boolean enableRawOsmiumOreDictOreOsmium = true;
 		public static boolean enableBronzeBlock = true;
 		public static boolean enableRefinedObsidianBlock = true;
 		public static boolean enableCharcoalBlock = true;

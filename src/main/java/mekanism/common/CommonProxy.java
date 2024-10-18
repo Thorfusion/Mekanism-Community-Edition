@@ -413,6 +413,7 @@ public class CommonProxy implements IGuiProvider
 
 		recipes.enableOsmiumBlock = Mekanism.configurationrecipes.get("recipes","enableOsmiumBlock", true).getBoolean();
 		recipes.enableRawOsmiumBlock = Mekanism.configurationrecipes.get("recipes","enableRawOsmiumBlock", true).getBoolean();
+		recipes.enableRawOsmiumOreDictOreOsmium = Mekanism.configurationrecipes.get("recipes","enableRawOsmiumOreDictOreOsmium", true, "Adds oredict oreOsmium on Raw osmium").getBoolean();
 		recipes.enableBronzeBlock = Mekanism.configurationrecipes.get("recipes","enableBronzeBlock", true).getBoolean();
 		recipes.enableRefinedObsidianBlock = Mekanism.configurationrecipes.get("recipes","enableRefinedObsidianBlock", true).getBoolean();
 		recipes.enableCharcoalBlock = Mekanism.configurationrecipes.get("recipes","enableCharcoalBlock", true).getBoolean();
