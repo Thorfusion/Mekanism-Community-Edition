@@ -118,7 +118,7 @@ public final class OreDictManager
 				RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
 			}
 
-			if (!Mekanism.hooks.EFRLoaded) {
+			if (!Mekanism.hooks.EFRLoaded && MekanismConfig.recipes.enableCombiner) {
 				try {
 					for (ItemStack ore : OreDictionary.getOres("dust" + resource.getOredictName())) {
 						RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), StackUtils.size(OreDictionary.getOres("ore" + resource.getOredictName()).get(0), 1));
@@ -247,7 +247,7 @@ public final class OreDictManager
 					} catch (Exception e) {
 					}
 				}
-				if (!Mekanism.hooks.EFRLoaded) {
+				if (!Mekanism.hooks.EFRLoaded && MekanismConfig.recipes.enableCombiner) {
 					for (ItemStack ore : OreDictionary.getOres("dust" + s)) {
 						try {
 							RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), StackUtils.size(OreDictionary.getOres("ore" + s).get(0), 1));
