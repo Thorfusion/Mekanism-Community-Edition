@@ -27,12 +27,13 @@ Mekanism CE has continued the use of the update notifier but changed the config 
 | MEK:CE 1.12.2 Featured Changes                                                                                              | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) |
 |-----------------------------------------------------------------------------------------------------------------------------|--------------------|-------------------------------------------------------------------|
 | Open Source                                                                                                                 | :heavy_check_mark: | :heavy_check_mark:                                                |
-| Dupe: [Wood dupe with Precision Sawmill and trapdoors](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/124) | :x:                | :heavy_check_mark:                                                |
-| Crash: [fixes an npe crash for cables](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/103)                 | :x:                | :heavy_check_mark:                                                |
-| Crash: Fix Tier installer NullPointerException onItemUse                                                                    | :x:                | :heavy_check_mark:                                                |
-| Bug: limit crystallizer to receive gas mutiples of recipe input                                                             | :x:                | :heavy_check_mark:                                                |
-| Performance: Optimize cable emitting                                                                                        | :x:                | :heavy_check_mark:                                                |
-| Performance: [New factory sort algorithm](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/107)              | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Personal chest dupe](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/130)                            | :x:                | :heavy_check_mark:                                                |
+| DUPE: [Wood dupe with Precision Sawmill and trapdoors](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/124) | :x:                | :heavy_check_mark:                                                |
+| BUG: limit crystallizer to receive gas mutiples of recipe input                                                             | :x:                | :heavy_check_mark:                                                |
+| CRASH: [fixes an npe crash for cables](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/103)                 | :x:                | :heavy_check_mark:                                                |
+| CRASH: Fix Tier installer NullPointerException onItemUse                                                                    | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: Optimize cable emitting                                                                                        | :x:                | :heavy_check_mark:                                                |
+| PERFORMANCE: [New factory sort algorithm](https://github.com/Thorfusion/Mekanism-Community-Edition/issues/107)              | :x:                | :heavy_check_mark:                                                |
 
 ### Full changelog
 
@@ -79,9 +80,13 @@ v
   + fixes gui settings for mek generators and mek tools
 + fixes an npe crash for cables Thorfusion#103
 + fixes wood dupe with sawmill and trapdoors Thorfusion#124
++ port new dump button design from 1.7.10
 
 #### KasumiNova
 + New factory sort algorithm for MekCE by KasumiNova Thorfusion#107 [Performance improvement]
+
+#### sddsd2332
++ Fix personal chest dupe
 
 # License
 

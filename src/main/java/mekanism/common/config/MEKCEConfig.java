@@ -27,6 +27,9 @@ public class MEKCEConfig extends BaseConfig {
     public final BooleanOption EnableSiliconCompat = new BooleanOption(this, "mekce", "EnableSiliconCompat", true,
             "When a mod that adds silicon (galacticraft, enderio, projectred and ae2) is detected, recipe for control circuit is changed from using iron to silicon in the metalurgic infuser");
 
+    public final BooleanOption EnableNewSortAlgorithm = new BooleanOption(this, "mekce", "EnableNewSortAlgorithm", true,
+            "Enables the new sorting algorithm on factories, you might need to replace the placed machine for the new code to work correctly, option is here to resolve any compat issues a modpack might have");
+
     //public final BooleanOption enableBoPProgression = new BooleanOption(this, "mekce", "enableBoPProgression", true,
     //        "when true and biome's o plenty is installed atomic alloy is made by using ender instead of obsidian");
 
