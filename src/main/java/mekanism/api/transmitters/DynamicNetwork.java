@@ -1,14 +1,7 @@
 package mekanism.api.transmitters;
 
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
@@ -29,6 +22,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     protected Set<Coord4D> possibleAcceptors = new HashSet<>();
     protected Map<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
+    protected Map<Coord4D, Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>>> acceptorTransmitters = new HashMap<>();
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = new HashMap<>();
     protected Range4D packetRange = null;
     protected int capacity = 0;
@@ -87,6 +81,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
         Coord4D acceptorCoord = transmitter.coord().offset(side);
         EnumSet<EnumFacing> directions = acceptorDirections.get(acceptorCoord);
+        Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>>transmitters = acceptorTransmitters.get(acceptorCoord);
 
         if (acceptor != null) {
             possibleAcceptors.add(acceptorCoord);
@@ -95,16 +90,29 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             } else {
                 acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
             }
+            if(transmitters != null)
+            {
+                transmitters.add(transmitter);
+            }
+            else
+            {
+                transmitters = new HashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>>(Arrays.asList(transmitter));
+                acceptorTransmitters.put(acceptorCoord, transmitters);
+            }
+
+
         } else if (directions != null) {
             directions.remove(side.getOpposite());
 
             if (directions.isEmpty()) {
                 possibleAcceptors.remove(acceptorCoord);
                 acceptorDirections.remove(acceptorCoord);
+                acceptorTransmitters.remove(acceptorCoord);
             }
         } else {
             possibleAcceptors.remove(acceptorCoord);
             acceptorDirections.remove(acceptorCoord);
+            acceptorTransmitters.remove(acceptorCoord);
         }
     }
 
@@ -161,6 +169,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             transmitter.setTransmitterNetwork((NETWORK) this);
             transmitters.add(transmitter);
             transmittersAdded.add(transmitter);
+
+
         }
 
         transmittersToAdd.addAll(net.transmittersToAdd);
