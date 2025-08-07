@@ -2,10 +2,11 @@ package mekanism.common.base.target;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.common.base.GasAcceptor;
 import mekanism.common.base.SplitInfo;
 import net.minecraft.util.EnumFacing;
 
-public class GasHandlerTarget extends Target<IGasHandler, Integer, GasStack> {
+public class GasHandlerTarget extends Target<GasAcceptor, Integer, GasStack> {
 
     public GasHandlerTarget(GasStack type) {
         this.extra = type;
@@ -17,7 +18,7 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, GasStack> {
     }
 
     @Override
-    protected Integer simulate(IGasHandler handler, EnumFacing side, GasStack gasStack) {
+    protected Integer simulate(GasAcceptor handler, EnumFacing side, GasStack gasStack) {
         return handler.receiveGas(side, gasStack, false);
     }
 }

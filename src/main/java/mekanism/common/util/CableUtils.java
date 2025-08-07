@@ -138,7 +138,7 @@ public final class CableUtils {
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us
                             EnumFacing opposite = side.getOpposite();
-                            EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
+                            EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite,emitter.getMaxOutput());
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
                                 target.addHandler(opposite, acceptor);
                             }
