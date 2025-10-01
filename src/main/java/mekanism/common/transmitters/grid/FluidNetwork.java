@@ -8,7 +8,11 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.FluidAcceptor;
+import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.target.FluidHandlerTarget;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.LangUtils;
@@ -106,6 +110,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     private int tickEmit(FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
+        Set<FluidHandlerTarget> availableTransmitters = new HashSet<>();
         int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
@@ -119,7 +124,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
             for (EnumFacing side : sides) {
                 if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
-                    IFluidHandler acceptor = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+                    int limit = Integer.MAX_VALUE;
+                    if(world.getTileEntity(coord.offset(side).getPos()) instanceof TileEntityMechanicalPipe)
+                    {
+                        TileEntityMechanicalPipe pipe = (TileEntityMechanicalPipe) world.getTileEntity(coord.offset(side).getPos());
+                        limit = pipe.getCapacity();
+                    }
+                    FluidAcceptor acceptor = new FluidAcceptor(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side),limit);
                     if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
                         target.addHandler(side, acceptor);
                     }

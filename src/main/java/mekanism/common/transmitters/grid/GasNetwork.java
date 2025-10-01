@@ -11,8 +11,11 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.GasAcceptor;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -136,8 +139,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             GasHandlerTarget target = new GasHandlerTarget(stack);
             for (EnumFacing side : sides) {
                 if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
-                    IGasHandler acceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
-                    if (acceptor != null && acceptor.canReceiveGas(side, type)) {
+                    int limit = Integer.MAX_VALUE;
+                    if(world.getTileEntity(coord.offset(side).getPos()) instanceof TileEntityPressurizedTube)
+                    {
+                        TileEntityPressurizedTube tube = (TileEntityPressurizedTube) world.getTileEntity(coord.offset(side).getPos());
+                        limit = tube.getCapacity();
+                    }
+                    GasAcceptor acceptor = new GasAcceptor(CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side),limit);
+                    if (acceptor != null && acceptor.gasHandler.canReceiveGas(side, type)) {
                         target.addHandler(side, acceptor);
                     }
                 }
