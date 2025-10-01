@@ -19,6 +19,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.StackUtils;
 import mekanism.common.world.DummyWorld;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -484,14 +485,18 @@ public final class OreDictManager {
 
         for (ItemStack logEntry : OreDictionary.getOres("logWood", false)) {
             if (logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                for (int j = 0; j < 16; j++) {
-                    addSawmillLog(tempCrafting, new ItemStack(logEntry.getItem(), 1, j), dummyWorld);
+                NonNullList<ItemStack> logVariants = NonNullList.create();
+                Block logBlock = Block.getBlockFromItem(logEntry.getItem());
+                logBlock.getSubBlocks(logBlock.getCreativeTab(), logVariants);
+
+                for (ItemStack log: logVariants) {
+                    addSawmillLog(tempCrafting, StackUtils.size(log, 1), dummyWorld);
                 }
             } else {
                 addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
             }
             RecipeHandler.addPRCRecipe(StackUtils.size(logEntry, 1), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100), ItemStack.EMPTY,
-                    new GasStack(MekanismFluids.Hydrogen, 100), 0, 150);
+                new GasStack(MekanismFluids.Hydrogen, 100), 0, 150);
         }
     }
 
