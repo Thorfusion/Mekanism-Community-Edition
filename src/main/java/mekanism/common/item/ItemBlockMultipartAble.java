@@ -52,7 +52,7 @@ public abstract class ItemBlockMultipartAble extends ItemBlock {
             pos = pos.offset(facing);
         }
 
-        if (player.canPlayerEdit(pos, facing, itemstack) && mayPlace(itemstack, worldIn, pos, iblockstate, hand, facing)) {
+        if (player.canPlayerEdit(pos, facing, itemstack) && mayPlace(itemstack, worldIn, pos, iblockstate, hand, facing, player)) {
             int i = this.getMetadata(itemstack.getMetadata());
             IBlockState iblockstate1 = this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand);
             boolean flag;
@@ -72,11 +72,11 @@ public abstract class ItemBlockMultipartAble extends ItemBlock {
         return EnumActionResult.FAIL;
     }
 
-    private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, IBlockState state, EnumHand hand, EnumFacing facing) {
+    private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, IBlockState state, EnumHand hand, EnumFacing facing, EntityPlayer player) {
         if (!Mekanism.hooks.MCMPLoaded) {
-            return worldIn.mayPlace(this.block, pos, false, facing, null);
+            return worldIn.mayPlace(this.block, pos, false, facing, player);
         }
-        return worldIn.mayPlace(this.block, pos, false, facing, null) || hasFreeMultiPartSpot(itemstack, worldIn, pos, state, facing);
+        return worldIn.mayPlace(this.block, pos, false, facing, player) || hasFreeMultiPartSpot(itemstack, worldIn, pos, state, facing);
     }
 
     private boolean hasFreeMultiPartSpot(ItemStack itemstack, World worldIn, BlockPos pos, IBlockState state, EnumFacing facing) {
