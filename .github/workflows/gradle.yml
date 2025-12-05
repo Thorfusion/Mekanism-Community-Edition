@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Mekanism-Mod
-          path: build/libs/*.jar
+          path: output/*.jar
