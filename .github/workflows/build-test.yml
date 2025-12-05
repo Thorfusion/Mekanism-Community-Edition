@@ -1,0 +1,23 @@
+name: Build Test
+
+# 添加 workflow_dispatch 以实现手动触发
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      # 先尝试最基础的构建任务，确保编译能通
+      - name: Build with Gradle
+        run: ./gradlew build
