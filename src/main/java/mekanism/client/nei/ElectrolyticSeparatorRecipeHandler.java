@@ -187,11 +187,18 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
-		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		if(isFluidLookup(inputId) && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
+			FluidStack fluid = (FluidStack)ingredients[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			for(SeparatorRecipe irecipe : getRecipes())
 			{
-				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
+				if(irecipe != null && irecipe.recipeInput != null && irecipe.recipeInput.ingredient != null && irecipe.recipeInput.ingredient.isFluidEqual(fluid))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}

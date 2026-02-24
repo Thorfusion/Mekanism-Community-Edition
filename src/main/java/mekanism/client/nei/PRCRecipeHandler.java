@@ -219,11 +219,18 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		else if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		else if(isFluidLookup(inputId) && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
+			FluidStack fluid = (FluidStack)ingredients[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
-				if(irecipe.getKey().containsType((FluidStack)ingredients[0]))
+				if(irecipe != null && irecipe.getKey() != null && irecipe.getKey().containsType(fluid))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
