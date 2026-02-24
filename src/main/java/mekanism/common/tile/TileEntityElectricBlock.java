@@ -52,37 +52,56 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public void register()
 	{
-		if(!worldObj.isRemote)
+		if(worldObj == null || worldObj.isRemote || isInvalid())
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
-			
-			if(registered != this)
-			{
-				if(registered instanceof IEnergyTile)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
-				}
-				else if(registered == null)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-					ic2Registered = true;
-				}
-			}
+			return;
+		}
+
+		if(worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return;
+		}
+
+		if(!worldObj.checkChunksExist(xCoord-1, yCoord, zCoord-1, xCoord+1, yCoord, zCoord+1))
+		{
+			return;
+		}
+
+		TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+
+		if(registered == this)
+		{
+			ic2Registered = true;
+			return;
+		}
+		
+		if(registered instanceof IEnergyTile)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+		}
+		else if(registered == null)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			ic2Registered = true;
 		}
 	}
 
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(worldObj == null || worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
-			
-			if(registered instanceof IEnergyTile)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
-			}
+			return;
 		}
+
+		TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+		
+		if(registered instanceof IEnergyTile)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+		}
+
+		ic2Registered = false;
 	}
 
 	@Override
