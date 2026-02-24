@@ -62,8 +62,6 @@ public class CommandMekanism extends CommandBase
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk" + EnumColor.GREY + " -- displays the main page."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk help" + EnumColor.GREY + " -- displays this guide."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk version" + EnumColor.GREY + " -- displays the version number."));
-					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk latest" + EnumColor.GREY + " -- displays the latest version number."));
-					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk news" + EnumColor.GREY + " -- displays most recent recent news."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk debug" + EnumColor.GREY + " -- toggles Mekanism's debug mode."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk teleporter" + EnumColor.GREY + " -- provides information on teleporters."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
