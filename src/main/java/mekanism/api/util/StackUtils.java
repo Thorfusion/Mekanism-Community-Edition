@@ -50,7 +50,15 @@ public final class StackUtils
 			return false;
 		}
 
-		return stack1.getItem() != stack2.getItem() || stack1.getItemDamage() != stack2.getItemDamage();
+		Item item1 = stack1.getItem();
+		Item item2 = stack2.getItem();
+
+		if(item1 == null || item2 == null)
+		{
+			return item1 != item2;
+		}
+
+		return item1 != item2 || stack1.getItemDamage() != stack2.getItemDamage();
 	}
 
 	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
@@ -59,8 +67,17 @@ public final class StackUtils
 		{
 			return check == wild;
 		}
-		
-		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
+
+		Item wildItem = wild.getItem();
+		Item checkItem = check.getItem();
+
+		if(wildItem == null || checkItem == null)
+		{
+			return wildItem == checkItem;
+		}
+
+		int wildDamage = wild.getItemDamage();
+		return wildItem == checkItem && (wildDamage == OreDictionary.WILDCARD_VALUE || wildDamage == check.getItemDamage());
 	}
 
 	public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check)
