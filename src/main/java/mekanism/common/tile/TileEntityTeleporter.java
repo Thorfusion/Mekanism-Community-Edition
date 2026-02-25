@@ -90,7 +90,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
         upgradeComponent.setSupported(Upgrade.ANCHOR);
     }
 
+    private static void clearRideState(Entity entity) {
+        if (entity.isRiding()) {
+            entity.dismountRidingEntity();
+        }
+        if (entity.isBeingRidden()) {
+            entity.removePassengers();
+        }
+    }
+
     public static void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter) {
+        clearRideState(player);
         if (player.dimension != coord.dimensionId) {
             player.changeDimension(coord.dimensionId, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
@@ -328,6 +338,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     }
 
     public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
+        clearRideState(entity);
         if (entity.world.provider.getDimension() != coord.dimensionId) {
             entity.changeDimension(coord.dimensionId, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
