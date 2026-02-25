@@ -128,9 +128,15 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(new GasStack(gas.getGas(), 1), new FluidStack(gas.getGas().getFluid(), 1), false));
 			}
 		}
-		else if(outputId.equals("fluid") && results.length == 1 && results[0] instanceof FluidStack)
+		else if(isFluidLookup(outputId) && results.length == 1 && results[0] instanceof FluidStack)
 		{
 			FluidStack fluid = (FluidStack)results[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			Gas gas = GasRegistry.getGas(fluid.getFluid());
 
 			if(gas != null)
@@ -155,9 +161,15 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(new GasStack(gas.getGas(), 1), new FluidStack(gas.getGas().getFluid(), 1), true));
 			}
 		}
-		else if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		else if(isFluidLookup(inputId) && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
 			FluidStack fluid = (FluidStack)ingredients[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			Gas gas = GasRegistry.getGas(fluid.getFluid());
 
 			if(gas != null)

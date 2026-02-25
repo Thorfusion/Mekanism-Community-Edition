@@ -113,11 +113,18 @@ public class ThermalEvaporationRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
-		else if(outputId.equals("fluid") && results.length == 1 && results[0] instanceof FluidStack)
+		else if(isFluidLookup(outputId) && results.length == 1 && results[0] instanceof FluidStack)
 		{
+			FluidStack fluid = (FluidStack)results[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			for(ThermalEvaporationRecipe irecipe : getRecipes())
 			{
-				if(((FluidStack)results[0]).isFluidEqual(irecipe.recipeOutput.output))
+				if(irecipe != null && irecipe.recipeOutput != null && irecipe.recipeOutput.output != null && fluid.isFluidEqual(irecipe.recipeOutput.output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -131,11 +138,18 @@ public class ThermalEvaporationRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
-		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		if(isFluidLookup(inputId) && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
+			FluidStack fluid = (FluidStack)ingredients[0];
+
+			if(fluid.getFluid() == null)
+			{
+				return;
+			}
+
 			for(ThermalEvaporationRecipe irecipe : getRecipes())
 			{
-				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
+				if(irecipe != null && irecipe.recipeInput != null && irecipe.recipeInput.ingredient != null && irecipe.recipeInput.ingredient.isFluidEqual(fluid))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}

@@ -19,6 +19,8 @@ import static codechicken.lib.gui.GuiDraw.*;
 
 public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements IGuiWrapper
 {
+	public static final String FLUID_LOOKUP_ID = "mekanism.fluid";
+
 	public BaseRecipeHandler()
 	{
 		addGuiElements();
@@ -27,6 +29,11 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
 
 	public abstract void addGuiElements();
+
+	public static boolean isFluidLookup(String id)
+	{
+		return "fluid".equals(id) || FLUID_LOOKUP_ID.equals(id);
+	}
 
 	public void displayGauge(int length, int xPos, int yPos, int overlayX, int overlayY, int scale, FluidStack fluid, GasStack gas)
 	{
@@ -122,20 +129,29 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements
 	 */
 	public boolean doFluidLookup(FluidStack stack, boolean type)
 	{
-		if(stack != null && stack.amount > 0)
+		if(stack != null && stack.amount > 0 && stack.getFluid() != null)
 		{
-			if(type)
+			FluidStack copy = stack.copy();
+
+			try
 			{
-				if(!GuiUsageRecipe.openRecipeGui("fluid", new Object[] {stack}))
+				if(type)
 				{
-					return false;
+					if(!GuiUsageRecipe.openRecipeGui(FLUID_LOOKUP_ID, new Object[] {copy}))
+					{
+						return false;
+					}
+				}
+				else {
+					if(!GuiCraftingRecipe.openRecipeGui(FLUID_LOOKUP_ID, new Object[] {copy}))
+					{
+						return false;
+					}
 				}
 			}
-			else {
-				if(!GuiCraftingRecipe.openRecipeGui("fluid", new Object[] {stack}))
-				{
-					return false;
-				}
+			catch(Throwable ignored)
+			{
+				return false;
 			}
 
 			return true;
@@ -143,7 +159,7 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements
 
 		return false;
 	}
-
+	
 	@Override
 	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
 	{

@@ -135,9 +135,11 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
-		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		if(isFluidLookup(inputId) && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			if(((FluidStack)ingredients[0]).getFluid() == FluidRegistry.WATER)
+			FluidStack fluid = (FluidStack)ingredients[0];
+
+			if(fluid.getFluid() == FluidRegistry.WATER)
 			{
 				for(WasherRecipe irecipe : getRecipes())
 				{
