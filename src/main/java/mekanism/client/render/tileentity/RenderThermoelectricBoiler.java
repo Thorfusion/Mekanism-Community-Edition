@@ -16,7 +16,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -28,9 +27,6 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 	private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<RenderData, DisplayInteger[]>();
 	private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<RenderData, DisplayInteger>();
 	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<ValveRenderData, DisplayInteger>();
-	
-	private Fluid STEAM = FluidRegistry.getFluid("steam");
-	private Fluid WATER = FluidRegistry.WATER;
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -194,14 +190,13 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		toReturn.setTexture(fluid == null ? null : fluid.getIcon());
 
-		final int stages = getStages(data.height);
 		DisplayInteger display = DisplayInteger.createAndStart();
 
 		cachedUpperFluids.put(data, display);
 		
-		if(STEAM.getIcon() != null)
+		if(fluid != null && fluid.getIcon() != null)
 		{
 			toReturn.minX = 0 + .01;
 			toReturn.minY = 0 + .01;

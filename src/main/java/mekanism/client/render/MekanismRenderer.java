@@ -336,35 +336,96 @@ public class MekanismRenderer
 
 		if(object.shouldSideRender(ForgeDirection.DOWN))
 		{
-			renderBlocks.renderFaceYNeg(null, 0, 0, 0, object.getBlockTextureFromSide(0));
+			IIcon icon = getRenderIcon(object, 0);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceYNeg(null, 0, 0, 0, icon);
+			}
 		}
 
 		if(object.shouldSideRender(ForgeDirection.UP))
 		{
-			renderBlocks.renderFaceYPos(null, 0, 0, 0, object.getBlockTextureFromSide(1));
+			IIcon icon = getRenderIcon(object, 1);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceYPos(null, 0, 0, 0, icon);
+			}
 		}
 
 		if(object.shouldSideRender(ForgeDirection.NORTH))
 		{
-			renderBlocks.renderFaceZNeg(null, 0, 0, 0, object.getBlockTextureFromSide(2));
+			IIcon icon = getRenderIcon(object, 2);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceZNeg(null, 0, 0, 0, icon);
+			}
 		}
 
 		if(object.shouldSideRender(ForgeDirection.SOUTH))
 		{
-			renderBlocks.renderFaceZPos(null, 0, 0, 0, object.getBlockTextureFromSide(3));
+			IIcon icon = getRenderIcon(object, 3);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceZPos(null, 0, 0, 0, icon);
+			}
 		}
 
 		if(object.shouldSideRender(ForgeDirection.WEST))
 		{
-			renderBlocks.renderFaceXNeg(null, 0, 0, 0, object.getBlockTextureFromSide(4));
+			IIcon icon = getRenderIcon(object, 4);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceXNeg(null, 0, 0, 0, icon);
+			}
 		}
 
 		if(object.shouldSideRender(ForgeDirection.EAST))
 		{
-			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
+			IIcon icon = getRenderIcon(object, 5);
+
+			if(icon != null)
+			{
+				renderBlocks.renderFaceXPos(null, 0, 0, 0, icon);
+			}
 		}
 		
 		Tessellator.instance.draw();
+	}
+
+	private static IIcon getRenderIcon(Model3D object, int side)
+	{
+		IIcon icon = object.getBlockTextureFromSide(side);
+
+		if(icon != null || object.baseBlock == null)
+		{
+			return icon;
+		}
+
+		try {
+			icon = object.baseBlock.getIcon(side, 0);
+		}
+		catch(Throwable ignored)
+		{
+			// Fall through to legacy fallback below.
+		}
+
+		if(icon != null)
+		{
+			return icon;
+		}
+
+		try {
+			return object.baseBlock.getBlockTextureFromSide(side);
+		}
+		catch(Throwable ignored)
+		{
+			return null;
+		}
 	}
 	
 	public static void color(EnumColor color)
