@@ -155,7 +155,11 @@ public class Mekanism
 	public static Configuration configurationce;
 
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(GRADLE_VERSIONMOD);
+	public static Version versionNumber = new Version(
+		Integer.parseInt(Tags.VERSION.split("\\.")[0]),
+		Integer.parseInt(Tags.VERSION.split("\\.")[1]),
+		Integer.parseInt(Tags.VERSION.split("\\.")[2])
+	);
 
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
