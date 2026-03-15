@@ -47,13 +47,17 @@ public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
-	
+
 	@Instance("MekanismGenerators")
 	public static MekanismGenerators instance;
-	
+
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(GRADLE_VERSIONMOD);
-	
+	public static Version versionNumber = new Version(
+        Integer.parseInt(Tags.VERSION.split("\\.")[0]),
+        Integer.parseInt(Tags.VERSION.split("\\.")[1]),
+        Integer.parseInt(Tags.VERSION.split("\\.")[2].split("[^0-9]")[0])
+    );
+
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
 	@EventHandler
@@ -68,10 +72,10 @@ public class MekanismGenerators implements IModule
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-		
+
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(1, proxy);
-		
+
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
 		FMLCommonHandler.instance().bus().register(this);
@@ -81,9 +85,9 @@ public class MekanismGenerators implements IModule
 		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
 		proxy.registerRenderInformation();
-		
+
 		addRecipes();
-		
+
 		//Finalization
 		Mekanism.logger.info("Loaded MekanismGenerators module.");
 	}
@@ -103,13 +107,13 @@ public class MekanismGenerators implements IModule
 
 			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * general.TO_TE), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		
+
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
 			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
 		}
 	}
-	
+
 	public void addRecipes()
 	{
 		String mekanismMaterial = Resource.OSMIUM.getOredictName();
@@ -247,7 +251,7 @@ public class MekanismGenerators implements IModule
 	}
 
 	@Override
-	public Version getVersion() 
+	public Version getVersion()
 	{
 		return versionNumber;
 	}
@@ -257,7 +261,7 @@ public class MekanismGenerators implements IModule
 	{
 		return "Generators";
 	}
-	
+
 	@Override
 	public void writeConfig(ByteBuf dataStream) throws IOException
 	{
@@ -272,13 +276,13 @@ public class MekanismGenerators implements IModule
 		dataStream.writeInt(generators.heatGenerationFluidRate);
 		dataStream.writeBoolean(generators.heatGenEnable);
 		dataStream.writeDouble(generators.solarGeneration);
-		
+
 		dataStream.writeDouble(generators.windGenerationMin);
 		dataStream.writeDouble(generators.windGenerationMax);
-		
+
 		dataStream.writeInt(generators.windGenerationMinY);
 		dataStream.writeInt(generators.windGenerationMaxY);
-		
+
 		dataStream.writeInt(generators.turbineBladesPerCoil);
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
@@ -325,13 +329,13 @@ public class MekanismGenerators implements IModule
 		generators.heatGenerationFluidRate = dataStream.readInt();
 		generators.heatGenEnable = dataStream.readBoolean();
 		generators.solarGeneration = dataStream.readDouble();
-		
+
 		generators.windGenerationMin = dataStream.readDouble();
 		generators.windGenerationMax = dataStream.readDouble();
-		
+
 		generators.windGenerationMinY = dataStream.readInt();
 		generators.windGenerationMaxY = dataStream.readInt();
-		
+
 		generators.turbineBladesPerCoil = dataStream.readInt();
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
@@ -363,7 +367,7 @@ public class MekanismGenerators implements IModule
 		generatorsrecipes.enableSolarPanel = dataStream.readBoolean();
 		generatorsrecipes.enableTurbineBlade = dataStream.readBoolean();
 	}
-	
+
 	@Override
 	public void resetClient()
 	{

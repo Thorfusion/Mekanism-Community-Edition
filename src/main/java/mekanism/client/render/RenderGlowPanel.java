@@ -62,7 +62,7 @@ public class RenderGlowPanel implements IIconSelfRegister
 
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
 		int side = panel.side.ordinal();
-		
+
 		frameModels[side].render(new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon));
 		lightModels[side].render(new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 	}
@@ -70,21 +70,22 @@ public class RenderGlowPanel implements IIconSelfRegister
 	public void renderItem(int metadata)
 	{
 		TextureUtils.bindAtlas(0);
-		CCRenderState.reset();
-		CCRenderState.startDrawing();
-		CCRenderState.hasColour = true;
+        CCRenderState state = CCRenderState.instance();
+		state.resetInstance();
+		state.startDrawingInstance();
+        state.hasColour = true;
 		EnumColor c = EnumColor.DYES[metadata];
 
 		Colour colour = new ColourRGBA(c.getColor(0), c.getColor(1), c.getColor(2), 1);
 		Colour white = new ColourRGBA(1.0, 1.0, 1.0, 1.0);
-		
+
 		for(int i = 4; i < 5; i++)
 		{
 			frameModels[i].render(new IconTransformation(icon), new ColourMultiplier(white.rgba()));
 			lightModels[i].render(new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 		}
-		
-		CCRenderState.draw();
+
+		state.drawInstance();
 	}
 
 	@Override

@@ -158,7 +158,7 @@ public class Mekanism
 	public static Version versionNumber = new Version(
 		Integer.parseInt(Tags.VERSION.split("\\.")[0]),
 		Integer.parseInt(Tags.VERSION.split("\\.")[1]),
-		Integer.parseInt(Tags.VERSION.split("\\.")[2])
+        Integer.parseInt(Tags.VERSION.split("\\.")[2].split("[^0-9]")[0])
 	);
 
 	/** MultiblockManagers for various structrures */

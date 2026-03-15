@@ -35,14 +35,14 @@ import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public GuiFluidGauge fluidInput;
 	public GuiGasGauge leftGas;
 	public GuiGasGauge rightGas;
 
 	public static int xOffset = 5;
 	public static int yOffset = 9;
-	
+
 	@Override
 	public void addGuiElements()
 	{
@@ -56,7 +56,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
-		
+
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 25, 34));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 51));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 51));
@@ -112,7 +112,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(-1, 0, 4, yOffset, 167, 62);
-		
+
 		for(GuiElement e : guiElements)
 		{
 			e.renderBackground(0, 0, -xOffset, -yOffset);
@@ -210,7 +210,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
 

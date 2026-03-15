@@ -42,9 +42,9 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	public abstract Collection<? extends AdvancedMachineRecipe> getRecipes();
 
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);
-	
+
 	public abstract ProgressBar getProgressType();
-	
+
 	@Override
 	public void addGuiElements()
 	{
@@ -52,7 +52,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 30, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
-		
+
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public double getLevel()
@@ -76,7 +76,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(12, 0, 28, 5, 144, 68);
-		
+
 		for(GuiElement e : guiElements)
 		{
 			e.renderBackground(0, 0, -16, -5);
@@ -134,7 +134,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			}
 		}
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
@@ -172,7 +172,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
 		Point offset = gui.getRecipePosition(recipe);

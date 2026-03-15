@@ -62,7 +62,7 @@ public class ThermalEvaporationRecipeHandler extends BaseRecipeHandler
 	{
 		return Recipe.THERMAL_EVAPORATION_PLANT.get().values();
 	}
-	
+
 	@Override
 	public void loadTransferRects()
 	{
@@ -161,7 +161,7 @@ public class ThermalEvaporationRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
 

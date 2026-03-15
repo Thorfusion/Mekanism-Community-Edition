@@ -91,7 +91,7 @@ import cpw.mods.fml.relauncher.Side;
 public class PacketHandler
 {
 	public SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("MEK");
-	
+
 	public void initialize()
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
@@ -135,7 +135,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
 		netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
 	}
-	
+
 	/**
 	 * Encodes an Object[] of data into a DataOutputStream.
 	 * @param dataValues - an Object[] of data to encode
@@ -206,27 +206,27 @@ public class PacketHandler
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void writeString(ByteBuf output, String s)
 	{
 		output.writeInt(s.getBytes().length);
 		output.writeBytes(s.getBytes());
 	}
-	
+
 	public static String readString(ByteBuf input)
 	{
 		return new String(input.readBytes(input.readInt()).array());
 	}
-	
+
 	public static void writeStack(ByteBuf output, ItemStack stack)
 	{
 		output.writeInt(stack != null ? Item.getIdFromItem(stack.getItem()) : -1);
-		
+
 		if(stack != null)
 		{
 			output.writeInt(stack.stackSize);
 			output.writeInt(stack.getItemDamage());
-			
+
 			if(stack.getTagCompound() != null && stack.getItem().getShareTag())
 			{
 				output.writeBoolean(true);
@@ -237,48 +237,48 @@ public class PacketHandler
 			}
 		}
 	}
-	
+
 	public static ItemStack readStack(ByteBuf input)
 	{
 		int id = input.readInt();
-		
+
 		if(id >= 0)
 		{
 			ItemStack stack = new ItemStack(Item.getItemById(id), input.readInt(), input.readInt());
-			
+
 			if(input.readBoolean())
 			{
 				stack.setTagCompound(readNBT(input));
 			}
-			
+
 			return stack;
 		}
-		
+
 		return null;
 	}
-	
+
 	public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags)
 	{
 		try {
 			byte[] buffer = CompressedStreamTools.compress(nbtTags);
-			
+
 			output.writeInt(buffer.length);
 			output.writeBytes(buffer);
 		} catch(Exception e) {}
 	}
-	
+
 	public static NBTTagCompound readNBT(ByteBuf input)
 	{
 		try {
 			byte[] buffer = new byte[input.readInt()];
 			input.readBytes(buffer);
-			
+
 			return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(2097152L));
 		} catch(Exception e) {
 			return null;
 		}
 	}
-	
+
 	public static void log(String log)
 	{
 		if(general.logPackets)
@@ -286,7 +286,7 @@ public class PacketHandler
 			System.out.println("[Mekanism] " + log);
 		}
 	}
-	
+
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
@@ -301,7 +301,7 @@ public class PacketHandler
 	{
 		netHandler.sendTo(message, player);
 	}
-	
+
 	/**
 	 * Send this message to everyone connected to the server.
 	 * @param message - message to send
@@ -309,10 +309,10 @@ public class PacketHandler
 	public void sendToAll(IMessage message)
 	{
 		MinecraftServer server = MinecraftServer.getServer();
-		
-		for(EntityPlayer player : (List<EntityPlayer>)server.getConfigurationManager().playerEntityList)
+
+		for(EntityPlayerMP player : server.getConfigurationManager().playerEntityList)
 		{
-			sendTo(message, (EntityPlayerMP)player);
+			sendTo(message, player);
 		}
 	}
 
@@ -345,7 +345,7 @@ public class PacketHandler
 	{
 		netHandler.sendToServer(message);
 	}
-	
+
 	/**
 	 * Send this message to all players within a defined AABB cuboid.
 	 * @param message - the message to send
@@ -367,7 +367,7 @@ public class PacketHandler
 			}
 		}
 	}
-	
+
 	public void sendToReceivers(IMessage message, Range4D range)
 	{
 		MinecraftServer server = MinecraftServer.getServer();

@@ -131,22 +131,22 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderSide(side, type, false);
 		}
-		
+
 		CCRenderState.draw();
-		
+
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderSide(side, type, true);
 		}
-		
+
 		CCRenderState.draw();
 	}
 
@@ -238,9 +238,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		}
 
 		push();
-		CCRenderState.reset();
-		CCRenderState.useNormals = true;
-		CCRenderState.startDrawing();
+        CCRenderState state = CCRenderState.instance();
+		state.resetInstance();
+		state.useNormals = true;
+		state.startDrawingInstance();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -251,7 +252,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		MekanismRenderer.glowOn();
 		MekanismRenderer.cullFrontFace();
 
-		CCRenderState.draw();
+		state.drawInstance();
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
@@ -262,9 +263,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderContents(PartThermodynamicConductor transmitter, Vector3 pos)
 	{
 		push();
-		CCRenderState.reset();
-		CCRenderState.useNormals = true;
-		CCRenderState.startDrawing();
+        CCRenderState state = CCRenderState.instance();
+        state.resetInstance();
+        state.useNormals = true;
+        state.startDrawingInstance();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -275,7 +277,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		MekanismRenderer.glowOn();
 		MekanismRenderer.cullFrontFace();
 
-		CCRenderState.draw();
+        state.drawInstance();
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
@@ -286,7 +288,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
 		float targetScale;
-		
+
 		if(pipe.getTransmitter().hasTransmitterNetwork())
 		{
 			targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
@@ -345,12 +347,13 @@ public class RenderPartTransmitter implements IIconSelfRegister
 						}
 					}
 				}
-				else if(pipe.getConnectionType(side) != ConnectionType.NONE) 
+				else if(pipe.getConnectionType(side) != ConnectionType.NONE)
 				{
 					GL11.glCullFace(GL11.GL_FRONT);
-					CCRenderState.startDrawing();
+                    CCRenderState state = CCRenderState.instance();
+					state.startDrawingInstance();
 					renderFluidInOut(side, pipe);
-					CCRenderState.draw();
+					state.drawInstance();
 					GL11.glCullFace(GL11.GL_BACK);
 				}
 			}
@@ -507,10 +510,11 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		}
 
 		push();
-		
-		CCRenderState.reset();
-		CCRenderState.useNormals = true;
-		CCRenderState.startDrawing();
+
+        CCRenderState state = CCRenderState.instance();
+        state.resetInstance();
+        state.useNormals = true;
+        state.startDrawingInstance();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -525,15 +529,16 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
-		
+
 		pop();
 	}
 
 	public void renderStatic(PartSidedPipe transmitter, int pass)
 	{
-		CCRenderState.reset();
-		CCRenderState.hasColour = true;
-		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
+        CCRenderState state = CCRenderState.instance();
+		state.resetInstance();
+		state.hasColour = true;
+        state.setBrightnessInstance(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -549,28 +554,28 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			{
 				IIcon renderIcon = transmitter.getIconForSide(side, false);
 				EnumColor color = transmitter.getRenderColor(false);
-		
+
 				Colour c = null;
-		
+
 				if(color != null)
 				{
 					c = new ColourRGBA(color.getColor(0), color.getColor(1), color.getColor(2), 1);
 				}
-		
+
 				renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
 			}
 		}
 		else {
 			IIcon renderIcon = transmitter.getIconForSide(side, true);
 			EnumColor color = transmitter.getRenderColor(true);
-	
+
 			Colour c = null;
-	
+
 			if(color != null)
 			{
 				c = new ColourRGBA(color.getColor(0), color.getColor(1), color.getColor(2), 1);
 			}
-	
+
 			renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
 		}
 	}
@@ -625,7 +630,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		{
 			return;
 		}
-		
+
 		if(color != null)
 		{
 			cc.render(new IconTransformation(icon), new ColourMultiplier(color.rgba()));
@@ -640,7 +645,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		String name = side.name().toLowerCase();
 		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 		name += out ? "NORMAL" : "NONE";
-		
+
 		if(type.getSize() == Size.SMALL)
 		{
 			return small_models.get(name);
