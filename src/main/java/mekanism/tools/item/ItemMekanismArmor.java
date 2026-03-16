@@ -22,10 +22,14 @@ import java.util.List;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, int armorType)
+
+    private final String armorName;
+
+	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, int armorType, String armorName)
 	{
 		super(enumarmormaterial, renderIndex, armorType);
-		setCreativeTab(Mekanism.tabMekanism);
+        this.armorName = armorName;
+        setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
@@ -38,15 +42,15 @@ public class ItemMekanismArmor extends ItemArmor
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
 	{
 		int layer = (slot == 2) ? 2 : 1;
-		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
+		return "mekanism:armor/" + this.armorName + "_" + layer + ".png";
 	}
-	
+
 	@Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
     {
         return StackUtils.equalsWildcard(getRepairStack(), stack2) ? true : super.getIsRepairable(stack1, stack2);
     }
-	
+
     private ItemStack getRepairStack()
     {
     	if(getArmorMaterial() == MekanismTools.armorOBSIDIAN)
@@ -73,7 +77,7 @@ public class ItemMekanismArmor extends ItemArmor
     	{
     		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
-    	
+
     	return new ItemStack(getArmorMaterial().func_151685_b());
     }
 
