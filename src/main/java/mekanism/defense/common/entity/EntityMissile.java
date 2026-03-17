@@ -696,6 +696,7 @@ public class EntityMissile extends Entity implements IChunkLoadHandler, IExplosi
         } catch(Exception e) {
             DefenseTech.LOGGER.severe("Missile failed to explode properly. Report this to the developers.");
             e.printStackTrace();
+            setDead();
         }
     }
 
