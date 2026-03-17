@@ -259,9 +259,6 @@ public final class DefenseTech
         EntityRegistry.registerModEntity(EntityBombCart.class, Reference.ENTITY_PREFIX + "BombCart", 7, this, 50, 4, true);
         
         netHandler.registerMessage(PacketItem.class, ItemMessage.class, 0, Side.SERVER);
-        
-        //Get data from server
-      	new ThreadGetData();
 
         proxy.init();
     }
