@@ -69,6 +69,7 @@ minecraft {
     replaceIn "mekanism/common/Mekanism.java"
     replaceIn "mekanism/generators/common/MekanismGenerators.java"
     replaceIn "mekanism/tools/common/MekanismTools.java"
+    replaceIn "mekanism/defense/common/DefenseTech.java"
     replace "GRADLE_MODVERSION", mod_version
     replace "GRADLE_VERSIONMOD", alt_version
 }
@@ -140,10 +141,24 @@ task generatorsJar(type: Jar) {
     }
 }
 
+task defensetechJar(type: Jar) {
+    classifier = 'DefenseTech'
+    from('etc/defensetech') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
+    }
+
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/defensetech/**'
+        exclude 'mcmod.info'
+    }
+}
+
 coreJar.dependsOn('reobf')
 toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
 alltJar.dependsOn('reobf')
+defensetechJar.dependsOn('reobf')
 
 
 task MDKZip(type: Zip) {
@@ -181,7 +196,7 @@ task fullBuild(type: Delete) {
     delete jar
 }
 
-fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar', 'devJar')
+fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar', 'devJar','defensetechJar')
 
 artifactory {
     contextUrl = System.getenv("MAVEN_URL")
@@ -216,7 +231,7 @@ publishing {
             artifactId = project.archivesBaseName
             groupId = project.group
             version = project.version
-            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar, devJar]
+            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar, devJar, defensetechJar]
             components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
                 skip()
             }
