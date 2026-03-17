@@ -96,7 +96,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'mcmod.info'
     }
 }
 
@@ -111,7 +111,7 @@ task alltJar(type: Jar) {
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mcmod.info'
+        exclude 'mcmod.info', 'mekanism/defense/**', 'defense/**'
     }
 }
 
@@ -143,13 +143,13 @@ task generatorsJar(type: Jar) {
 
 task defensetechJar(type: Jar) {
     classifier = 'DefenseTech'
-    from('etc/defensetech') {
+    from('etc/defense') {
         include '*.info'
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/defensetech/**'
+        include 'mekanism/defense/**', 'defense/**'
         exclude 'mcmod.info'
     }
 }
@@ -189,7 +189,7 @@ task apiJar(type: Jar) {
     dependsOn processResources
     from sourceSets.main.java.srcDirs
     from sourceSets.main.output
-    include 'mekanism/api/**'
+    include 'mekanism/api/**', 'defense/api/**'
 }
 
 task fullBuild(type: Delete) {
