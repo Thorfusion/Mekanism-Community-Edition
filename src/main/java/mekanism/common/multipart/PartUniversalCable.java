@@ -37,6 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
 	private static final int CLIENT_VISUAL_UPDATE_TICKS = 10;
+	private static final int SHARE_SAVE_INTERVAL_TICKS = 20;
 
 	public Tier.CableTier tier;
 
@@ -44,6 +45,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 	public double currentPower = 0;
 	private int clientVisualUpdateDelay = 0;
+	private int shareSaveDelay = 0;
+	private double lastSavedWrite = Double.NaN;
+	private boolean shareSavePending = false;
 	public double lastWrite = 0;
 
 	public EnergyStack buffer = new EnergyStack(0);
@@ -161,12 +165,29 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
         if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
         {
             double last = getSaveShare();
+			double forceSaveDelta = Math.max(1, tier.cableCapacity / 1000D);
 
             if(last != lastWrite)
             {
                 lastWrite = last;
-                MekanismUtils.saveChunk(tile());
+				shareSavePending = true;
             }
+
+			if(shareSavePending)
+			{
+				shareSaveDelay++;
+
+				if(Double.isNaN(lastSavedWrite) || Math.abs(lastWrite - lastSavedWrite) >= forceSaveDelta || shareSaveDelay >= SHARE_SAVE_INTERVAL_TICKS)
+				{
+					MekanismUtils.saveChunk(tile());
+					lastSavedWrite = lastWrite;
+					shareSaveDelay = 0;
+					shareSavePending = false;
+				}
+			}
+		}
+		else {
+			shareSaveDelay = 0;
         }
     }
 
@@ -275,6 +296,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void onChunkUnload()
 	{
+		if(!world().isRemote && shareSavePending)
+		{
+			MekanismUtils.saveChunk(tile());
+			lastSavedWrite = lastWrite;
+			shareSaveDelay = 0;
+			shareSavePending = false;
+		}
+
 		takeShare();
 		super.onChunkUnload();
 	}
