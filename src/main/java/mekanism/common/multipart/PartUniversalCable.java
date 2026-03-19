@@ -63,31 +63,32 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			{
 				currentPower = 0;
 				clientVisualUpdateDelay = 0;
+				super.update();
+				return;
 			}
-			else {
-				clientVisualUpdateDelay++;
 
-				if(clientVisualUpdateDelay >= CLIENT_VISUAL_UPDATE_TICKS)
+			clientVisualUpdateDelay++;
+
+			if(clientVisualUpdateDelay >= CLIENT_VISUAL_UPDATE_TICKS)
+			{
+				double targetPower;
+
+				clientVisualUpdateDelay = 0;
+
+				if(mekce.disableUniversalCableServerVisualUpdates)
 				{
-					double targetPower;
+					targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
+				}
+				else {
+					targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
+				}
 
-					clientVisualUpdateDelay = 0;
-
-					if(mekce.disableUniversalCableServerVisualUpdates)
-					{
-						targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
-					}
-					else {
-						targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
-					}
-
-					if(Math.abs(currentPower - targetPower) > 0.01)
-					{
-						currentPower = (9 * currentPower + targetPower) / 10;
-					}
-					else {
-						currentPower = targetPower;
-					}
+				if(Math.abs(currentPower - targetPower) > 0.01)
+				{
+					currentPower = (9 * currentPower + targetPower) / 10;
+				}
+				else {
+					currentPower = targetPower;
 				}
 			}
 		} 
