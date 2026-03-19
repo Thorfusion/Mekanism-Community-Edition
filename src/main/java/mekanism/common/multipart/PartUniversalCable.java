@@ -36,11 +36,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
+	private static final int CLIENT_VISUAL_UPDATE_TICKS = 10;
+
 	public Tier.CableTier tier;
 
 	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
 
 	public double currentPower = 0;
+	private int clientVisualUpdateDelay = 0;
 	public double lastWrite = 0;
 
 	public EnergyStack buffer = new EnergyStack(0);
@@ -59,23 +62,25 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			if(mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable)
 			{
 				currentPower = 0;
+				clientVisualUpdateDelay = 0;
 			}
 			else {
-				double targetPower;
+				clientVisualUpdateDelay++;
 
-				if(mekce.disableUniversalCableServerVisualUpdates)
+				if(clientVisualUpdateDelay >= CLIENT_VISUAL_UPDATE_TICKS)
 				{
-					targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
-				}
-				else {
-					targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
-				}
+					double targetPower;
 
-				if(Math.abs(currentPower - targetPower) > 0.01)
-				{
-					currentPower = (9 * currentPower + targetPower) / 10;
-				}
-				else {
+					clientVisualUpdateDelay = 0;
+
+					if(mekce.disableUniversalCableServerVisualUpdates)
+					{
+						targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
+					}
+					else {
+						targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
+					}
+
 					currentPower = targetPower;
 				}
 			}

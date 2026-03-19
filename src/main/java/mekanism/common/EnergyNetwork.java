@@ -23,9 +23,12 @@ import cpw.mods.fml.common.eventhandler.Event;
 
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {
+	private static final int UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS = 10;
+
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double jouleBufferLastTick = 0;
+	private int visualUpdateDelay = 0;
 
 	public double clientEnergyScale = 0;
 
@@ -267,13 +270,23 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
 				if(needsUpdate)
 				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-					lastPowerScale = currentPowerScale;
-					needsUpdate = false;
+					visualUpdateDelay++;
+
+					if(visualUpdateDelay >= UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS)
+					{
+						MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+						lastPowerScale = currentPowerScale;
+						needsUpdate = false;
+						visualUpdateDelay = 0;
+					}
+				}
+				else {
+					visualUpdateDelay = 0;
 				}
 			}
 			else {
 				needsUpdate = false;
+				visualUpdateDelay = 0;
 			}
 
 			if(buffer.amount > 0)
