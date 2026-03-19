@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.mekce;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -253,19 +254,25 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
 		clearJoulesTransmitted();
 
-		double currentPowerScale = getPowerScale();
-
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
+			if(!mekce.disableUniversalCableServerVisualUpdates)
 			{
-				needsUpdate = true;
-			}
+				double currentPowerScale = getPowerScale();
 
-			if(needsUpdate)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-				lastPowerScale = currentPowerScale;
+				if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
+				{
+					needsUpdate = true;
+				}
+
+				if(needsUpdate)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+					lastPowerScale = currentPowerScale;
+					needsUpdate = false;
+				}
+			}
+			else {
 				needsUpdate = false;
 			}
 

@@ -5,7 +5,8 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.Collection;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.mekce;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.ICableOutputter;
@@ -55,11 +56,28 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		if(world().isRemote)
 		{
-			double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
-
-			if(Math.abs(currentPower - targetPower) > 0.01)
+			if(mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable)
 			{
-				currentPower = (9 * currentPower + targetPower) / 10;
+				currentPower = 0;
+			}
+			else {
+				double targetPower;
+
+				if(mekce.disableUniversalCableServerVisualUpdates)
+				{
+					targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
+				}
+				else {
+					targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
+				}
+
+				if(Math.abs(currentPower - targetPower) > 0.01)
+				{
+					currentPower = (9 * currentPower + targetPower) / 10;
+				}
+				else {
+					currentPower = targetPower;
+				}
 			}
 		} 
 		else {
