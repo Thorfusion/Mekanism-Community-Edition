@@ -1,0 +1,259 @@
+## Translated by Vexatos
+itemGroup.DefenseTech=DefenseTech
+
+potion.toxin=Toxin
+potion.virus=Virus
+potion.frostBite=Erfrierung
+potion.radiation=Strahlung
+
+## Items
+item.sulfur.name=Schwefel
+item.saltpeter.name=Salpeter
+item.poisonPowder.name=Giftpulver
+item.antidote.name=Gegengift
+item.radarGun.name=Radarpistole
+item.remoteDetonator.name=Fernzünder
+item.defuser.name=Entschärfer
+item.laserDesignator.name=Laser-Zielerfasser
+item.tracker.name=Tracker
+item.signalDisrupter.name=Störsender
+item.rocketLauncher.name=Raketenwerfer
+
+## Machines
+machine.LauncherBase.0.name=Startplattform Stufe 1
+machine.LauncherBase.1.name=Startplattform Stufe 2
+machine.LauncherBase.2.name=Startplattform Stufe 3
+machine.LauncherScreen.0.name=Abschuss-Steuerpult Stufe 1
+machine.LauncherScreen.1.name=Abschuss-Steuerpult Stufe 2
+machine.LauncherScreen.2.name=Abschuss-Steuerpult Stufe 3
+machine.LauncherFrame.0.name=Startplatforms-Stützgestell Stufe 1
+machine.LauncherFrame.1.name=Startplatforms-Stützgestell Stufe 2
+machine.LauncherFrame.2.name=Startplatforms-Stützgestell Stufe 3
+machine.RadarStation.name=Radarstation
+machine.EmpTower.name=EMP-Turm
+machine.CruiseLauncher.name=Mobile Abschussrampe
+machine.MissileCoordinator.name=Raketen-Koordinator
+
+## Blocks
+tile.sulfurOre.name=Schwefelerz
+
+## Explosives
+
+## Block Form
+explosive.condensed.name=Verdichteter Sprengstoff
+explosive.shrapnel.name=Schrapnellsprengstoff
+explosive.incendiary.name=Brennender Sprengstoff
+explosive.debilitation.name=Entkräftender Sprengstoff
+explosive.chemical.name=Chemischer Sprengstoff
+explosive.anvil.name=Amboss-Sprengstoff
+explosive.repulsive.name=Abstoßender Sprengstoff
+explosive.attractive.name=Anziehener Sprengstoff
+
+explosive.fragmentation.name=Splitternder Sprengstoff
+explosive.contagious.name=Ansteckender Sprengstoff
+explosive.sonic.name=Schallsprengstoff
+explosive.breaching.name=Durchschlagssprengstoff
+explosive.rejuvenation.name=Revitalisierungssprengstoff
+explosive.thermobaric.name=Thermobarischer Sprengstoff
+
+explosive.nuclear.name=Atomarer Sprengstoff
+explosive.emp.name=EMP-Sprengstoff
+explosive.exothermic.name=Exothermer Sprengstoff
+explosive.endothermic.name=Endothermer Sprengstoff
+explosive.antiGravitational.name=Anti-Schwerkraft-Sprengstoff
+explosive.ender.name=Endersprengstoff
+explosive.hypersonic.name=Hyperschallsprengstoff
+
+explosive.antimatter.name=Antimateriensprengstoff
+explosive.redMatter.name=Rotmateriensprengstoff
+
+explosive.sMine.name=S-Mine
+
+## Missile Form
+missile.condensed.name=Konventionelle Rakete
+missile.shrapnel.name=Schrapnellrakete
+missile.incendiary.name=Brandrakete
+missile.debilitation.name=Entkräftende Rakete
+missile.chemical.name=Chemische Rakete
+missile.anvil.name=Amboss-Rakete
+missile.repulsive.name=Abstoßende Rakete
+missile.attractive.name=Anziehende Rakete
+
+missile.fragmentation.name=Splitterrakete
+missile.contagious.name=Ansteckende Rakete
+missile.sonic.name=Schallrakete
+missile.breaching.name=Durchschlagsrakete
+missile.rejuvenation.name=Revitalisierungsrakete
+missile.thermobaric.name=Thermobarische Rakete
+
+missile.nuclear.name=Atomrakete
+missile.emp.name=EMP-Rakete
+missile.exothermic.name=Exotherme Rakete
+missile.endothermic.name=Endotherme Rakete
+missile.antiGravitational.name=Anti-Schwerkraft-Rakete
+missile.ender.name=Enderrakete
+missile.hypersonic.name=Hyperschallrakete
+
+missile.antimatter.name=Antimaterienrakete
+missile.redMatter.name=Rotmaterienrakete
+
+## Special Missiles
+missile.missileModule.name=Raketenmodul
+missile.antiBallistic.name=Flugabwehrrakete
+missile.cluster.name=Streurakete
+missile.nuclearCluster.name=Atomare Streurakete
+missile.homing.name=Verfolgungsrakete
+
+## Grenades
+grenade.condensed.name=Konventionelle Granate
+grenade.shrapnel.name=Schrapnellgranate
+grenade.incendiary.name=Brandgranate
+grenade.debilitation.name=Entkräftende Granate
+grenade.chemical.name=Chemische Granate
+grenade.anvil.name=Ambossgranate
+grenade.repulsive.name=Abstoßende Granate
+grenade.attractive.name=Anziehende Granate
+
+## Explosive Minecarts
+minecart.condensed.name=Explosive Lore
+minecart.shrapnel.name=Schrapnelllore
+minecart.incendiary.name=Brandlore
+minecart.debilitation.name=Entkräftende Lore
+minecart.chemical.name=Chemische Lore
+minecart.anvil.name=Amboss-Lore
+minecart.repulsive.name=Abstoßende Lore
+minecart.attractive.name=Anziehende Lore
+
+minecart.fragmentation.name=Splitterlore
+minecart.contagious.name=Ansteckede Lore
+minecart.sonic.name=Schall-Lore
+minecart.breaching.name=Durchbrechende Lore
+minecart.rejuvenation.name=Revitalisierungslore
+minecart.thermobaric.name=Thermobarische Lore
+
+## Chat messages
+message.tracker.nowtrack=Nun Verfolgend:
+message.tracker.nopower=Tracker hat nicht genügend Energie!
+message.tracker.banned=Ein Tracker ist in diesem Bereich verboten!
+
+message.defuser.nopower=Entschärfer hat nicht genügend Energie!
+
+message.designator.callTime=Rufe Luftschlag in:
+message.designator.blast=Luftschlag kommt!
+message.designator.setFreq=Laser-Zielerfasser-Frequenz eingestellt:
+message.designator.failFreq=Frequenz muss größer als null sein.
+message.designator.callBlast=Rufe Luftschlag zu erfasster Position!
+message.designator.nopower=Laser-Zielerfasser hat nicht genügend Energie!
+message.designator.noFreq=Laser-Zielerfasser hat keine Frequenz eingestellt!
+
+message.radarGun.scanned=Koordinaten gescannt: X:%x, Y:%y, Z:%z - Entfernung: %d
+message.radarGun.nopower=Radarpistole hat nicht genügend Energie!
+message.radarGun.transfer=Koordinateninformation übertragen!
+message.radarGun.noCoords=Du musst eine Koordinate scannen!
+message.launcher.protected=Region wird geschützt.
+message.detonator.locked=Fernzünder gebunden an: X:%x, Y:%y, Z:%z
+message.detonator.nopower=Fernzünder hat nicht genügend Energie!
+message.radar.redstone=Radar-Redstone-Emission auf allen Seiten:
+
+## GUI stuff
+gui.misc.nopower=Nicht genügend Energie!
+gui.misc.idle=Bereit
+gui.misc.freq=Frequenz:
+gui.misc.XCoord=X-Koord:
+gui.misc.YCoord=Y-Koord:
+gui.misc.ZCoord=Z-Koord:
+gui.misc.x=X:
+gui.misc.y=Y:
+gui.misc.z=Z:
+gui.misc.dimension=Dimension:
+gui.misc.status=Status:
+gui.misc.voltage=Spannung:
+
+gui.tracker.freq=Frequenz
+gui.detector.name=Umgebungs-Scanner
+gui.detector.all=Alles
+gui.detector.players=Spieler
+gui.detector.mobs=Lebendes
+gui.detector.range=Erkennungsradius
+gui.detector.min=Min
+gui.detector.max=Max
+gui.detector.exclude=Ausschließen
+gui.detector.include=Einschließen
+gui.detector.target=Ziel:
+gui.detector.on=An
+gui.detector.status=Status:
+
+gui.empTower.name=EMP-Turm
+gui.empTower.missiles=Raketen
+gui.empTower.elec=Energie
+gui.empTower.both=Beides
+gui.empTower.radius=EMP-Radius: %p Blöcke
+gui.empTower.effect=EMP-Effekt:
+gui.empTower.effectDebilitate=Elektronik schwächen
+gui.empTower.effectDisrupt=Raketen stören
+gui.empTower.effectDeplete=Energie erschöpfen
+gui.empTower.mode=Modus:
+gui.empTower.ready=Bereit zum Feuern!
+
+gui.launcherBase.name=Abschussplattform
+gui.launcherBase.place=Platziere Rakete
+gui.launcherScreen.name=Abschuss-Steuerpult
+gui.launcherScreen.detHeight=Detonationshöhe:
+gui.launcherScreen.lockHeight=Feste Höhe:
+gui.launcherScreen.target=Raketenziel
+gui.launcherScreen.inaccuracy=Ungenauigkeit: %p Blöcke
+gui.launcherScreen.statusMissing=Nicht verbunden!
+gui.launcherScreen.statusNoPower=Zu wenig Energie!
+gui.launcherScreen.statusEmpty=Raketensilo ist leer!
+gui.launcherScreen.statusInvalid=Ziel ist ungültig!
+gui.launcherScreen.statusClose=Ziel zu nah!
+gui.launcherScreen.statusFar=Ziel zu weit entfernt!
+gui.launcherScreen.statusReady=Bereit zum Start!
+gui.launcherCruise.name=Mobile Rampe
+gui.launcherCruise.statusNoPower=Keine Energie!
+gui.launcherCruise.statusEmpty=Silo leer!
+gui.launcherCruise.statusInvalid=Ziel ungültig!
+gui.launcherCruise.statusReady=Bereit!
+
+gui.coordinator.name=Raketen-Koordinator
+gui.coordinator.sim=Pfadsimulator
+gui.coordinator.from=Von:
+gui.coordinator.to=Bis:
+gui.coordinator.displace=Abstand: %p Meter
+gui.coordinator.arc=Weg: %p Meter
+gui.coordinator.time=Zeit: %p Sekunden
+gui.coordinator.direction=Richtung:
+gui.coordinator.wip=Mehr Funktionen kommen!
+
+gui.assembler.name=Raketentisch
+gui.radar.coords=Koordinaten:
+gui.radar.zoneSafe=Sicherheitszone:
+gui.radar.zoneAlarm=Alarmzone:
+gui.radar.on=Radar An!
+gui.radar.nopower=Keine Energie!
+
+gui.terminal.name=Terminal
+gui.platform.ammo=Munition
+gui.platform.upgrades=Upgrades
+gui.platform.joules=von %j
+gui.platform.access=Nutzerzugriff
+
+## Tooltips
+info.misc.freq=Frequenz:
+info.tracker.tracking=Verfolgend:
+info.designator.noFreq=Frequenz: Nicht gesetzt
+info.radarGun.savedCoords=Gespeicherte Koordinaten:
+info.radarGun.meters=Meter
+info.detonator.linked=Verbundener Sprengsatz:
+info.detonator.noLink=Kein verbundener Sprengsatz
+info.misc.tier=Explosivstufe
+info.rocketlauncher.tooltip=Dieser Raketenwerfer kann Raketen bis Stufe %s abfeuern
+info.tracker.tooltip=Linksklicke ein Lebewesen (auch Spieler) und der Tracker wird in dessen Richtung zeigen.
+
+## Config Gui
+defensetech.configgui.ctgy.general=Generelle Einstellungen
+defensetech.configgui.ctgy.explosives=Sprengstoffeinstellungen
+
+## Config Tooltips
+defensetech.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich DefenseTech und all seinen Modulen
+defensetech.configgui.ctgy.explosives.tooltip=Einstellungen bezüglich des Aktivierens und Deaktivierens einzelner Sprengstoffarten

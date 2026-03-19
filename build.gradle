@@ -69,6 +69,8 @@ minecraft {
     replaceIn "mekanism/common/Mekanism.java"
     replaceIn "mekanism/generators/common/MekanismGenerators.java"
     replaceIn "mekanism/tools/common/MekanismTools.java"
+    replaceIn "mekanism/defense/common/DefenseTech.java"
+    replaceIn "mekanism/ultimate/common/MekanismUltimate.java"
     replace "GRADLE_MODVERSION", mod_version
     replace "GRADLE_VERSIONMOD", alt_version
 }
@@ -95,7 +97,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'mcmod.info', 'mekanism/ultimate/**'
     }
 }
 
@@ -110,7 +112,7 @@ task alltJar(type: Jar) {
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mcmod.info'
+        exclude 'mcmod.info', 'mekanism/defense/**', 'defense/**', 'mekanism/ultimate/**'
     }
 }
 
@@ -140,10 +142,38 @@ task generatorsJar(type: Jar) {
     }
 }
 
+task defensetechJar(type: Jar) {
+    classifier = 'DefenseTech'
+    from('etc/defense') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
+    }
+
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/defense/**', 'defense/**'
+        exclude 'mcmod.info'
+    }
+}
+
+task ultimateJar(type: Jar) {
+    classifier = 'Ultimate'
+    from('etc/ultimate') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
+    }
+
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/ultimate/**'
+        exclude 'mcmod.info'
+    }
+}
+
 coreJar.dependsOn('reobf')
 toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
 alltJar.dependsOn('reobf')
+defensetechJar.dependsOn('reobf')
+ultimateJar.dependsOn('reobf')
 
 
 task MDKZip(type: Zip) {
@@ -174,14 +204,14 @@ task apiJar(type: Jar) {
     dependsOn processResources
     from sourceSets.main.java.srcDirs
     from sourceSets.main.output
-    include 'mekanism/api/**'
+    include 'mekanism/api/**', 'defense/api/**'
 }
 
 task fullBuild(type: Delete) {
     delete jar
 }
 
-fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar', 'devJar')
+fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar', 'devJar','defensetechJar', 'ultimateJar')
 
 artifactory {
     contextUrl = System.getenv("MAVEN_URL")
@@ -216,7 +246,7 @@ publishing {
             artifactId = project.archivesBaseName
             groupId = project.group
             version = project.version
-            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar, devJar]
+            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar, devJar, defensetechJar, ultimateJar]
             components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
                 skip()
             }
