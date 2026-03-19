@@ -1,6 +1,6 @@
 package mekanism.common.multipart;
 
-import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.mekce_client;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
@@ -41,11 +41,11 @@ public class TransmitterIcons
 
 	public IIcon getSideIcon(int n)
 	{
-		return client.opaqueTransmitters ? sideIcons_opaque[n] : sideIcons[n];
+		return mekce_client.opaqueTransmitters ? sideIcons_opaque[n] : sideIcons[n];
 	}
 
 	public IIcon getCenterIcon(int n)
 	{
-		return client.opaqueTransmitters ? centerIcons_opaque[n] : centerIcons[n];
+		return mekce_client.opaqueTransmitters ? centerIcons_opaque[n] : centerIcons[n];
 	}
 }

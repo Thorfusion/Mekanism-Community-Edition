@@ -324,6 +324,7 @@ public class CommonProxy implements IGuiProvider
 		mekce.electricBowPowerCost = Mekanism.configurationce.get("mekce", "ElectricBowJoulesPerShot", 120, "Base energy cost of shooting arrows with the Electric Bow. Default is 120", 1, Integer.MAX_VALUE).getInt();
 		mekce.robitEnergyPerHP = Mekanism.configurationce.get("mekce", "robitEnergyPerHP", 1000, "Energy equivalency of 1HP of health for Robit", 1, Integer.MAX_VALUE).getInt();
 		mekce.teleporterBasePowerCost = Mekanism.configurationce.get("mekce", "BaseTeleporterCost", 1000, "Base energy cost of using teleporters. Default is 1000", 1, Integer.MAX_VALUE).getInt();
+		mekce.disableUniversalCableServerVisualUpdates = Mekanism.configurationce.get("mekce", "disableUniversalCableServerVisualUpdates", false, "When true, server-side Universal Cable visual energy updates are disabled to reduce server tick overhead from cable render sync. Energy transfer logic is unchanged. Clients render Universal Cables as full while this is enabled.").getBoolean();
 
 		mekce.IC2SinkTier = Mekanism.configurationce.get("mekce", "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 		mekce.IC2SourceTier = Mekanism.configurationce.get("mekce", "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
