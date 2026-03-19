@@ -91,6 +91,9 @@ public class ClientProxy extends CommonProxy
 		mekce_client.multiblockSparkleIntensity = Mekanism.configurationce.get("mekce_client", "MultiblockSparkleIntesity", 6).getInt();
 		mekce_client.opaqueTransmitters = Mekanism.configurationce.get("mekce_client", "disableTransparentTransmitterRender", false, "Global transmitter performance mode. Disables dynamic translucent contents for Universal Cables, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Logistical Transporters, and skips client visual ENERGY/GAS/FLUID network updates. Transfer behavior is unchanged.").getBoolean();
 		mekce_client.opaqueUniversalCable = Mekanism.configurationce.get("mekce_client", "disableTransparentUniversalCableRender", false, "Universal Cable-only performance mode. Disables the cable energy overlay (LiquidEnergy) and client visual ENERGY network updates for Universal Cables only. Other transmitter types are unaffected unless global transmitter performance mode is enabled.").getBoolean();
+		mekce_client.dynamicTransmitterDistanceCulling = Mekanism.configurationce.get("mekce_client", "enableDynamicTransmitterDistanceCulling", true, "When true, dynamic transmitter contents are only rendered within the configured distance to reduce rendering cost.").getBoolean();
+		mekce_client.dynamicTransmitterRenderDistance = Mekanism.configurationce.get("mekce_client", "dynamicTransmitterRenderDistance", 48, "Maximum block distance for rendering dynamic transmitter contents when distance culling is enabled. Default is 48.", 1, 512).getInt();
+		mekce_client.tesrGlobalRenderDistance = Mekanism.configurationce.get("mekce_client", "tesrGlobalRenderDistance", 64, "Global maximum block distance for Mekanism TESR tile rendering. Lower values reduce render cost; higher values keep tile models visible farther away. Default is 64.", 1, 512).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{

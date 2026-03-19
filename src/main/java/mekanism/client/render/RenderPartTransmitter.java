@@ -16,6 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -31,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -74,6 +76,30 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public static RenderPartTransmitter getInstance()
 	{
 		return INSTANCE;
+	}
+
+	public boolean shouldRenderDynamicContents(PartSidedPipe part)
+	{
+		if(!mekce_client.dynamicTransmitterDistanceCulling)
+		{
+			return true;
+		}
+
+		Entity camera = mc.renderViewEntity != null ? mc.renderViewEntity : mc.thePlayer;
+
+		if(camera == null || part == null)
+		{
+			return true;
+		}
+
+		double maxDistance = Math.max(1, mekce_client.dynamicTransmitterRenderDistance);
+		double maxDistanceSq = maxDistance * maxDistance;
+
+		double dx = camera.posX - (part.x() + 0.5);
+		double dy = camera.posY - (part.y() + 0.5);
+		double dz = camera.posZ - (part.z() + 0.5);
+
+		return dx * dx + dy * dy + dz * dz <= maxDistanceSq;
 	}
 
 	public static void init()

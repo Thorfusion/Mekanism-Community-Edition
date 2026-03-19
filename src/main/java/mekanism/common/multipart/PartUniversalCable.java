@@ -281,7 +281,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 0 && !mekce_client.opaqueTransmitters && !mekce_client.opaqueUniversalCable)
+		if(pass == 0 && !mekce_client.opaqueTransmitters && !mekce_client.opaqueUniversalCable && RenderPartTransmitter.getInstance().shouldRenderDynamicContents(this))
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

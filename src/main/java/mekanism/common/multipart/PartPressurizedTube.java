@@ -238,7 +238,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0 && !mekce_client.opaqueTransmitters)
+		if(pass == 0 && !mekce_client.opaqueTransmitters && RenderPartTransmitter.getInstance().shouldRenderDynamicContents(this))
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

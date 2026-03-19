@@ -118,6 +118,9 @@ public class MekanismConfig
 		public static int multiblockSparkleIntensity = 6;
 		public static boolean opaqueTransmitters = false;
 		public static boolean opaqueUniversalCable = false;
+		public static boolean dynamicTransmitterDistanceCulling = true;
+		public static int dynamicTransmitterRenderDistance = 48;
+		public static int tesrGlobalRenderDistance = 64;
 	}
 	
 	public static class machines
