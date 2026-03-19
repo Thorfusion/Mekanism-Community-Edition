@@ -232,7 +232,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
-		if(cable.currentPower == 0)
+		if(cable.currentPower <= 0.01)
 		{
 			return;
 		}

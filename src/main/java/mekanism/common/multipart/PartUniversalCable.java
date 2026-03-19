@@ -81,7 +81,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
 					}
 
-					currentPower = targetPower;
+					if(Math.abs(currentPower - targetPower) > 0.01)
+					{
+						currentPower = (9 * currentPower + targetPower) / 10;
+					}
+					else {
+						currentPower = targetPower;
+					}
 				}
 			}
 		} 
