@@ -244,19 +244,19 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public IIcon getCenterIcon(boolean opaque)
 	{
-		return cableIcons.getCenterIcon(tier.ordinal());
+		return cableIcons.getCenterIcon(tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
-		return cableIcons.getSideIcon(tier.ordinal());
+		return cableIcons.getSideIcon(tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return cableIcons.getSideIcon(4+tier.ordinal());
+		return cableIcons.getSideIcon(4+tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override

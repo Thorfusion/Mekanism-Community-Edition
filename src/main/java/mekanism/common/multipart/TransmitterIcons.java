@@ -41,11 +41,21 @@ public class TransmitterIcons
 
 	public IIcon getSideIcon(int n)
 	{
-		return mekce_client.opaqueTransmitters ? sideIcons_opaque[n] : sideIcons[n];
+		return getSideIcon(n, mekce_client.opaqueTransmitters);
 	}
 
 	public IIcon getCenterIcon(int n)
 	{
-		return mekce_client.opaqueTransmitters ? centerIcons_opaque[n] : centerIcons[n];
+		return getCenterIcon(n, mekce_client.opaqueTransmitters);
+	}
+
+	public IIcon getSideIcon(int n, boolean opaque)
+	{
+		return opaque ? sideIcons_opaque[n] : sideIcons[n];
+	}
+
+	public IIcon getCenterIcon(int n, boolean opaque)
+	{
+		return opaque ? centerIcons_opaque[n] : centerIcons[n];
 	}
 }
