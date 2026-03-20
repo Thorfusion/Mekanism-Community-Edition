@@ -42,10 +42,14 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 
 		if(MekanismConfig.client.renderCTM && blockCTM != null)
 		{
-			if(blockCTM.hasFacingOverride() && world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+			if(blockCTM.hasFacingOverride())
 			{
-				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-				blockCTM.setFacing(tile.facing);
+				TileEntity tile = world.getTileEntity(x, y, z);
+
+				if(tile instanceof TileEntityBasicBlock)
+				{
+					blockCTM.setFacing(((TileEntityBasicBlock)tile).facing);
+				}
 			}
 			
 			rendererCTM.blockAccess = world;
