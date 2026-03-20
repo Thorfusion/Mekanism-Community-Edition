@@ -268,6 +268,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -292,6 +293,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -538,6 +540,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -612,25 +615,21 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
 	public void renderHeatSide(ForgeDirection side, PartThermodynamicConductor cable)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(pipe.getTransmitter().getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
 	}
 
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(tube.getTransmitter().getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
