@@ -28,18 +28,15 @@ defaultTasks 'fullBuild'
 repositories {
     maven {
         name 'central'
-        url 'https://maven.thorfusion.com/artifactory/central/'
+        url = 'https://maven.thorfusion.com/artifactory/central/'
     }
-
 }
 
 idea {
     module {
-        // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
 }
-
 
 dependencies {
     implementation "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:dev"
@@ -77,7 +74,6 @@ minecraft {
 
 processResources {
     duplicatesStrategy = 'include'
-    // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
         exclude '**/*.blend*'
@@ -87,8 +83,7 @@ processResources {
 task coreJar(type: Jar) {
     classifier = 'Core'
     manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLCorePluginContainsFMLMod': 'false'
     }
 
     from('etc/core') {
@@ -104,8 +99,7 @@ task coreJar(type: Jar) {
 task alltJar(type: Jar) {
     classifier = 'ALL'
     manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLCorePluginContainsFMLMod': 'false'
     }
     from('etc/all') {
         include '*.info'
@@ -175,7 +169,6 @@ alltJar.dependsOn('reobf')
 defensetechJar.dependsOn('reobf')
 ultimateJar.dependsOn('reobf')
 
-
 task MDKZip(type: Zip) {
     classifier = 'MDK'
     from sourceSets.main.java.srcDirs
@@ -187,8 +180,7 @@ task devJar(type: Jar) {
     dependsOn processResources
     from sourceSets.main.java.srcDirs
     manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLCorePluginContainsFMLMod': 'false'
     }
     from('etc/all') {
         include '*.info'
@@ -235,7 +227,6 @@ artifactory {
             username = System.getenv("MAVEN_USERNAME")
             password = System.getenv("MAVEN_PASSWORD")
             maven = true
-
         }
     }
 }
