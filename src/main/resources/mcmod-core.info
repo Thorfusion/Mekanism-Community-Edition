@@ -1,0 +1,15 @@
+[
+{
+  "modid": "Mekanism",
+  "name": "Mekanism Community Edition",
+  "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": ["ForgeMultipart"]
+}
+]
