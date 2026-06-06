@@ -155,7 +155,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
 

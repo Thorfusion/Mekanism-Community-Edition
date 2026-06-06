@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
+import mekanism.common.Tags;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.ShapedMekanismRecipe;
@@ -35,12 +36,16 @@ public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
 	public static ToolsCommonProxy proxy;
-	
+
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
-	
+
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(GRADLE_VERSIONMOD);
+	public static Version versionNumber = new Version(
+        Integer.parseInt(Tags.VERSION.split("\\.")[0]),
+        Integer.parseInt(Tags.VERSION.split("\\.")[1]),
+        Integer.parseInt(Tags.VERSION.split("\\.")[2].split("[^0-9]")[0])
+    );
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;
@@ -75,22 +80,22 @@ public class MekanismTools implements IModule
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-		
+
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLCommonHandler.instance().bus().register(this);
 
 		//Load the proxy
 		proxy.loadConfiguration();
-		
+
 		//Load this module
 		addRecipes();
 		registerOreDict();
-		
+
 		//Finalization
 		Mekanism.logger.info("Loaded MekanismTools module.");
 	}
-	
+
 	public void addRecipes()
 	{
 		String mekanismMaterial = Resource.OSMIUM.getOredictName();
@@ -112,7 +117,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GoldPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Items.golden_axe, Character.valueOf('Y'), Items.golden_pickaxe, Character.valueOf('Z'), Items.golden_shovel, Character.valueOf('T'), Items.stick
 		}));
-		
+
 		//Obsidian
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), "ingotRefinedObsidian"
@@ -144,7 +149,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.ObsidianSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Items.stick
 		}));
-		
+
 		//Glowstone
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), ToolsItems.GlowstoneAxe, Character.valueOf('Y'), ToolsItems.GlowstonePickaxe, Character.valueOf('Z'), ToolsItems.GlowstoneShovel, Character.valueOf('T'), Items.stick
@@ -176,7 +181,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.GlowstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
-		
+
 		//Lazuli
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.LazuliHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Items.dye, 1, 4)
@@ -273,7 +278,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.BronzeBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotBronze"
 		}));
-		
+
 		//Steel
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelPaxel, 1), new Object[] {
 			"XYZ", " I ", " I ", Character.valueOf('X'), ToolsItems.SteelAxe, Character.valueOf('Y'), ToolsItems.SteelPickaxe, Character.valueOf('Z'), ToolsItems.SteelShovel, Character.valueOf('I'), Items.iron_ingot
@@ -315,7 +320,7 @@ public class MekanismTools implements IModule
 		OreDictionary.registerOre("hoeSteel", new ItemStack(ToolsItems.SteelHoe));
 		OreDictionary.registerOre("paxelSteel", new ItemStack(ToolsItems.SteelPaxel));
 	}
-	
+
 	public void addItems()
 	{
 		//Tools
@@ -486,7 +491,7 @@ public class MekanismTools implements IModule
 	{
 		double chance = event.world.rand.nextDouble();
 		int armorType = event.world.rand.nextInt(4);
-		
+
 		if(chance < tools.armorSpawnRate)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
@@ -496,7 +501,7 @@ public class MekanismTools implements IModule
 				int chestplate = event.world.rand.nextInt(100);
 				int leggings = event.world.rand.nextInt(100);
 				int boots = event.world.rand.nextInt(100);
-				
+
 				if(armorType == 0)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(ToolsItems.GlowstoneSword));
@@ -548,7 +553,7 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "Tools";
 	}
@@ -564,7 +569,7 @@ public class MekanismTools implements IModule
 	{
 		tools.armorSpawnRate = dataStream.readDouble();
 	}
-	
+
 	@Override
 	public void resetClient() {}
 

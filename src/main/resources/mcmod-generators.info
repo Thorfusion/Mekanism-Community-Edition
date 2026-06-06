@@ -1,0 +1,15 @@
+[
+{
+  "modid": "MekanismGenerators",
+  "name": "MekanismGenerators Community Edition",
+  "description": "Generators module of Mekanism.",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
+]

@@ -33,12 +33,12 @@ import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public GuiGasGauge gasOutput;
 
 	public static int xOffset = 5;
 	public static int yOffset = 12;
-	
+
 	@Override
 	public void addGuiElements()
 	{
@@ -98,7 +98,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(0, 0, xOffset, yOffset, 147, 62);
-		
+
 		for(GuiElement e : guiElements)
 		{
 			e.renderBackground(0, 0, -xOffset, -yOffset);
@@ -157,7 +157,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
 		Point offset = gui.getRecipePosition(recipe);

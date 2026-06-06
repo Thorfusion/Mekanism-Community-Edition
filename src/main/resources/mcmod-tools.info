@@ -1,0 +1,15 @@
+[
+{
+  "modid": "MekanismTools",
+  "name": "MekanismTools Community Edition",
+  "description": "Tools module for Mekanism.",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
+]

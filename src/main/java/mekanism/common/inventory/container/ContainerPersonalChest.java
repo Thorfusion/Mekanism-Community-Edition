@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import invtweaks.api.container.ChestContainer;
+//import invtweaks.api.container.ChestContainer;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.slot.SlotPersonalChest;
@@ -12,7 +12,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-@ChestContainer(isLargeChest=true)
+//@ChestContainer(isLargeChest=true)
 public class ContainerPersonalChest extends Container
 {
 	private TileEntityPersonalChest tileEntity;
@@ -150,7 +150,7 @@ public class ContainerPersonalChest extends Container
 		if(modifier == 2 && destSlot >= 0 && destSlot < 9)
 		{
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
-			
+
 			if(itemStack != null && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
 				return null;
