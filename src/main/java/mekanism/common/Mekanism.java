@@ -367,7 +367,7 @@ public class Mekanism
 
 		if (MekanismConfig.recipes.enableTeleporterCore) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.TeleportationCore), new Object[]{
-					"LAL", "GDG", "LAL", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('G'), "ingotGold", Character.valueOf('D'), Items.diamond
+					"LAL", "GDG", "LAL", Character.valueOf('L'), Items.ender_pearl, Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('G'), "ingotGold", Character.valueOf('D'), Items.diamond
 			}));
 		}
 

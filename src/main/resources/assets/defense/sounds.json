@@ -1,0 +1,46 @@
+{
+	"aagun": {"category": "master", "sounds": [{"name": "aagun", "stream": false}]},
+	"airstrike": {"category": "master", "sounds": [{"name": "airstrike", "stream": false}]},
+	"alarm": {"category": "master", "sounds": [{"name": "alarm", "stream": false}]},
+	"antigravity": {"category": "master", "sounds": [{"name": "antigravity", "stream": false}]},
+	"antimatter": {"category": "master", "sounds": [{"name": "antimatter", "stream": false}]},
+	"beamcharging": {"category": "master", "sounds": [{"name": "beamcharging", "stream": false}]},
+	"collapse": {"category": "master", "sounds": [
+		{"name": "collapse1", "stream": false},
+		{"name": "collapse2", "stream": false},
+		{"name": "collapse3", "stream": false},
+		{"name": "collapse4", "stream": false},
+		{"name": "collapse5", "stream": false},
+		{"name": "collapse6", "stream": false},
+		{"name": "collapse7", "stream": false},
+		{"name": "collapse8", "stream": false}
+	]
+	},
+	"debilitation": {"category": "master", "sounds": [{"name": "debilitation", "stream": false}]},
+	"emp": {"category": "master", "sounds": [{"name": "emp", "stream": false}]},
+	"explosion": {"category": "master", "sounds": [{"name": "explosion", "stream": false}]},
+	"explosionfire": {"category": "master", "sounds": [{"name": "explosionfire", "stream": false}]},
+	"gasleak": {"category": "master", "sounds": [{"name": "gasleak", "stream": false}]},
+	"hypersonic": {"category": "master", "sounds": [{"name": "hypersonic", "stream": false}]},
+	"interface": {"category": "master", "sounds": [{"name": "interface", "stream": false}]},
+	"laser": {"category": "master", "sounds": [{"name": "laser", "stream": false}]},
+	"lasershot": {"category": "master", "sounds": [{"name": "lasershot", "stream": false}]},
+	"machinegun": {"category": "master", "sounds": [
+		{"name": "machinegun1", "stream": false},
+		{"name": "machinegun2", "stream": false}
+	]
+	},
+	"machinehum": {"category": "master", "sounds": [{"name": "machinehum", "stream": false}]},
+	"missileinair": {"category": "master", "sounds": [{"name": "missileinair", "stream": false}]},
+	"missilelaunch": {"category": "master", "sounds": [
+		{"name": "missilelaunch1", "stream": false},
+		{"name": "missilelaunch2", "stream": false}
+	]
+	},
+	"powerdown": {"category": "master", "sounds": [{"name": "powerdown", "stream": false}]},
+	"radaralarm": {"category": "master", "sounds": [{"name": "radaralarm", "stream": false}]},
+	"railgun": {"category": "master", "sounds": [{"name": "railgun", "stream": false}]},
+	"redmatter": {"category": "master", "sounds": [{"name": "redmatter", "stream": false}]},
+	"sonicwave": {"category": "master", "sounds": [{"name": "sonicwave", "stream": false}]},
+	"targetlocked": {"category": "master", "sounds": [{"name": "targetlocked", "stream": false}]}
+}

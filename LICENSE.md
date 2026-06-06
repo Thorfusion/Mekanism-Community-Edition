@@ -5,6 +5,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Copyright © 2016 Aidan Brady
 
+## Note that Mekanism Community Edition: DefenTech module has its own license:
+Currently: ALL RIGHTS RESERVED UNTIL FURTHER NOTICE
+This means, no distrobution of the module. It can be used in modpacks yes.
+
 ## Note that modifications made by Thorfusion, Terralization, maggi373 and others contributing to this fork goes under:
 # Mekanism 1.7.10 Community Edition License
 “Commons Clause” License Condition v1.0

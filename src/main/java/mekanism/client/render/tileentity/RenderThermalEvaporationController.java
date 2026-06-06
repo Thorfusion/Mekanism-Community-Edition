@@ -22,6 +22,9 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer
 {
+	// Keep display-list generation bounded to avoid large one-time render stalls.
+	private static final int FLUID_RENDER_STAGE_DIVISOR = 1000;
+	private static final int MAX_FLUID_RENDER_STAGES = 256;
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
@@ -51,8 +54,14 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid());
-				displayList[(int) (((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()) * ((float) getStages(data.height) - 1))].render();
+				int stages = getStages(data.height);
+				int displayIndex = Math.min(stages - 1, (int)(((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()) * (stages - 1)));
+				DisplayInteger displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid(), displayIndex, stages);
+
+				if(displayList != null)
+				{
+					displayList.render();
+				}
 
 
 				MekanismRenderer.glowOff();
@@ -79,92 +88,94 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger[] getListAndRender(SalinationRenderData data, Fluid fluid)
+	private DisplayInteger getListAndRender(SalinationRenderData data, Fluid fluid, int stage, int stages)
 	{
-		if(cachedCenterFluids.containsKey(data) && cachedCenterFluids.get(data).containsKey(fluid))
+		if(fluid == null || fluid.getIcon() == null)
 		{
-			return cachedCenterFluids.get(data).get(fluid);
+			return null;
+		}
+
+		HashMap<Fluid, DisplayInteger[]> fluidCache = cachedCenterFluids.get(data);
+
+		if(fluidCache == null)
+		{
+			fluidCache = new HashMap<Fluid, DisplayInteger[]>();
+			cachedCenterFluids.put(data, fluidCache);
+		}
+
+		DisplayInteger[] displays = fluidCache.get(fluid);
+
+		if(displays == null || displays.length != stages)
+		{
+			displays = new DisplayInteger[stages];
+			fluidCache.put(fluid, displays);
+		}
+
+		int clampedStage = Math.max(0, Math.min(stages - 1, stage));
+		DisplayInteger cachedDisplay = displays[clampedStage];
+
+		if(cachedDisplay != null)
+		{
+			return cachedDisplay;
 		}
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(fluid.getIcon());
 
-		final int stages = getStages(data.height);
-		DisplayInteger[] displays = new DisplayInteger[stages];
-
-		if(cachedCenterFluids.containsKey(data))
+		switch(data.side)
 		{
-			cachedCenterFluids.get(data).put(fluid, displays);
-		}
-		else {
-			HashMap<Fluid, DisplayInteger[]> map = new HashMap<Fluid, DisplayInteger[]>();
-			map.put(fluid, displays);
-			cachedCenterFluids.put(data, map);
+			case NORTH:
+				toReturn.minX = 0 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = 0 + .01;
+
+				toReturn.maxX = 2 - .01;
+				toReturn.maxY = ((float)clampedStage/(float)stages)*data.height - .01;
+				toReturn.maxZ = 2 - .01;
+				break;
+			case SOUTH:
+				toReturn.minX = -1 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = -1 + .01;
+
+				toReturn.maxX = 1 - .01;
+				toReturn.maxY = ((float)clampedStage/(float)stages)*data.height - .01;
+				toReturn.maxZ = 1 - .01;
+				break;
+			case WEST:
+				toReturn.minX = 0 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = -1 + .01;
+
+				toReturn.maxX = 2 - .01;
+				toReturn.maxY = ((float)clampedStage/(float)stages)*data.height - .01;
+				toReturn.maxZ = 1 - .01;
+				break;
+			case EAST:
+				toReturn.minX = -1 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = 0 + .01;
+
+				toReturn.maxX = 1 - .01;
+				toReturn.maxY = ((float)clampedStage/(float)stages)*data.height - .01;
+				toReturn.maxZ = 2 - .01;
+				break;
 		}
 
+		DisplayInteger display = DisplayInteger.createAndStart();
 		MekanismRenderer.colorFluid(fluid);
-
-		for(int i = 0; i < stages; i++)
-		{
-			displays[i] = DisplayInteger.createAndStart();
-
-			if(fluid.getIcon() != null)
-			{
-				switch(data.side)
-				{
-					case NORTH:
-						toReturn.minX = 0 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = 0 + .01;
-
-						toReturn.maxX = 2 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 2 - .01;
-						break;
-					case SOUTH:
-						toReturn.minX = -1 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = -1 + .01;
-
-						toReturn.maxX = 1 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 1 - .01;
-						break;
-					case WEST:
-						toReturn.minX = 0 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = -1 + .01;
-
-						toReturn.maxX = 2 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 1 - .01;
-						break;
-					case EAST:
-						toReturn.minX = -1 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = 0 + .01;
-
-						toReturn.maxX = 1 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 2 - .01;
-						break;
-				}
-
-				MekanismRenderer.renderObject(toReturn);
-			}
-
-			displays[i].endList();
-		}
-
+		MekanismRenderer.renderObject(toReturn);
+		display.endList();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-		return displays;
+		displays[clampedStage] = display;
+		return display;
 	}
 
 	private int getStages(int height)
 	{
-		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
+		int stages = height * Math.max(1, TankUpdateProtocol.FLUID_PER_TANK / FLUID_RENDER_STAGE_DIVISOR);
+		return Math.max(2, Math.min(MAX_FLUID_RENDER_STAGES, stages));
 	}
 
 	private double getX(int x)
@@ -192,6 +203,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 		{
 			int code = 1;
 			code = 31 * code + height;
+			code = 31 * code + (side == null ? 0 : side.ordinal());
 			return code;
 		}
 

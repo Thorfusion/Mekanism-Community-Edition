@@ -1,0 +1,16 @@
+[
+{
+  "modid": "DefenseTech",
+  "name": "MEK:CE DefenseTech",
+  "description": "DefenseTech is a Minecraft add-on featuring high-tech weaponry and defense technologies, including missiles, devastating explosives, and other nifty gadgets. The mod serves as a continuation of Calclavia's classic mod 'ICBM.'",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "authors": [
+    "aidancbrady"
+  ],
+  "credits": "",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": ["Mekanism"]
+}
+]
