@@ -24,6 +24,8 @@ import defense.common.item.ItemMissile;
 
 public class TileCruiseLauncher extends TileLauncherPrefab implements IBlockActivate, IInventory, ILauncherContainer
 {
+    public static final int MAX_MISSILE_TIER = 2;
+
     // The missile that this launcher is holding
     public IMissile daoDan = null;
 
@@ -153,7 +155,7 @@ public class TileCruiseLauncher extends TileLauncherPrefab implements IBlockActi
                             if (this.daoDan == null)
                             {
 
-                                if (missile.isCruise() && missile.getTier() <= 3)
+                                if (missile.isCruise() && missile.getTier() <= MAX_MISSILE_TIER)
                                 {
                                     Pos3D startingPosition = new Pos3D((this.xCoord + 0.5f), (this.yCoord + 1f), (this.zCoord + 0.5f));
                                     this.daoDan = new EntityMissile(this.worldObj, startingPosition, new Pos3D(this), haoMa);
@@ -203,7 +205,7 @@ public class TileCruiseLauncher extends TileLauncherPrefab implements IBlockActi
         {
             Explosion missile = (Explosion) ExplosiveRegistry.get(this.inventory[0].getItemDamage());
 
-            if (missile != null && missile.getID() == daoDan.getExplosiveType().getID() && missile.isCruise() && missile.getTier() <= 3)
+            if (missile != null && missile.getID() == daoDan.getExplosiveType().getID() && missile.isCruise() && missile.getTier() <= MAX_MISSILE_TIER)
             {
                 if (getEnergy() == getMaxEnergy())
                 {
@@ -304,7 +306,7 @@ public class TileCruiseLauncher extends TileLauncherPrefab implements IBlockActi
                 {
                     Explosion missile = (Explosion) ExplosiveRegistry.get(itemStack.getItemDamage());
 
-                    if (missile.isCruise() && missile.getTier() <= 3)
+                    if (missile.isCruise() && missile.getTier() <= MAX_MISSILE_TIER)
                     {
                         return true;
                     }

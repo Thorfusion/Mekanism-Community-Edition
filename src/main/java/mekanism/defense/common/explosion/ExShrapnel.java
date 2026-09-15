@@ -9,7 +9,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import defense.client.model.missile.ModelAnvilMissile;
-import defense.client.model.missile.ModelFragmentationMissile;
 import defense.client.model.missile.ModelMissileBase;
 import defense.client.model.missile.ModelShrapnelMissile;
 import defense.common.explosive.Explosive;
@@ -35,7 +34,7 @@ public class ExShrapnel extends Explosion
     		return new ModelAnvilMissile();
     	}
         else {
-            return new ModelFragmentationMissile();
+            return new ModelShrapnelMissile();
         }
     }
 

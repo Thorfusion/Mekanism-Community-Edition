@@ -18,7 +18,7 @@ public class Settings
     public static int MAX_MISSILE_DISTANCE = 10000;
     public static int ANTIMATTER_SIZE = 55;
     public static boolean DESTROY_BEDROCK = true;
-    public static int MAX_ROCKET_LAUNCHER_TIER = 2;
+    public static int MAX_ROCKET_LAUNCHER_TIER = 1;
     public static boolean GENERATE_SULFUR = true;
     public static int MAX_REDMATTER_LIFESPAN = 3600;
     public static boolean DO_REDMATTER_DESPAWN = true;
@@ -35,7 +35,7 @@ public class Settings
         MAX_MISSILE_DISTANCE = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Max Missile Distance", 10000).getInt(10000);
         ANTIMATTER_SIZE = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Explosion Size", 55).getInt(55);
         DESTROY_BEDROCK = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Destroy Bedrock", true).getBoolean(true);
-        MAX_ROCKET_LAUNCHER_TIER = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Rocket Launcher Max Missile Tier", 2).getInt(2);
+        MAX_ROCKET_LAUNCHER_TIER = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Rocket Launcher Max Missile Tier", 1).getInt(1);
         GENERATE_SULFUR = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Generate Sulfur Ore", true).getBoolean(true);
         MAX_REDMATTER_LIFESPAN = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "RedMatter Life Span in ticks", 3600).getInt(3600);
         DO_REDMATTER_DESPAWN = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "RedMatter despawn", true).getBoolean(true);

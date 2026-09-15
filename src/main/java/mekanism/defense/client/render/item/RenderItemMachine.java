@@ -60,51 +60,28 @@ public class RenderItemMachine implements IItemRenderer
             GL11.glRotatef(180f, 0f, 0f, 1f);
             GL11.glScalef(0.4f, 0.4f, 0.4f);
 
-            if (tier == BaseTier.BASIC)
-            {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherBase.TEXTURE_FILE_0);
-                RenderLauncherBase.modelBase0.render(0.0625F);
-                RenderLauncherBase.modelRail0.render(0.0625F);
-            }
-            else if (tier == BaseTier.ADVANCED)
-            {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherBase.TEXTURE_FILE_1);
-
-                RenderLauncherBase.modelBase1.render(0.0625F);
-                RenderLauncherBase.modelRail1.render(0.0625F);
-                GL11.glRotatef(180F, 0F, 180F, 1.0F);
-                RenderLauncherBase.modelRail1.render(0.0625F);
-            }
-            else if (tier == BaseTier.ELITE)
-            {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherBase.TEXTURE_FILE_2);
-                RenderLauncherBase.modelBase2.render(0.0625F);
-                RenderLauncherBase.modelRail2.render(0.0625F);
-                GL11.glRotatef(180F, 0F, 180F, 1.0F);
-                RenderLauncherBase.modelRail2.render(0.0625F);
-            }
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherBase.getTexture(tier.ordinal()));
+            RenderLauncherBase.MODEL_BASE.render(0.0625F);
+            RenderLauncherBase.MODEL_RAIL.render(0.0625F);
         }
         else if (metadata == MachineData.LauncherScreen.ordinal())
         {
         	BaseTier tier = ((ItemBlockMachine)item.getItem()).getBaseTier(item);
-            GL11.glTranslatef(0f, 0.9f, 0f);
-            GL11.glRotatef(180f, 0f, 0f, 1f);
-            GL11.glRotatef(180f, 0f, 180f, 1f);
-
-            if (tier == BaseTier.BASIC)
+            if (tier == BaseTier.ELITE)
             {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherScreen.TEXTURE_FILE_0);
-                RenderLauncherScreen.model0.render(0.0625F);
-            }
-            else if (tier == BaseTier.ADVANCED)
-            {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherScreen.TEXTURE_FILE_1);
-                RenderLauncherScreen.model1.render(0.0625F);
-            }
-            else if (tier == BaseTier.ELITE)
-            {
+                GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
+                GL11.glScalef(0.8F, 0.8F, 0.8F);
+                GL11.glTranslatef(0.0F, -0.8F, 0.0F);
                 FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherScreen.TEXTURE_FILE_2);
-                RenderLauncherScreen.model2.render(0.0625F);
+                RenderLauncherScreen.renderT3(FMLClientHandler.instance().getClient().renderEngine);
+            }
+            else
+            {
+                GL11.glTranslatef(0f, 0.9f, 0f);
+                GL11.glRotatef(180f, 0f, 0f, 1f);
+                GL11.glRotatef(180f, 0f, 180f, 1f);
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderLauncherScreen.getTexture(tier.ordinal()));
+                RenderLauncherScreen.MODEL_T1.render(0.0625F);
             }
         }
         else if (metadata == MachineData.LauncherFrame.ordinal())

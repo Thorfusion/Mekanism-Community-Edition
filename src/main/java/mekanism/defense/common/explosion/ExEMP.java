@@ -8,8 +8,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import defense.client.model.missile.ModelEMPMissile;
 import defense.client.model.missile.ModelMissileBase;
+import defense.client.model.missile.ModelRepulsiveMissile;
 import defense.common.explosive.blast.BlastEMP;
 
 public class ExEMP extends Explosion
@@ -23,7 +23,7 @@ public class ExEMP extends Explosion
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelEMPMissile();
+        return new ModelRepulsiveMissile();
     }
 
     @Override

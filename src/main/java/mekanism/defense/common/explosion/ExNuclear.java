@@ -7,9 +7,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import defense.client.model.missile.ModelIncendiaryMissile;
 import defense.client.model.missile.ModelMissileBase;
-import defense.client.model.missile.ModelThermobaricMissile;
-import defense.client.model.missile.ModelNuclearMissile;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.blast.BlastNuclear;
 
@@ -24,13 +23,7 @@ public class ExNuclear extends Explosion
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	if(getTier() == 3)
-    	{
-    		return new ModelNuclearMissile();
-    	}
-    	else {
-    		return new ModelThermobaricMissile();
-    	}
+        return new ModelIncendiaryMissile();
     }
 
     @Override
