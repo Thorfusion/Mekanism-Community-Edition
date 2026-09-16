@@ -6,8 +6,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import defense.client.model.missile.ModelMissileBase;
 import defense.client.model.missile.ModelRedMatterMissile;
+import defense.client.model.missile.ModelMissileBase;
 import defense.common.explosive.blast.BlastRedmatter;
 
 public class ExRedMatter extends Explosion
@@ -21,7 +21,7 @@ public class ExRedMatter extends Explosion
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelRedMatterMissile();
+		return new ModelRedMatterMissile();
     }
 
     @Override

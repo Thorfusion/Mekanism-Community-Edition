@@ -7,8 +7,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import defense.client.model.missile.ModelAntiGravitationalMissile;
 import defense.client.model.missile.ModelMissileBase;
+import defense.client.model.missile.ModelRepulsiveMissile;
 import defense.common.explosive.blast.BlastAntiGravitational;
 
 public class ExAntiGravitational extends Explosion
@@ -22,7 +22,7 @@ public class ExAntiGravitational extends Explosion
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelAntiGravitationalMissile();
+        return new ModelRepulsiveMissile();
     }
 
     @Override

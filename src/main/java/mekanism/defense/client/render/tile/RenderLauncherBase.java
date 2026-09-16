@@ -10,11 +10,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import defense.client.model.tile.ModelLauncherBaseT1;
-import defense.client.model.tile.ModelLauncherBaseT2;
-import defense.client.model.tile.ModelLauncherBaseT3;
 import defense.client.model.tile.ModelLauncherRailT1;
-import defense.client.model.tile.ModelLauncherRailT2;
-import defense.client.model.tile.ModelLauncherRailT3;
 import defense.common.Reference;
 import defense.common.tile.TileLauncherBase;
 
@@ -25,14 +21,8 @@ public class RenderLauncherBase extends TileEntitySpecialRenderer
     public static final ResourceLocation TEXTURE_FILE_1 = new ResourceLocation(Reference.DOMAIN, Reference.MODEL_TEXTURE_PATH + "launcher_1.png");
     public static final ResourceLocation TEXTURE_FILE_2 = new ResourceLocation(Reference.DOMAIN, Reference.MODEL_TEXTURE_PATH + "launcher_2.png");
 
-    public static final ModelLauncherBaseT1 modelBase0 = new ModelLauncherBaseT1();
-    public static final ModelLauncherRailT1 modelRail0 = new ModelLauncherRailT1();
-
-    public static final ModelLauncherBaseT2 modelBase1 = new ModelLauncherBaseT2();
-    public static final ModelLauncherRailT2 modelRail1 = new ModelLauncherRailT2();
-
-    public static final ModelLauncherBaseT3 modelBase2 = new ModelLauncherBaseT3();
-    public static final ModelLauncherRailT3 modelRail2 = new ModelLauncherRailT3();
+    public static final ModelLauncherBaseT1 MODEL_BASE = new ModelLauncherBaseT1();
+    public static final ModelLauncherRailT1 MODEL_RAIL = new ModelLauncherRailT1();
 
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f)
@@ -52,31 +42,24 @@ public class RenderLauncherBase extends TileEntitySpecialRenderer
             GL11.glRotatef(90F, 0F, 180F, 1.0F);
         }
 
-        // The missile launcher screen
-        if (tileEntity.getTier() == 0)
-        {
-            this.bindTexture(TEXTURE_FILE_0);
-            modelBase0.render(0.0625F);
-            modelRail0.render(0.0625F);
-        }
-        else if (tileEntity.getTier() == 1)
-        {
-            this.bindTexture(TEXTURE_FILE_1);
-            modelBase1.render(0.0625F);
-            modelRail1.render(0.0625F);
-            GL11.glRotatef(180F, 0F, 180F, 1.0F);
-            modelRail1.render(0.0625F);
-        }
-        else if (tileEntity.getTier() == 2)
-        {
-            this.bindTexture(TEXTURE_FILE_2);
-            modelBase2.render(0.0625F);
-            modelRail2.render(0.0625F);
-            GL11.glRotatef(180F, 0F, 180F, 1.0F);
-            modelRail2.render(0.0625F);
-        }
+        this.bindTexture(getTexture(tileEntity.getTier()));
+        MODEL_BASE.render(0.0625F);
+        MODEL_RAIL.render(0.0625F);
 
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glPopMatrix();
+    }
+
+    public static ResourceLocation getTexture(int tier)
+    {
+        switch (tier)
+        {
+            case 1:
+                return TEXTURE_FILE_1;
+            case 2:
+                return TEXTURE_FILE_2;
+            default:
+                return TEXTURE_FILE_0;
+        }
     }
 }

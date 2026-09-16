@@ -5,8 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import defense.client.model.missile.ModelClusterMissile;
 import defense.client.model.missile.ModelMissileBase;
+import defense.client.model.missile.ModelShrapnelMissile;
 import defense.common.entity.EntityMissile;
 import defense.common.entity.EntityMissile.MissileType;
 import defense.common.explosive.blast.BlastRepulsive;
@@ -27,7 +27,7 @@ public class MissileCluster extends Missile
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelClusterMissile();
+        return new ModelShrapnelMissile();
     }
 
     @Override

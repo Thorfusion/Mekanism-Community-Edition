@@ -8,7 +8,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import defense.client.model.missile.ModelChemicalMissile;
-import defense.client.model.missile.ModelContagiousMissile;
 import defense.client.model.missile.ModelMissileBase;
 import defense.common.DefenseTechItems;
 import defense.common.explosive.Explosive;
@@ -30,7 +29,7 @@ public class ExChemical extends Explosion
     		return new ModelChemicalMissile();
     	}
     	else {
-    		return new ModelContagiousMissile();
+            return new ModelChemicalMissile();
     	}
     }
 

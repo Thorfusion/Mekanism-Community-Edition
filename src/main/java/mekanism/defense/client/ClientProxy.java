@@ -9,7 +9,6 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.entity.RenderMinecart;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,6 +37,7 @@ import defense.client.gui.GuiRadarStation;
 import defense.client.render.RenderUtils;
 import defense.client.render.block.BlockRenderingHandler;
 import defense.client.render.entity.RenderEntityExplosive;
+import defense.client.render.entity.RenderBombCart;
 import defense.client.render.entity.RenderExplosion;
 import defense.client.render.entity.RenderGrenade;
 import defense.client.render.entity.RenderLightBeam;
@@ -112,7 +112,7 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityExplosion.class, new RenderExplosion());
         RenderingRegistry.registerEntityRenderingHandler(EntityLightBeam.class, new RenderLightBeam());
         RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, new RenderGrenade());
-        RenderingRegistry.registerEntityRenderingHandler(EntityBombCart.class, new RenderMinecart());
+        RenderingRegistry.registerEntityRenderingHandler(EntityBombCart.class, new RenderBombCart());
         
         RenderingRegistry.registerBlockHandler(new RenderBombBlock());
         RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());

@@ -1,18 +1,14 @@
 package defense.common.block;
 
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import mekanism.api.Pos3D;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,9 +21,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -38,7 +34,6 @@ import defense.api.ExplosionEvent.ExplosivePreDetonationEvent;
 import defense.api.ExplosiveType;
 import defense.client.render.tile.RenderBombBlock;
 import defense.common.CreativeTabHandler;
-import defense.common.Reference;
 import defense.common.entity.EntityExplosive;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.ExplosiveRegistry;
@@ -46,9 +41,7 @@ import defense.common.tile.TileExplosive;
 
 public class BlockExplosive extends BlockBase
 {
-    public final IIcon[] ICON_TOP = new IIcon[100];
-    public final IIcon[] ICON_SIDE = new IIcon[100];
-    public final IIcon[] ICON_BOTTOM = new IIcon[100];
+    private final Map<Integer, IIcon[]> explosiveIcons = new HashMap<Integer, IIcon[]>();
 
     public BlockExplosive()
     {
@@ -184,60 +177,40 @@ public class BlockExplosive extends BlockBase
     @Override
     public IIcon getIcon(IBlockAccess par1IBlockAccess, int x, int y, int z, int side)
     {
-        int explosiveID = ((TileExplosive)par1IBlockAccess.getTileEntity(x, y, z)).explosiveID;
-        return getIcon(side, explosiveID);
+        TileEntity tileEntity = par1IBlockAccess.getTileEntity(x, y, z);
+        return tileEntity instanceof TileExplosive ? getIcon(side, ((TileExplosive)tileEntity).explosiveID) : Blocks.tnt.getIcon(side, 0);
     }
 
     @Override
     public IIcon getIcon(int side, int explosiveID)
     {
-        if(side == 0)
+        IIcon[] icons = explosiveIcons.get(explosiveID);
+        if(icons == null)
         {
-            return ICON_BOTTOM[explosiveID];
-        }
-        else if(side == 1)
-        {
-            return ICON_TOP[explosiveID];
+            return Blocks.tnt.getIcon(side, 0);
         }
 
-        return ICON_SIDE[explosiveID];
+        return icons[side == 0 ? 0 : side == 1 ? 1 : 2];
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        /** Register every single texture for all explosives. */
-        for(Explosive zhaPin : ExplosiveRegistry.getExplosives())
+        explosiveIcons.clear();
+
+        for(Explosive explosive : ExplosiveRegistry.getExplosives())
         {
-            ICON_TOP[zhaPin.getID()] = getIcon(iconRegister, zhaPin, "_top");
-            ICON_SIDE[zhaPin.getID()] = getIcon(iconRegister, zhaPin, "_side");
-            ICON_BOTTOM[zhaPin.getID()] = getIcon(iconRegister, zhaPin, "_bottom");
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IIconRegister iconRegister, Explosive zhaPin, String suffix)
-    {
-        String iconName = "explosive_" + zhaPin.getUnlocalizedName() + suffix;
-
-        try {
-            ResourceLocation resourcelocation = new ResourceLocation(Reference.DOMAIN, Reference.BLOCK_PATH + iconName + ".png");
-            InputStream inputstream = Minecraft.getMinecraft().getResourceManager().getResource(resourcelocation).getInputStream();
-            BufferedImage bufferedimage = ImageIO.read(inputstream);
-
-            if(bufferedimage != null)
+            if(explosive.hasBlockForm() && explosive != Explosive.sMine)
             {
-                return iconRegister.registerIcon(Reference.PREFIX + iconName);
+                String base = "explosive_" + explosive.getUnlocalizedName() + "_";
+                explosiveIcons.put(explosive.getID(), new IIcon[] {
+                        iconRegister.registerIcon("defense:" + base + "bottom"),
+                        iconRegister.registerIcon("defense:" + base + "top"),
+                        iconRegister.registerIcon("defense:" + base + "side")
+                });
             }
-        } catch(Exception e) {}
-
-        if(suffix.equals("_bottom"))
-        {
-            return iconRegister.registerIcon(Reference.PREFIX + "explosive_bottom_" + zhaPin.getTier());
         }
-
-        return iconRegister.registerIcon(Reference.PREFIX + "explosive_base_" + zhaPin.getTier());
     }
 
     @Override

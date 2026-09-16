@@ -90,7 +90,7 @@ public class ItemRocketLauncher extends ItemEnergized
 
                                 if (((Explosion) ex) != null && !evt.isCanceled())
                                 {
-                                    // Limit the missile to tier two.
+                                    // The handheld launcher is intentionally a T1-only weapon.
                                     if (((Explosion) ex).getTier() <= Settings.MAX_ROCKET_LAUNCHER_TIER && ((Explosion) ex).isCruise())
                                     {
                                         Pos3D launcher = new Pos3D(player).translate(new Pos3D(0, 0.5, 0));

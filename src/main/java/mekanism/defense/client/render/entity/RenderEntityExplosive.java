@@ -12,6 +12,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import defense.client.render.RenderUtils;
 import defense.common.DefenseTechBlocks;
 import defense.common.entity.EntityExplosive;
+import defense.common.explosive.Explosive;
+import defense.common.explosive.ExplosiveRegistry;
 
 @SideOnly(Side.CLIENT)
 public class RenderEntityExplosive extends Render
@@ -53,8 +55,9 @@ public class RenderEntityExplosive extends Render
         }
 
         f2 = (1.0F - (entityExplosive.fuse - par9 + 1.0F) / 100.0F) * 0.8F;
-        RenderUtils.setTerrainTexture();
-        this.blockRenderer.renderBlockAsItem(DefenseTechBlocks.blockExplosive, entityExplosive.explosiveID, entityExplosive.getBrightness(par9));
+        Explosive explosive = ExplosiveRegistry.get(entityExplosive.explosiveID);
+        boolean customModel = explosive != null && explosive.getBlockModel() != null && explosive.getBlockResource() != null;
+        renderExplosive(entityExplosive, explosive, customModel, entityExplosive.getBrightness(par9), true);
 
         if (entityExplosive.fuse / 5 % 2 == 0)
         {
@@ -63,11 +66,40 @@ public class RenderEntityExplosive extends Render
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f2);
-            this.blockRenderer.renderBlockAsItem(DefenseTechBlocks.blockExplosive, entityExplosive.explosiveID, 1.0F);
+            renderExplosive(entityExplosive, explosive, customModel, 1.0F, false);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
+
+        GL11.glPopMatrix();
+    }
+
+    private void renderExplosive(EntityExplosive entityExplosive, Explosive explosive, boolean customModel, float brightness, boolean bindTexture)
+    {
+        GL11.glPushMatrix();
+
+        if(customModel)
+        {
+            // Match Mekanism's primed Obsidian TNT presentation rather than
+            // the ground-aligned tile transform.
+            GL11.glTranslatef(0.0F, 1.2F, 0.0F);
+            GL11.glScalef(0.8F, 0.8F, 0.8F);
+            GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+            if(bindTexture)
+            {
+                bindTexture(explosive.getBlockResource());
+            }
+            explosive.getBlockModel().render(0.0625F);
+        }
+        else
+        {
+            if(bindTexture)
+            {
+                RenderUtils.setTerrainTexture();
+            }
+            blockRenderer.renderBlockAsItem(DefenseTechBlocks.blockExplosive, entityExplosive.explosiveID, brightness);
         }
 
         GL11.glPopMatrix();

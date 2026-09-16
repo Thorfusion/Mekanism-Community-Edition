@@ -26,7 +26,7 @@ public class ExAntimatter extends Explosion
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelAntimatterMissile();
+		return new ModelAntimatterMissile();
     }
 
     /** Called when the explosive is on fuse and going to explode. Called only when the explosive is

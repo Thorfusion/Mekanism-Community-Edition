@@ -8,7 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import defense.api.ITarget;
 import defense.api.ITarget.TargetType;
-import defense.client.model.missile.ModelAntiMissileMissile;
+import defense.client.model.missile.ModelHomingMissile;
 import defense.client.model.missile.ModelMissileBase;
 import defense.common.Reference;
 import defense.common.entity.EntityMissile;
@@ -30,7 +30,7 @@ public class MissileAntiBallistic extends Missile
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getMissileModel()
     {
-    	return new ModelAntiMissileMissile();
+        return new ModelHomingMissile();
     }
 
     @Override

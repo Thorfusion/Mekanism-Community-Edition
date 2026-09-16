@@ -57,15 +57,8 @@ public class RenderItemMissile implements IItemRenderer
 					scale = scale / 1.7f;
 					right = 0.5f;
 				}
-				else if (missile.getTier() == 4)
-				{
-					scale = scale / 1.4f;
-					right = 0.2f;
-				}
-
 				GL11.glTranslatef(right, 0f, 0f);
 			}
-
 			if (type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.EQUIPPED)
 			{
 				GL11.glTranslatef(1.15f, 1f, 0.5f);
@@ -80,6 +73,8 @@ public class RenderItemMissile implements IItemRenderer
 			{
 				scale = scale / 1.5f;
 			}
+
+			scale = scale * RenderMissile.getTierScale(missile.getTier());
 
 			GL11.glScalef(scale, scale, scale);
 

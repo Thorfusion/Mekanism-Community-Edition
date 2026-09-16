@@ -48,6 +48,9 @@ public class RenderMissile extends Render
                 GL11.glScalef(0.5f, 0.5f, 0.5f);
             }
 
+            float tierScale = getTierScale(missile.getTier());
+            GL11.glScalef(tierScale, tierScale, tierScale);
+
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(missile.getMissileResource());
             
             synchronized (cache)
@@ -62,6 +65,12 @@ public class RenderMissile extends Render
 
             GL11.glPopMatrix();
         }
+    }
+
+    public static float getTierScale(int tier)
+    {
+        int clampedTier = Math.max(1, Math.min(4, tier));
+        return 1.0F + (clampedTier - 1) * 0.06F;
     }
 
     @Override

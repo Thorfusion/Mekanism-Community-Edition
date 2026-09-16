@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -14,10 +13,8 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import defense.client.model.tile.ModelSMine;
 import defense.client.render.RenderUtils;
 import defense.common.DefenseTech;
-import defense.common.Reference;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.ExplosiveRegistry;
 import defense.common.tile.TileExplosive;
@@ -25,7 +22,6 @@ import defense.common.tile.TileExplosive;
 @SideOnly(Side.CLIENT)
 public class RenderBombBlock extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler
 {
-    public static final ResourceLocation TEXTURE_FILE = new ResourceLocation(Reference.DOMAIN, Reference.MODEL_TEXTURE_PATH + "s-mine.png");
     public static final int ID = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -33,13 +29,29 @@ public class RenderBombBlock extends TileEntitySpecialRenderer implements ISimpl
     {
         if(modelID == ID)
         {
-            if(metadata == Explosive.sMine.getID())
+            Explosive explosive = ExplosiveRegistry.get(metadata);
+
+            if(explosive != null && explosive.getBlockModel() != null && explosive.getBlockResource() != null)
             {
                 GL11.glPushMatrix();
-                GL11.glTranslatef(0.0F, 1.5F, 0.0F);
-                GL11.glRotatef(180f, 0f, 0f, 1f);
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(TEXTURE_FILE);
-                ModelSMine.INSTANCE.render(0.0625F);
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(explosive.getBlockResource());
+
+                if(explosive.usesTntBundleModel())
+                {
+                    // Match Mekanism's Obsidian TNT inventory transform. The
+                    // tile transform places this model far outside an item slot.
+                    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(180.0F, 0.0F, -1.0F, 0.0F);
+                    GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+                }
+                else
+                {
+                    GL11.glTranslatef(0.0F, 1.5F, 0.0F);
+                    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                }
+
+                explosive.getBlockModel().render(0.0625F);
+                RenderUtils.setTerrainTexture();
                 GL11.glPopMatrix();
             }
             else {

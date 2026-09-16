@@ -1,29 +1,254 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+name: Publish release
 
-name: Publish to Maven
 on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
 jobs:
   build:
-
+    name: Build, publish Maven, and attach GitHub assets
     runs-on: self-hosted
+    timeout-minutes: 90
+    environment: release
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 8
-      uses: actions/setup-java@v2
-      with:
-        java-version: '8'
-        distribution: 'adopt'
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build and Publish
-      run: ./gradlew fullbuild artifactoryPublish
-      env:
+      - name: Check out release tag
+        uses: actions/checkout@v7
+        with:
+          clean: true
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '8'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          validate-wrappers: true
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Verify tag matches the project version
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          project_version="$(sed -n 's/^mod_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+          if [[ -z "$project_version" || "$RELEASE_TAG" != "$project_version" ]]; then
+            echo "Release tag '$RELEASE_TAG' must equal gradle.properties mod_version '$project_version'." >&2
+            exit 1
+          fi
+
+      - name: Remove stale packaged artifacts
+        shell: bash
+        run: |
+          mkdir -p output
+          find output -maxdepth 1 -type f \( -name '*.jar' -o -name '*.zip' \) -delete
+
+      - name: Build release artifacts
+        run: ./gradlew --no-daemon --stacktrace clean fullBuild
+
+      - name: Validate packaged artifacts
+        shell: bash
+        run: bash .github/scripts/validate-release-artifacts.sh
+
+      - name: Publish release to Maven
+        run: ./gradlew --no-daemon --stacktrace artifactoryPublish
+        env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_TOKEN }}
           MAVEN_REPO: ${{ secrets.MAVEN_REPO }}
+
+      - name: Attach artifacts to GitHub release
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          github-tag: ${{ github.event.release.tag_name }}
+          github-generate-changelog: false
+          files: |
+            output/*-ALL.jar
+            output/*-API.jar
+            output/*-Core.jar
+            output/*-DEV.jar
+            output/*-DefenseTech.jar
+            output/*-Generators.jar
+            output/*-MDK.zip
+            output/*-Tools.jar
+            output/*-Ultimate.jar
+          version: ${{ github.event.release.tag_name }}
+
+      - name: Save release artifacts for publishing jobs
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ github.event.release.tag_name }}
+          path: |
+            output/*.jar
+            output/*.zip
+          if-no-files-found: error
+          # This artifact only passes the verified files to the parallel
+          # publishing jobs; GitHub Releases and Maven are the durable stores.
+          retention-days: 1
+          compression-level: 0
+
+  publish-modrinth-main:
+    name: Publish Modrinth main project
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 30
+    environment: release
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: release-${{ github.event.release.tag_name }}
+          path: output
+
+      # Core is the primary file on the main project. The combined ALL artifact
+      # is intentionally distributed through GitHub and Maven, not Modrinth.
+      - name: Publish Mekanism Community Edition to Modrinth
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          modrinth-id: toGHjw6t
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: |
+            output/*-Core.jar
+            output/*-API.jar
+            output/*-DEV.jar
+            output/*-MDK.zip
+          name: Mekanism Community Edition ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name }}
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
+          loaders: forge
+          game-versions: '1.7.10'
+          game-version-filter: none
+          java: '8'
+          environment: client | server
+          retry-attempts: 2
+
+  publish-modrinth-modules:
+    name: Publish Modrinth (${{ matrix.name }})
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 30
+    environment: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: DefenseTech
+            project-id: qBExn86I
+            file: output/*-DefenseTech.jar
+            beta-only: false
+          - name: Generators
+            project-id: ksSEAhTL
+            file: output/*-Generators.jar
+            beta-only: false
+          - name: Tools
+            project-id: CD05L8Jr
+            file: output/*-Tools.jar
+            beta-only: false
+          - name: Ultimate
+            project-id: Q6fY4JVC
+            file: output/*-Ultimate.jar
+            beta-only: true
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: release-${{ github.event.release.tag_name }}
+          path: output
+
+      - name: Publish ${{ matrix.name }} to Modrinth
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          modrinth-id: ${{ matrix.project-id }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: ${{ matrix.file }}
+          name: Mekanism Community Edition - ${{ matrix.name }} ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name }}
+          version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
+          changelog: ${{ github.event.release.body }}
+          loaders: forge
+          game-versions: '1.7.10'
+          game-version-filter: none
+          java: '8'
+          environment: client | server
+          modrinth-dependencies: toGHjw6t(required)
+          retry-attempts: 2
+
+  publish-curseforge:
+    name: Publish CurseForge (${{ matrix.name }})
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 30
+    environment: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Core
+            project-id: '399904'
+            file: output/*-Core.jar
+            dependencies: ''
+            beta-only: false
+          - name: DefenseTech
+            project-id: '1488821'
+            file: output/*-DefenseTech.jar
+            dependencies: mekanism-ce(required)
+            beta-only: false
+          - name: Generators
+            project-id: '813408'
+            file: output/*-Generators.jar
+            dependencies: mekanism-ce(required)
+            beta-only: false
+          - name: Tools
+            project-id: '813407'
+            file: output/*-Tools.jar
+            dependencies: mekanism-ce(required)
+            beta-only: false
+          - name: Ultimate
+            project-id: '872280'
+            file: output/*-Ultimate.jar
+            dependencies: mekanism-ce(required)
+            beta-only: true
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: release-${{ github.event.release.tag_name }}
+          path: output
+
+      - name: Publish ${{ matrix.name }} to CurseForge
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          curseforge-id: ${{ matrix.project-id }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: ${{ matrix.file }}
+          name: Mekanism Community Edition - ${{ matrix.name }} ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name }}
+          version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
+          changelog: ${{ github.event.release.body }}
+          loaders: forge
+          game-versions: '1.7.10'
+          game-version-filter: none
+          java: '8'
+          environment: client | server
+          curseforge-dependencies: ${{ matrix.dependencies }}
+          retry-attempts: 2

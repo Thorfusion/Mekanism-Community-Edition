@@ -12,7 +12,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import defense.api.IExplosive;
 import defense.client.model.missile.ModelMissileBase;
+import defense.client.model.tile.ModelExplosiveBundle;
 import defense.common.DefenseTechBlocks;
+import defense.common.Reference;
 import defense.common.explosion.ExAntiGravitational;
 import defense.common.explosion.ExAntimatter;
 import defense.common.explosion.ExBreaching;
@@ -238,14 +240,29 @@ public abstract class Explosive implements IExplosive
     @SideOnly(Side.CLIENT)
     public ModelMissileBase getBlockModel()
     {
-        return null;
+        return usesTntBundleModel() ? ModelExplosiveBundle.INSTANCE : null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public ResourceLocation getBlockResource()
     {
-        return null;
+        return usesTntBundleModel() ? new ResourceLocation(Reference.DOMAIN, Reference.MODEL_TEXTURE_PATH + "explosive_" + nameID + ".png") : null;
+    }
+
+    /**
+     * Physical charge and burst payloads use Mekanism's shared nine-tube
+     * geometry. Specialized field, nuclear and exotic payloads retain the
+     * cube shell represented by their registered top/side/bottom icons.
+     */
+    public boolean usesTntBundleModel()
+    {
+        return "condensed".equals(nameID)
+                || "shrapnel".equals(nameID)
+                || "incendiary".equals(nameID)
+                || "fragmentation".equals(nameID)
+                || "breaching".equals(nameID)
+                || "thermobaric".equals(nameID);
     }
 
     @Override
