@@ -129,7 +129,7 @@ jobs:
             output/*-API.jar
             output/*-DEV.jar
             output/*-MDK.zip
-          name: Mekanism Community Edition ${{ github.event.release.tag_name }}
+          name: Mekanism CE - CORE ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
@@ -180,7 +180,7 @@ jobs:
           modrinth-id: ${{ matrix.project-id }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: ${{ matrix.file }}
-          name: Mekanism Community Edition - ${{ matrix.name }} ${{ github.event.release.tag_name }}
+          name: Mekanism CE - ${{ matrix.name }} ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
           version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
           changelog: ${{ github.event.release.body }}
@@ -241,7 +241,7 @@ jobs:
           curseforge-id: ${{ matrix.project-id }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ matrix.file }}
-          name: Mekanism Community Edition - ${{ matrix.name }} ${{ github.event.release.tag_name }}
+          name: Mekanism CE - ${{ matrix.name }} ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
           version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
           changelog: ${{ github.event.release.body }}
