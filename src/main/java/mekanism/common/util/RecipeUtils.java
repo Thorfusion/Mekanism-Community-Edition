@@ -31,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class RecipeUtils 
 {
@@ -87,7 +88,10 @@ public class RecipeUtils
 	
 	private static boolean isFactory(ItemStack stack)
 	{
-		return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+		MachineType type = MachineType.get(stack);
+		Block ultimateFactory = GameRegistry.findBlock("MekanismUltimate", "UltimateFactory");
+		return type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY ||
+			(ultimateFactory != null && Block.getBlockFromItem(stack.getItem()) == ultimateFactory);
 	}
 	
 	public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn)

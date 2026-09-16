@@ -37,5 +37,30 @@
   "logoFile": "logo.png",
   "screenshots": [
   ]
+},
+{
+  "modid": "DefenseTech",
+  "name": "MEK:CE DefenseTech",
+  "description": "DefenseTech is a Minecraft add-on featuring high-tech weaponry and defense technologies, including missiles, devastating explosives, and other nifty gadgets. The mod serves as a continuation of Calclavia's classic mod 'ICBM.'",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "authors": ["aidancbrady"],
+  "credits": "",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": ["Mekanism"]
+},
+{
+  "modid": "MekanismUltimate",
+  "name": "Mekanism Community Edition: Ultimate",
+  "description": "Mekanism Ultimate module of Mekanism CE.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["maggi373", "DrParadox7", "Spoilers"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "dependencies": ["Mekanism"],
+  "screenshots": []
 }
 ]

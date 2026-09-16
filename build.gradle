@@ -97,7 +97,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**', 'assets/mekanism/gui/factory/GuiUltimateFactory.png', 'assets/mekanism/textures/blocks/factory/ultimate/**'
     }
 }
 
@@ -112,7 +112,7 @@ task alltJar(type: Jar) {
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mcmod.info', 'mekanism/defense/**', 'defense/**', 'assets/defense/**', 'mekanism/ultimate/**'
+        exclude 'mcmod.info'
     }
 }
 
@@ -161,9 +161,12 @@ task ultimateJar(type: Jar) {
         include '*.info'
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
+    from('etc/ultimate') {
+        include 'logo.png'
+    }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/ultimate/**'
+        include 'mekanism/ultimate/**', 'assets/mekanism/gui/factory/GuiUltimateFactory.png', 'assets/mekanism/textures/blocks/factory/ultimate/**'
         exclude 'mcmod.info'
     }
 }

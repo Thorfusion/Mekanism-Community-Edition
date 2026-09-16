@@ -68,8 +68,13 @@ for spec in "${expected[@]}"; do
     fi
 
     case "$classifier" in
-        ALL|Core)
+        Core)
             require_exact_entry 'mekanism/common/Mekanism.class' "$artifact"
+            ;;
+        ALL)
+            require_exact_entry 'mekanism/common/Mekanism.class' "$artifact"
+            require_exact_entry 'defense/common/DefenseTech.class' "$artifact"
+            require_exact_entry 'mekanism/ultimate/common/MekanismUltimate.class' "$artifact"
             ;;
         API)
             require_matching_entry '^mekanism/api/.*\.class$' 'compiled Mekanism API class' "$artifact"
@@ -92,9 +97,8 @@ for spec in "${expected[@]}"; do
             ;;
         Ultimate)
             require_exact_entry 'mcmod.info' "$artifact"
-            if ! grep -q '\.class$' "$listing"; then
-                echo "::warning file=$artifact::Ultimate currently contains metadata only and will be published as beta."
-            fi
+            require_exact_entry 'mekanism/ultimate/common/MekanismUltimate.class' "$artifact"
+            require_exact_entry 'mekanism/ultimate/common/tile/TileEntityUltimateFactory.class' "$artifact"
             ;;
     esac
 

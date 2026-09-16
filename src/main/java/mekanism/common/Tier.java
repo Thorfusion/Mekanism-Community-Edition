@@ -217,7 +217,8 @@ public final class Tier
 	{
 		BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png")),
 		ADVANCED(5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png")),
-		ELITE(7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png"));
+		ELITE(7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png")),
+		ULTIMATE(9, new ResourceLocation("mekanism", "gui/factory/GuiUltimateFactory.png"));
 
 		public final int processes;
 		public final ResourceLocation guiLocation;

@@ -61,11 +61,13 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -147,7 +149,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
     }
 
     public TileEntityFactory(FactoryTier type, MachineType machine) {
-        super("null", machine.name, machine.baseEnergy);
+        this(type, machine.name, machine.baseEnergy);
+    }
+
+    /** Constructor for factory tiers supplied by an optional module. */
+    protected TileEntityFactory(FactoryTier type, String name, double baseEnergy) {
+        super("null", name, baseEnergy);
 
         tier = type;
         inventory = new ItemStack[5 + type.processes * 2];
@@ -160,12 +167,24 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ELITE) {
+        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ULTIMATE) {
             return false;
         }
 
+        Block targetBlock = MekanismBlocks.MachineBlock;
+        int targetMetadata = 5 + upgradeTier.ordinal();
+
+        if (upgradeTier == BaseTier.ULTIMATE) {
+            targetBlock = GameRegistry.findBlock("MekanismUltimate", "UltimateFactory");
+            targetMetadata = 0;
+
+            if (targetBlock == null) {
+                return false;
+            }
+        }
+
         worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-        worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5 + tier.ordinal() + 1, 3);
+        worldObj.setBlock(xCoord, yCoord, zCoord, targetBlock, targetMetadata, 3);
 
         TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
 
@@ -344,15 +363,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
     public void sortInventory() {
         if (sorting) {
             boolean didOp = false;
-            int[] inputSlots = null;
+            int[] inputSlots = new int[tier.processes];
             List<InvID> invStacks = new ArrayList<InvID>();
 
-            if (tier == FactoryTier.BASIC) {
-                inputSlots = new int[] {5, 6, 7};
-            } else if (tier == FactoryTier.ADVANCED) {
-                inputSlots = new int[] {5, 6, 7, 8, 9};
-            } else if (tier == FactoryTier.ELITE) {
-                inputSlots = new int[] {5, 6, 7, 8, 9, 10, 11};
+            for (int i = 0; i < inputSlots.length; i++) {
+                inputSlots[i] = getInputSlot(i);
             }
 
             for (int id : inputSlots) {
@@ -460,11 +475,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
     public boolean canExtractItem(int slotID, ItemStack itemstack, int side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else if (tier == FactoryTier.BASIC && slotID >= 8 && slotID <= 10) {
-            return true;
-        } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
-            return true;
-        } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
+        } else if (slotID >= getOutputSlot(0) && slotID < getOutputSlot(0) + tier.processes) {
             return true;
         }
         return false;
@@ -472,24 +483,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
     @Override
     public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
-        if (tier == FactoryTier.BASIC) {
-            if (slotID >= 8 && slotID <= 10) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 7) {
-                return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
-            }
-        } else if (tier == FactoryTier.ADVANCED) {
-            if (slotID >= 10 && slotID <= 14) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 9) {
-                return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
-            }
-        } else if (tier == FactoryTier.ELITE) {
-            if (slotID >= 12 && slotID <= 18) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 11) {
-                return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
-            }
+        if (slotID >= getOutputSlot(0) && slotID < getOutputSlot(0) + tier.processes) {
+            return false;
+        } else if (slotID >= getInputSlot(0) && slotID < getInputSlot(0) + tier.processes) {
+            return recipeType.getAnyRecipe(itemstack, gasTank.getGasType(), infuseStored) != null;
         }
 
         if (slotID == 0) {

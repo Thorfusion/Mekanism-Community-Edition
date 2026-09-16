@@ -35,6 +35,10 @@ public class GuiFactory extends GuiMekanism
 		tileEntity = tentity;
 
 		ySize += 11;
+		if(tileEntity.tier == FactoryTier.ULTIMATE)
+		{
+			ySize += 16;
+		}
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, tileEntity.tier.guiLocation));
@@ -62,12 +66,16 @@ public class GuiFactory extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
 
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		int energyX = tileEntity.tier == FactoryTier.ULTIMATE ? 171 : 165;
+		if(xAxis >= energyX && xAxis <= energyX + 4 && yAxis >= 17 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 
-		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
+		int gaugeX = tileEntity.tier == FactoryTier.ULTIMATE ? 52 : 8;
+		int gaugeY = tileEntity.tier == FactoryTier.ULTIMATE ? 83 : 78;
+		int gaugeWidth = tileEntity.tier == FactoryTier.ULTIMATE ? 116 : 160;
+		if(xAxis >= gaugeX && xAxis <= gaugeX + gaugeWidth && yAxis >= gaugeY && yAxis <= gaugeY + 5)
 		{
 			if(tileEntity.recipeType.usesFuel())
 			{
@@ -97,12 +105,13 @@ public class GuiFactory extends GuiMekanism
 		int displayInt;
 
 		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+		int energyX = tileEntity.tier == FactoryTier.ULTIMATE ? 171 : 165;
+		drawTexturedModalRect(guiWidth + energyX, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
 
 		int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : (tileEntity.tier == FactoryTier.ADVANCED ? 
-			39 : 33);
+			39 : (tileEntity.tier == FactoryTier.ELITE ? 33 : 11));
 		int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : (tileEntity.tier == FactoryTier.ADVANCED ? 
-			26 : 19);
+			26 : (tileEntity.tier == FactoryTier.ELITE ? 19 : 18));
 		
 		for(int i = 0; i < tileEntity.tier.processes; i++)
 		{
@@ -116,14 +125,16 @@ public class GuiFactory extends GuiMekanism
 		{
 			if(tileEntity.getScaledGasLevel(160) > 0)
 			{
-				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getIcon());
+				int gaugeWidth = tileEntity.tier == FactoryTier.ULTIMATE ? 116 : 160;
+				displayGauge(tileEntity.tier == FactoryTier.ULTIMATE ? 52 : 8, tileEntity.tier == FactoryTier.ULTIMATE ? 83 : 78, tileEntity.getScaledGasLevel(gaugeWidth), 5, tileEntity.gasTank.getGas().getGas().getIcon());
 			}
 		}
 		else if(tileEntity.recipeType == RecipeType.INFUSING)
 		{
 			if(tileEntity.getScaledInfuseLevel(160) > 0)
 			{
-				displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.type.icon);
+				int gaugeWidth = tileEntity.tier == FactoryTier.ULTIMATE ? 116 : 160;
+				displayGauge(tileEntity.tier == FactoryTier.ULTIMATE ? 52 : 8, tileEntity.tier == FactoryTier.ULTIMATE ? 83 : 78, tileEntity.getScaledInfuseLevel(gaugeWidth), 5, tileEntity.infuseStored.type.icon);
 			}
 		}
 		
@@ -154,7 +165,8 @@ public class GuiFactory extends GuiMekanism
 			int xAxis = (x - (width - xSize) / 2);
 			int yAxis = (y - (height - ySize) / 2);
 
-			if(xAxis > 144 && xAxis < 168 && yAxis > 83 && yAxis < 93)
+			int dumpY = tileEntity.tier == FactoryTier.ULTIMATE ? 99 : 83;
+			if(xAxis > 144 && xAxis < 168 && yAxis > dumpY && yAxis < dumpY + 10)
 			{
 				ArrayList data = new ArrayList();
 				data.add(1);
