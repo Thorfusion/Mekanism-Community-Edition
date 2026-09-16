@@ -89,6 +89,7 @@ import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -275,7 +276,21 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
-		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, 5+tier.ordinal());
+		Block factoryBlock = MekanismBlocks.MachineBlock;
+		int metadata = 5 + tier.ordinal();
+
+		if(tier == FactoryTier.ULTIMATE)
+		{
+			factoryBlock = GameRegistry.findBlock("MekanismUltimate", "UltimateFactory");
+			metadata = 0;
+
+			if(factoryBlock == null)
+			{
+				return null;
+			}
+		}
+
+		ItemStack itemstack = new ItemStack(factoryBlock, 1, metadata);
 		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}

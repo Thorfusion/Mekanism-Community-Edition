@@ -92,9 +92,8 @@ for spec in "${expected[@]}"; do
             ;;
         Ultimate)
             require_exact_entry 'mcmod.info' "$artifact"
-            if ! grep -q '\.class$' "$listing"; then
-                echo "::warning file=$artifact::Ultimate currently contains metadata only and will be published as beta."
-            fi
+            require_exact_entry 'mekanism/ultimate/common/MekanismUltimate.class' "$artifact"
+            require_exact_entry 'mekanism/ultimate/common/tile/TileEntityUltimateFactory.class' "$artifact"
             ;;
     esac
 
