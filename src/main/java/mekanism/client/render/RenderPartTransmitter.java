@@ -266,7 +266,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		push();
 		CCRenderState.reset();
-		CCRenderState.useNormals = true;
+		CodeChickenRenderCompat.setUseNormals(true);
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -291,7 +291,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		push();
 		CCRenderState.reset();
-		CCRenderState.useNormals = true;
+		CodeChickenRenderCompat.setUseNormals(true);
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -538,7 +538,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		push();
 		
 		CCRenderState.reset();
-		CCRenderState.useNormals = true;
+		CodeChickenRenderCompat.setUseNormals(true);
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -562,7 +562,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderStatic(PartSidedPipe transmitter, int pass)
 	{
 		CCRenderState.reset();
-		CCRenderState.hasColour = true;
+		CodeChickenRenderCompat.setHasColour(true);
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

@@ -72,7 +72,7 @@ public class RenderGlowPanel implements IIconSelfRegister
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
-		CCRenderState.hasColour = true;
+		CodeChickenRenderCompat.setHasColour(true);
 		EnumColor c = EnumColor.DYES[metadata];
 
 		Colour colour = new ColourRGBA(c.getColor(0), c.getColor(1), c.getColor(2), 1);

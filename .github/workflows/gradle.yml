@@ -85,6 +85,16 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
+      - name: Verify GTNH CodeChicken compatibility
+        shell: bash
+        run: |
+          minecraft_version="$(sed -n 's/^minecraft_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+          if [[ "$minecraft_version" == '1.7.10' ]]; then
+            ./gradlew --no-daemon --stacktrace clean compileJava -PcodeChickenVariant=gtnh
+          else
+            echo "GTNH CodeChicken compatibility profile is only applicable to Minecraft 1.7.10."
+          fi
+
       - name: Determine exact artifact names
         id: artifacts
         shell: bash

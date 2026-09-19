@@ -15,6 +15,11 @@ if (buildVersion) {
     mod_version = "${baseModVersion}-${buildVersion}"
 }
 
+def codeChickenVariant = (findProperty('codeChickenVariant') ?: 'legacy').toString().trim().toLowerCase()
+if (!['legacy', 'gtnh'].contains(codeChickenVariant)) {
+    throw new GradleException("Unsupported CodeChicken dependency variant '${codeChickenVariant}'. Use 'legacy' or 'gtnh'.")
+}
+
 group = 'mekanism'
 version = "${minecraft_version}-${mod_version}"
 
@@ -86,10 +91,23 @@ repositories {
 }
 
 dependencies {
-    implementation "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:dev"
-    implementation "codechicken:ForgeMultipart:${minecraft_version}-${FMP_version}:dev"
+    if (codeChickenVariant == 'gtnh') {
+        // Current GTNH CodeChickenCore contains the codechicken.lib API. Adding
+        // GTNH CodeChickenLib separately would put duplicate classes on the
+        // compile and runtime classpaths.
+        implementation("com.github.GTNewHorizons:CodeChickenCore:${gtnh_CCC_version}:dev") {
+            transitive = false
+        }
+        implementation("com.github.GTNewHorizons:ForgeMultipart:${gtnh_FMP_version}:dev") {
+            transitive = false
+        }
+    } else {
+        implementation "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:dev"
+        implementation "codechicken:ForgeMultipart:${minecraft_version}-${FMP_version}:dev"
+        implementation "codechicken:CodeChickenCore:${minecraft_version}-${CCC_version}:dev"
+    }
+
     implementation "codechicken:NotEnoughItems:${minecraft_version}-${NEI_version}:dev"
-    implementation "codechicken:CodeChickenCore:${minecraft_version}-${CCC_version}:dev"
     implementation "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
     implementation "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     implementation "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"

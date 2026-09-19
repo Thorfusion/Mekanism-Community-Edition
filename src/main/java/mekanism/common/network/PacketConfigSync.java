@@ -297,8 +297,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.atomicDisassemblerUnpoweredDamage = dataStream.readInt();
 			mekce.atomicDisassemblerAttackPowerCost = dataStream.readInt();
 			mekce.electricBowPowerCost = dataStream.readInt();
-			mekce.teleporterBasePowerCost = dataStream.readInt();
 			mekce.robitEnergyPerHP = dataStream.readInt();
+			mekce.teleporterBasePowerCost = dataStream.readInt();
 			mekce.disableUniversalCableServerVisualUpdates = dataStream.readBoolean();
 
 			for(MachineType type : MachineType.getValidMachines())

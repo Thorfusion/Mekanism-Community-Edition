@@ -737,7 +737,40 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		return INFINITE_EXTENT_AABB;
+		Coord4D renderLocation = getRenderLocation();
+
+		if(renderLocation == null || height <= 2)
+		{
+			return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 1, zCoord + 1);
+		}
+
+		double minX = renderLocation.xCoord;
+		double minZ = renderLocation.zCoord;
+		double maxX = minX + 2;
+		double maxZ = minZ + 2;
+
+		switch(ForgeDirection.getOrientation(facing))
+		{
+			case SOUTH:
+				minX--;
+				maxX--;
+				minZ--;
+				maxZ--;
+				break;
+			case WEST:
+				minZ--;
+				maxZ--;
+				break;
+			case EAST:
+				minX--;
+				maxX--;
+				break;
+			default:
+				break;
+		}
+
+		return AxisAlignedBB.getBoundingBox(minX, renderLocation.yCoord, minZ,
+				maxX, renderLocation.yCoord + height - 2, maxZ);
 	}
 
 	@Override
