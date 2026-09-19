@@ -94,7 +94,7 @@ public class MekanismConfig
 		public static int electricBowPowerCost;
 		public static int teleporterBasePowerCost;
 		public static int robitEnergyPerHP;
-		public static boolean disableUniversalCableServerVisualUpdates;
+		public static boolean disableUniversalCableServerVisualUpdates = true;
 	}
 
 
@@ -117,7 +117,7 @@ public class MekanismConfig
 		public static boolean doMultiblockSparkle = true;
 		public static int multiblockSparkleIntensity = 6;
 		public static boolean opaqueTransmitters = false;
-		public static boolean opaqueUniversalCable = false;
+		public static boolean opaqueUniversalCable = true;
 		public static boolean dynamicTransmitterDistanceCulling = true;
 		public static int dynamicTransmitterRenderDistance = 32;
 		public static int tesrGlobalRenderDistance = 64;

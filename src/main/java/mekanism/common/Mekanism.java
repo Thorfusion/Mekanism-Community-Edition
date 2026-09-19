@@ -1654,7 +1654,7 @@ public class Mekanism
 	{
 		if(event.getChunk() != null && !event.world.isRemote)
 		{
-			HashMap<ChunkPosition, TileEntity> chunkData = new HashMap<ChunkPosition, TileEntity>(event.getChunk().chunkTileEntityMap);
+			Map<ChunkPosition, TileEntity> chunkData = new HashMap<ChunkPosition, TileEntity>(event.getChunk().chunkTileEntityMap);
 
 			for (TileEntity tileEntity : chunkData.values()) {
 				if (tileEntity instanceof IChunkLoadHandler) {
