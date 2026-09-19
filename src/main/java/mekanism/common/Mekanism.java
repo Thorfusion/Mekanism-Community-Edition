@@ -225,6 +225,7 @@ public class Mekanism {
     public static Configuration configurationce;
     public static Configuration configurationgenerators;
     public static Configuration configurationtools;
+    public static Configuration configurationultimate;
     /**
      * Mekanism version number
      */
@@ -792,6 +793,7 @@ public class Mekanism {
         configurationce = new Configuration(new File("config/mekanism/MekanismCE.cfg"));
         configurationgenerators = new Configuration(new File("config/mekanism/MekanismGenerators.cfg"));
         configurationtools = new Configuration(new File("config/mekanism/MekanismTools.cfg"));
+        configurationultimate = new Configuration(new File("config/mekanism/MekanismUltimate.cfg"));
 
         //Load configuration
         proxy.loadConfiguration();

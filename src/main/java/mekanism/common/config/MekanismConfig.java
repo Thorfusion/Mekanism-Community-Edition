@@ -44,4 +44,6 @@ public class MekanismConfig {
     public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
 
     public ToolsConfig tools = Loader.isModLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
+
+    public UltimateConfig ultimate = Loader.isModLoaded("mekanismultimate") ? new UltimateConfig() : null;
 }

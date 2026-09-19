@@ -1,0 +1,38 @@
+﻿{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryright",
+      "front": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryfront",
+      "south": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryback",
+      "west": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryright",
+      "east": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryleft",
+      "up": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactorytop",
+      "down": "mekanismultimate:blocks/factory/ultimate/ultimatefactorybottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryfronton",
+          "south": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactorybackon",
+          "west": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactoryrighton",
+          "east": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactorylefton",
+          "up": "mekanismultimate:blocks/factory/ultimate/infusing/ultimateinfusingfactorytopon"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+
+

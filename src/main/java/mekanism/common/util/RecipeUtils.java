@@ -18,6 +18,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -54,7 +55,12 @@ public class RecipeUtils {
     }
 
     private static boolean isFactory(ItemStack stack) {
-        return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+        MachineType type = MachineType.get(stack);
+        if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
+            return true;
+        }
+        ResourceLocation registryName = stack.getItem().getRegistryName();
+        return registryName != null && registryName.equals(new ResourceLocation("mekanismultimate", "ultimate_factory"));
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {

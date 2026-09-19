@@ -1,0 +1,5 @@
+{
+  "conditions": {
+    "factory_enabled": "mekanism.ultimate.common.recipe.UltimateRecipeEnabledCondition"
+  }
+}

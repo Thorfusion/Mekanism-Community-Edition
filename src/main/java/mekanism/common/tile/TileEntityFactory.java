@@ -68,14 +68,18 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ISpecialConfigData, ITierUpgradeable,
       ISustainedData, IComparatorSupport {
@@ -160,7 +164,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public TileEntityFactory(FactoryTier type, MachineType machine) {
-        super("null", machine, 0);
+        this(type, machine.getBlockName());
+    }
+
+    /** Constructor for factory tiers supplied by an optional module. */
+    protected TileEntityFactory(FactoryTier type, String name) {
+        super("null", name, 0, 0, 0);
         tier = type;
         inventory = NonNullList.withSize(5 + type.processes * 2, ItemStack.EMPTY);
         progress = new int[type.processes];
@@ -173,12 +182,27 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ELITE) {
+        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ULTIMATE) {
             return false;
         }
 
+        IBlockState targetState;
+        if (upgradeTier == BaseTier.ULTIMATE) {
+            if (MekanismConfig.current().ultimate == null || !MekanismConfig.current().ultimate.factoryEnabled.val()
+                  || !MekanismConfig.current().ultimate.allowTierInstallerUpgrade.val()) {
+                return false;
+            }
+            Block targetBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("mekanismultimate", "ultimate_factory"));
+            if (targetBlock == null) {
+                return false;
+            }
+            targetState = targetBlock.getDefaultState();
+        } else {
+            targetState = MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1);
+        }
+
         world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
+        world.setBlockState(getPos(), targetState, 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
 
@@ -336,8 +360,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
-        BASE_MAX_ENERGY = maxEnergy = tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
-        BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
+        BASE_MAX_ENERGY = maxEnergy = getFactoryMaxEnergy(recipeType);
+        BASE_ENERGY_PER_TICK = energyPerTick = getFactoryEnergyUsage(recipeType);
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
@@ -356,6 +380,14 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
     }
 
+    protected double getFactoryEnergyUsage(RecipeType type) {
+        return type.getEnergyUsage();
+    }
+
+    protected double getFactoryMaxEnergy(RecipeType type) {
+        return tier.processes * Math.max(0.5D * type.getEnergyStorage(), getFactoryEnergyUsage(type));
+    }
+
     @Override
     public boolean sideIsConsumer(EnumFacing side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
@@ -363,17 +395,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     public void sortInventory() {
         if (sorting) {
-            int[] inputSlots;
-            if (tier == FactoryTier.BASIC) {
-                inputSlots = new int[]{5, 6, 7};
-            } else if (tier == FactoryTier.ADVANCED) {
-                inputSlots = new int[]{5, 6, 7, 8, 9};
-            } else if (tier == FactoryTier.ELITE) {
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
-            } else {
-                //If something went wrong finding the tier don't sort it
-                return;
-            }
+            int[] inputSlots = getSlotsWithTier(tier);
             for (int i = 0; i < inputSlots.length; i++) {
                 int slotID = inputSlots[i];
                 ItemStack stack = inventory.get(slotID);
@@ -530,11 +552,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else if (tier == FactoryTier.BASIC && slotID >= 8 && slotID <= 10) {
-            return true;
-        } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
-            return true;
-        } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
+        } else if (slotID >= 5 + tier.processes && slotID < 5 + 2 * tier.processes) {
             return true;
         } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
             return true;
@@ -554,29 +572,15 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     private boolean isInputSlot(int slotID) {
-        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE && slotID <= 11);
+        return slotID >= 5 && slotID < 5 + tier.processes;
     }
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (tier == FactoryTier.BASIC) {
-            if (slotID >= 8 && slotID <= 10) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 7) {
-                return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
-            }
-        } else if (tier == FactoryTier.ADVANCED) {
-            if (slotID >= 10 && slotID <= 14) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 9) {
-                return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
-            }
-        } else if (tier == FactoryTier.ELITE) {
-            if (slotID >= 12 && slotID <= 18) {
-                return false;
-            } else if (slotID >= 5 && slotID <= 11) {
-                return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
-            }
+        if (slotID >= 5 + tier.processes && slotID < 5 + 2 * tier.processes) {
+            return false;
+        } else if (isInputSlot(slotID)) {
+            return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
         }
 
         if (slotID == 0) {
@@ -1086,16 +1090,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     private static int[] getSlotsWithTier(FactoryTier tier) {
-        switch (tier) {
-            case BASIC:
-                return new int[]{5, 6, 7};
-            case ADVANCED:
-                return new int[]{5, 6, 7, 8, 9};
-            case ELITE:
-                return new int[]{5, 6, 7, 8, 9, 10, 11};
-            default:
-                return null;
+        int[] slots = new int[tier.processes];
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = 5 + i;
         }
+        return slots;
     }
 
     public static ItemStack copyStackWithSize(ItemStack stack, int amount) {

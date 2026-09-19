@@ -1,0 +1,38 @@
+﻿{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryright",
+      "front": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryfront",
+      "south": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryback",
+      "west": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryright",
+      "east": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryleft",
+      "up": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactorytop",
+      "down": "mekanismultimate:blocks/factory/ultimate/ultimatefactorybottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryfronton",
+          "south": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactorybackon",
+          "west": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactoryrighton",
+          "east": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactorylefton",
+          "up": "mekanismultimate:blocks/factory/ultimate/compressing/ultimatecompressingfactorytopon"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+
+
