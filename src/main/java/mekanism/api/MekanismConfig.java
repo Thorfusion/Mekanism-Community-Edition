@@ -94,6 +94,7 @@ public class MekanismConfig
 		public static int electricBowPowerCost;
 		public static int teleporterBasePowerCost;
 		public static int robitEnergyPerHP;
+		public static boolean disableUniversalCableServerVisualUpdates;
 	}
 
 
@@ -109,13 +110,17 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
-		public static boolean opaqueTransmitters = false;
 	}
 
 	public static class mekce_client
 	{
 		public static boolean doMultiblockSparkle = true;
 		public static int multiblockSparkleIntensity = 6;
+		public static boolean opaqueTransmitters = false;
+		public static boolean opaqueUniversalCable = false;
+		public static boolean dynamicTransmitterDistanceCulling = true;
+		public static int dynamicTransmitterRenderDistance = 48;
+		public static int tesrGlobalRenderDistance = 64;
 	}
 	
 	public static class machines

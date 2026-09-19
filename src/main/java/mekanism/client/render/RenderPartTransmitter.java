@@ -16,6 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -31,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -74,6 +76,30 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public static RenderPartTransmitter getInstance()
 	{
 		return INSTANCE;
+	}
+
+	public boolean shouldRenderDynamicContents(PartSidedPipe part)
+	{
+		if(!mekce_client.dynamicTransmitterDistanceCulling)
+		{
+			return true;
+		}
+
+		Entity camera = mc.renderViewEntity != null ? mc.renderViewEntity : mc.thePlayer;
+
+		if(camera == null || part == null)
+		{
+			return true;
+		}
+
+		double maxDistance = Math.max(1, mekce_client.dynamicTransmitterRenderDistance);
+		double maxDistanceSq = maxDistance * maxDistance;
+
+		double dx = camera.posX - (part.x() + 0.5);
+		double dy = camera.posY - (part.y() + 0.5);
+		double dz = camera.posZ - (part.z() + 0.5);
+
+		return dx * dx + dy * dy + dz * dz <= maxDistanceSq;
 	}
 
 	public static void init()
@@ -233,7 +259,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
-		if(cable.currentPower == 0)
+		if(cable.currentPower <= 0.01)
 		{
 			return;
 		}
@@ -243,6 +269,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -267,6 +294,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -513,6 +541,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -587,25 +616,21 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
 	public void renderHeatSide(ForgeDirection side, PartThermodynamicConductor cable)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(pipe.getTransmitter().getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
 	}
 
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
-		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(tube.getTransmitter().getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 

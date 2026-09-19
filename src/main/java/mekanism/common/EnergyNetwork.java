@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.mekce;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -22,9 +23,12 @@ import cpw.mods.fml.common.eventhandler.Event;
 
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {
+	private static final int UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS = 10;
+
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double jouleBufferLastTick = 0;
+	private int visualUpdateDelay = 0;
 
 	public double clientEnergyScale = 0;
 
@@ -253,20 +257,36 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
 		clearJoulesTransmitted();
 
-		double currentPowerScale = getPowerScale();
-
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
+			if(!mekce.disableUniversalCableServerVisualUpdates)
 			{
-				needsUpdate = true;
-			}
+				double currentPowerScale = getPowerScale();
 
-			if(needsUpdate)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-				lastPowerScale = currentPowerScale;
+				if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
+				{
+					needsUpdate = true;
+				}
+
+				if(needsUpdate)
+				{
+					visualUpdateDelay++;
+
+					if(visualUpdateDelay >= UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS)
+					{
+						MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+						lastPowerScale = currentPowerScale;
+						needsUpdate = false;
+						visualUpdateDelay = 0;
+					}
+				}
+				else {
+					visualUpdateDelay = 0;
+				}
+			}
+			else {
 				needsUpdate = false;
+				visualUpdateDelay = 0;
 			}
 
 			if(buffer.amount > 0)

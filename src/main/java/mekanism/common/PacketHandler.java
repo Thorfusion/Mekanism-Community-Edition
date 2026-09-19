@@ -3,6 +3,7 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mekanism.api.MekanismConfig.general;
@@ -77,6 +78,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -91,6 +93,11 @@ import cpw.mods.fml.relauncher.Side;
 public class PacketHandler
 {
 	public SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("MEK");
+
+	private long receiverCacheTick = Long.MIN_VALUE;
+	private int receiverCachePlayerCount = -1;
+	private final HashMap<EntityPlayerMP, Range4D> receiverPlayerRanges = new HashMap<>();
+	private final HashMap<Integer, List<EntityPlayerMP>> receiverPlayersByDimension = new HashMap<>();
 	
 	public void initialize()
 	{
@@ -372,14 +379,89 @@ public class PacketHandler
 	{
 		MinecraftServer server = MinecraftServer.getServer();
 
-		if(server != null)
+		if(server == null || range == null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			return;
+		}
+
+		long tick = getReceiverCacheTick(server, range.dimensionId);
+
+		if(tick == Long.MIN_VALUE)
+		{
+			sendToReceiversUncached(server, message, range);
+			return;
+		}
+
+		int playerCount = server.getConfigurationManager().playerEntityList.size();
+
+		if(tick != receiverCacheTick || playerCount != receiverCachePlayerCount)
+		{
+			rebuildReceiverCache(server, tick);
+		}
+
+		List<EntityPlayerMP> dimensionPlayers = receiverPlayersByDimension.get(range.dimensionId);
+
+		if(dimensionPlayers == null || dimensionPlayers.isEmpty())
+		{
+			return;
+		}
+
+		for(EntityPlayerMP player : dimensionPlayers)
+		{
+			Range4D playerRange = receiverPlayerRanges.get(player);
+
+			if(playerRange != null && playerRange.intersects(range))
 			{
-				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
-				{
-					sendTo(message, player);
-				}
+				sendTo(message, player);
+			}
+		}
+	}
+
+	private long getReceiverCacheTick(MinecraftServer server, int dimensionId)
+	{
+		WorldServer world = server.worldServerForDimension(dimensionId);
+
+		if(world == null && server.worldServers != null && server.worldServers.length > 0)
+		{
+			world = server.worldServers[0];
+		}
+
+		return world != null ? world.getTotalWorldTime() : Long.MIN_VALUE;
+	}
+
+	private void rebuildReceiverCache(MinecraftServer server, long tick)
+	{
+		receiverPlayerRanges.clear();
+		receiverPlayersByDimension.clear();
+
+		List<EntityPlayerMP> players = (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList;
+		receiverCachePlayerCount = players.size();
+
+		for(EntityPlayerMP player : players)
+		{
+			receiverPlayerRanges.put(player, Range4D.getChunkRange(player));
+
+			List<EntityPlayerMP> playersByDimension = receiverPlayersByDimension.get(player.dimension);
+
+			if(playersByDimension == null)
+			{
+				playersByDimension = new ArrayList<>();
+				receiverPlayersByDimension.put(player.dimension, playersByDimension);
+			}
+
+			playersByDimension.add(player);
+		}
+
+		receiverCacheTick = tick;
+	}
+
+	private void sendToReceiversUncached(MinecraftServer server, IMessage message, Range4D range)
+	{
+		for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+		{
+			if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
+			{
+				sendTo(message, player);
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -63,13 +63,18 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			}
 		}
 		
-		if(client.opaqueTransmitters)
+		if(mekce_client.opaqueTransmitters)
 		{
 			return null;
 		}
 		
 		if(message.packetType == PacketType.ENERGY)
 		{
+			if(mekce_client.opaqueUniversalCable)
+			{
+				return null;
+			}
+
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
 			if(tileEntity instanceof ITransmitterTile)

@@ -9,6 +9,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChunkLoadHandler;
@@ -30,6 +31,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
@@ -51,6 +54,14 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public boolean doAutoSync = true;
 
 	public List<ITileComponent> components = new ArrayList<ITileComponent>();
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared()
+	{
+		double distance = Math.max(1, mekce_client.tesrGlobalRenderDistance);
+		return distance * distance;
+	}
 
 	@Override
 	public void updateEntity()

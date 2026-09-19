@@ -10,6 +10,7 @@ import defense.common.DefenseTech;
 import defense.common.explosive.ExplosiveRegistry;
 import defense.common.item.ItemRemoteDetonator;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -18,12 +19,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileExplosive extends TileEntity implements IExplosiveContainer, ITileNetwork
 {
     public boolean exploding = false;
     public int explosiveID = 0;
     public NBTTagCompound nbtData = new NBTTagCompound();
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        double distance = Math.max(1, mekce_client.tesrGlobalRenderDistance);
+        return distance * distance;
+    }
 
     @Override
     public boolean canUpdate()

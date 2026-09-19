@@ -89,10 +89,11 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(mekce.enablePersonalChestPocketAccess);
             dataStream.writeInt(mekce.atomicDisassemblerPoweredDamage);
             dataStream.writeInt(mekce.atomicDisassemblerUnpoweredDamage);
-            dataStream.writeInt(mekce.atomicDisassemblerAttackPowerCost);
+			dataStream.writeInt(mekce.atomicDisassemblerAttackPowerCost);
 			dataStream.writeInt(mekce.electricBowPowerCost);
 			dataStream.writeInt(mekce.robitEnergyPerHP);
 			dataStream.writeInt(mekce.teleporterBasePowerCost);
+			dataStream.writeBoolean(mekce.disableUniversalCableServerVisualUpdates);
 
 
 			for(MachineType type : MachineType.getValidMachines())
@@ -298,6 +299,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.electricBowPowerCost = dataStream.readInt();
 			mekce.teleporterBasePowerCost = dataStream.readInt();
 			mekce.robitEnergyPerHP = dataStream.readInt();
+			mekce.disableUniversalCableServerVisualUpdates = dataStream.readBoolean();
 
 			for(MachineType type : MachineType.getValidMachines())
 			{

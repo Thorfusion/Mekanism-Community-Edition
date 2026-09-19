@@ -5,7 +5,8 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.Collection;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.mekce;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.ICableOutputter;
@@ -35,11 +36,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
+	private static final int CLIENT_VISUAL_UPDATE_TICKS = 10;
+	private static final int SHARE_SAVE_INTERVAL_TICKS = 20;
+
 	public Tier.CableTier tier;
 
 	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
 
 	public double currentPower = 0;
+	private int clientVisualUpdateDelay = 0;
+	private int shareSaveDelay = 0;
+	private double lastSavedWrite = Double.NaN;
+	private boolean shareSavePending = false;
 	public double lastWrite = 0;
 
 	public EnergyStack buffer = new EnergyStack(0);
@@ -55,11 +63,37 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		if(world().isRemote)
 		{
-			double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
-
-			if(Math.abs(currentPower - targetPower) > 0.01)
+			if(mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable)
 			{
-				currentPower = (9 * currentPower + targetPower) / 10;
+				currentPower = 0;
+				clientVisualUpdateDelay = 0;
+				super.update();
+				return;
+			}
+
+			clientVisualUpdateDelay++;
+
+			if(clientVisualUpdateDelay >= CLIENT_VISUAL_UPDATE_TICKS)
+			{
+				double targetPower;
+
+				clientVisualUpdateDelay = 0;
+
+				if(mekce.disableUniversalCableServerVisualUpdates)
+				{
+					targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
+				}
+				else {
+					targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
+				}
+
+				if(Math.abs(currentPower - targetPower) > 0.01)
+				{
+					currentPower = (9 * currentPower + targetPower) / 10;
+				}
+				else {
+					currentPower = targetPower;
+				}
 			}
 		} 
 		else {
@@ -131,12 +165,29 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
         if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
         {
             double last = getSaveShare();
+			double forceSaveDelta = Math.max(1, tier.cableCapacity / 1000D);
 
             if(last != lastWrite)
             {
                 lastWrite = last;
-                MekanismUtils.saveChunk(tile());
+				shareSavePending = true;
             }
+
+			if(shareSavePending)
+			{
+				shareSaveDelay++;
+
+				if(Double.isNaN(lastSavedWrite) || Math.abs(lastWrite - lastSavedWrite) >= forceSaveDelta || shareSaveDelay >= SHARE_SAVE_INTERVAL_TICKS)
+				{
+					MekanismUtils.saveChunk(tile());
+					lastSavedWrite = lastWrite;
+					shareSaveDelay = 0;
+					shareSavePending = false;
+				}
+			}
+		}
+		else {
+			shareSaveDelay = 0;
         }
     }
 
@@ -193,19 +244,19 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public IIcon getCenterIcon(boolean opaque)
 	{
-		return cableIcons.getCenterIcon(tier.ordinal());
+		return cableIcons.getCenterIcon(tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
-		return cableIcons.getSideIcon(tier.ordinal());
+		return cableIcons.getSideIcon(tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return cableIcons.getSideIcon(4+tier.ordinal());
+		return cableIcons.getSideIcon(4+tier.ordinal(), mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable);
 	}
 
 	@Override
@@ -230,7 +281,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 0 && !client.opaqueTransmitters)
+		if(pass == 0 && !mekce_client.opaqueTransmitters && !mekce_client.opaqueUniversalCable && RenderPartTransmitter.getInstance().shouldRenderDynamicContents(this))
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
@@ -245,6 +296,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void onChunkUnload()
 	{
+		if(!world().isRemote && shareSavePending)
+		{
+			MekanismUtils.saveChunk(tile());
+			lastSavedWrite = lastWrite;
+			shareSaveDelay = 0;
+			shareSavePending = false;
+		}
+
 		takeShare();
 		super.onChunkUnload();
 	}
