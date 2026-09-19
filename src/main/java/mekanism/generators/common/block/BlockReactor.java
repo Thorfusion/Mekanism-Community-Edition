@@ -7,8 +7,10 @@ import mekanism.api.Coord4D;
 import mekanism.common.CTMData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBlockOcclusion;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.util.BlockOcclusionUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -38,7 +40,7 @@ import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockReactor extends BlockContainer implements IBlockCTM
+public class BlockReactor extends BlockContainer implements IBlockCTM, IBlockOcclusion
 {
 	public IIcon[][] icons = new IIcon[16][16];
 
@@ -344,9 +346,18 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 					return super.shouldSideBeRendered(world, x, y, z, side);
 			}
 		}
-		else {
-			return super.shouldSideBeRendered(world, x, y, z, side);
+		else if(isFullOpaqueCube(world, obj.xCoord, obj.yCoord, obj.zCoord))
+		{
+			return !BlockOcclusionUtils.isFullOpaqueCube(world, x, y, z);
 		}
+
+		return super.shouldSideBeRendered(world, x, y, z, side);
+	}
+
+	@Override
+	public boolean isFullOpaqueCube(IBlockAccess world, int x, int y, int z)
+	{
+		return this == GeneratorsBlocks.Reactor && ReactorBlockType.get(this, world.getBlockMetadata(x, y, z)) != null;
 	}
 	
 	@Override

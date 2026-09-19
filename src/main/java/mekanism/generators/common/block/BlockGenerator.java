@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
@@ -12,6 +13,7 @@ import mekanism.common.CTMData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBlockOcclusion;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
@@ -24,6 +26,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.BlockOcclusionUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -84,7 +87,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer implements ISpecialBounds, IBlockCTM
+public class BlockGenerator extends BlockContainer implements ISpecialBounds, IBlockCTM, IBlockOcclusion
 {
 	public IIcon[][] icons = new IIcon[16][16];
 	
@@ -599,6 +602,28 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	public boolean isOpaqueCube()
 	{
 		return false;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		GeneratorType type = GeneratorType.getFromMetadata(obj.getMetadata(world));
+
+		if(type != null && !type.hasModel && type != GeneratorType.TURBINE_ROTOR)
+		{
+			return !BlockOcclusionUtils.isFullOpaqueCube(world, x, y, z);
+		}
+
+		return super.shouldSideBeRendered(world, x, y, z, side);
+	}
+
+	@Override
+	public boolean isFullOpaqueCube(IBlockAccess world, int x, int y, int z)
+	{
+		GeneratorType type = GeneratorType.getFromMetadata(world.getBlockMetadata(x, y, z));
+		return type != null && !type.hasModel && type != GeneratorType.TURBINE_ROTOR;
 	}
 
 	@Override

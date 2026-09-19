@@ -17,6 +17,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBlockOcclusion;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITierItem;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -43,6 +44,7 @@ import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
+import mekanism.common.util.BlockOcclusionUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -105,7 +107,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
+public class BlockBasic extends Block implements IBlockCTM, IBlockOcclusion, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][16];
 	public IIcon[][] binIcons = new IIcon[16][16];
@@ -1014,14 +1016,25 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		
-		if(BasicType.get(this, obj.getMetadata(world)) == BasicType.STRUCTURAL_GLASS)
+		BasicType type = BasicType.get(this, obj.getMetadata(world));
+
+		if(type == BasicType.STRUCTURAL_GLASS)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}
-		else {
-			return super.shouldSideBeRendered(world, x, y, z, side);
+		else if(type != null && type.isFullOpaqueCube())
+		{
+			return !BlockOcclusionUtils.isFullOpaqueCube(world, x, y, z);
 		}
+
+		return super.shouldSideBeRendered(world, x, y, z, side);
+	}
+
+	@Override
+	public boolean isFullOpaqueCube(IBlockAccess world, int x, int y, int z)
+	{
+		BasicType type = BasicType.get(this, world.getBlockMetadata(x, y, z));
+		return type != null && type.isFullOpaqueCube();
 	}
 
 	@Override
@@ -1193,6 +1206,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		public ItemStack getStack()
 		{
 			return new ItemStack(typeBlock.getBlock(), 1, meta);
+		}
+
+		public boolean isFullOpaqueCube()
+		{
+			return this != STRUCTURAL_GLASS && this != SECURITY_DESK;
 		}
 
 		public static BasicType get(ItemStack stack)

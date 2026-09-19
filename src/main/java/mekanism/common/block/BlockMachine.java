@@ -24,6 +24,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBlockOcclusion;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
@@ -82,6 +83,7 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.BlockOcclusionUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -161,7 +163,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlockCTM, ICustomBlockIcon
+public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlockCTM, IBlockOcclusion, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][16];
 	public IIcon[][][] factoryIcons = new IIcon[4][16][16];
@@ -758,6 +760,28 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	public boolean isOpaqueCube()
 	{
 		return false;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		MachineType type = MachineType.get(this, obj.getMetadata(world));
+
+		if(type != null && !type.hasModel)
+		{
+			return !BlockOcclusionUtils.isFullOpaqueCube(world, x, y, z);
+		}
+
+		return super.shouldSideBeRendered(world, x, y, z, side);
+	}
+
+	@Override
+	public boolean isFullOpaqueCube(IBlockAccess world, int x, int y, int z)
+	{
+		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
+		return type != null && !type.hasModel;
 	}
 
 	@Override
