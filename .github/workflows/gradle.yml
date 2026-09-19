@@ -70,15 +70,47 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
-      - name: Remove stale packaged artifacts
+      - name: Determine exact artifact names
+        id: artifacts
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        run: |
+          minecraft_version="$(sed -n 's/^minecraft_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+          mod_version="$(sed -n 's/^mod_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+
+          if [[ -z "$minecraft_version" || -z "$mod_version" ]]; then
+            echo "Could not determine artifact versions from gradle.properties." >&2
+            exit 1
+          fi
+
+          case "$GITHUB_EVENT_NAME" in
+            pull_request|pull_request_target)
+              build_suffix="pr-${PR_NUMBER}-${GITHUB_RUN_NUMBER}"
+              ;;
+            *)
+              build_suffix="$GITHUB_RUN_NUMBER"
+              ;;
+          esac
+
+          artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}"
+          if [[ -n "$build_suffix" ]]; then
+            artifact_prefix="${artifact_prefix}-${build_suffix}"
+          fi
+
+          echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
+
+      - name: Empty output directory
         shell: bash
         run: |
           mkdir -p output
-          find output -maxdepth 1 -type f \( -name '*.jar' -o -name '*.zip' \) -delete
+          find output -mindepth 1 -delete
 
       - name: Build external pull request
         if: github.event_name == 'pull_request'
         run: ./gradlew --no-daemon --stacktrace clean fullBuild
+        env:
+          BUILD_VER: ${{ format('pr-{0}-{1}', github.event.pull_request.number, github.run_number) }}
 
       - name: Build trusted team pull request
         if: github.event_name == 'pull_request_target'
@@ -95,7 +127,9 @@ jobs:
 
       - name: Validate packaged artifacts
         shell: bash
-        run: bash .github/scripts/validate-release-artifacts.sh
+        run: >-
+          bash .github/scripts/validate-release-artifacts.sh
+          output '${{ steps.artifacts.outputs.prefix }}'
 
       # Preserve the development Maven publication used by the external test
       # servers. Trusted team PRs publish a unique pr-N-RUN version. Unknown PRs
@@ -120,8 +154,15 @@ jobs:
         with:
           name: mekanism-ce-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            output/*.jar
-            output/*.zip
+            output/${{ steps.artifacts.outputs.prefix }}-ALL.jar
+            output/${{ steps.artifacts.outputs.prefix }}-API.jar
+            output/${{ steps.artifacts.outputs.prefix }}-Core.jar
+            output/${{ steps.artifacts.outputs.prefix }}-DEV.jar
+            output/${{ steps.artifacts.outputs.prefix }}-DefenseTech.jar
+            output/${{ steps.artifacts.outputs.prefix }}-Generators.jar
+            output/${{ steps.artifacts.outputs.prefix }}-MDK.zip
+            output/${{ steps.artifacts.outputs.prefix }}-Tools.jar
+            output/${{ steps.artifacts.outputs.prefix }}-Ultimate.jar
           if-no-files-found: error
           retention-days: 14
           compression-level: 0

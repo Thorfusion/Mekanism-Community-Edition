@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-shopt -s nullglob
 
 artifact_dir="${1:-output}"
+artifact_prefix="${2:-}"
 
 if [[ ! -d "$artifact_dir" ]]; then
     echo "Artifact directory does not exist: $artifact_dir" >&2
     exit 1
+fi
+
+if [[ -z "$artifact_prefix" ]]; then
+    repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+    minecraft_version="$(sed -n 's/^minecraft_version=//p' "$repo_root/gradle.properties" | tr -d '\r' | tail -n 1)"
+    mod_version="$(sed -n 's/^mod_version=//p' "$repo_root/gradle.properties" | tr -d '\r' | tail -n 1)"
+    artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}"
+
+    if [[ -n "${BUILD_VER:-}" ]]; then
+        artifact_prefix="${artifact_prefix}-${BUILD_VER}"
+    fi
 fi
 
 declare -a expected=(
@@ -47,15 +58,13 @@ require_matching_entry() {
 for spec in "${expected[@]}"; do
     classifier="${spec%%:*}"
     extension="${spec##*:}"
-    matches=("$artifact_dir"/Mekanism-Community-Edition-*-"$classifier"."$extension")
+    artifact="$artifact_dir/$artifact_prefix-$classifier.$extension"
 
-    if (( ${#matches[@]} != 1 )); then
-        echo "Expected exactly one $classifier artifact, found ${#matches[@]}." >&2
-        printf '  %s\n' "${matches[@]:-<none>}" >&2
+    if [[ ! -f "$artifact" ]]; then
+        echo "Expected artifact is missing: $artifact" >&2
         exit 1
     fi
 
-    artifact="${matches[0]}"
     if (( $(wc -c < "$artifact") < 512 )); then
         echo "Artifact is unexpectedly small: $artifact" >&2
         exit 1
