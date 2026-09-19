@@ -97,7 +97,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**', 'assets/mekanism/gui/factory/GuiUltimateFactory.png', 'assets/mekanism/textures/blocks/factory/ultimate/**'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**', 'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**'
     }
 }
 
@@ -166,7 +166,7 @@ task ultimateJar(type: Jar) {
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/ultimate/**', 'assets/mekanism/gui/factory/GuiUltimateFactory.png', 'assets/mekanism/textures/blocks/factory/ultimate/**'
+        include 'mekanism/ultimate/**'
         exclude 'mcmod.info'
     }
 }

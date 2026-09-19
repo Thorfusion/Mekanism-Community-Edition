@@ -355,6 +355,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.recipeType = recipeType;
 				factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 				factory.secondaryEnergyPerTick = factory.getSecondaryEnergyPerTick(recipeType);
+				factory.updateOutputSlots();
 				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType());
 			}
 

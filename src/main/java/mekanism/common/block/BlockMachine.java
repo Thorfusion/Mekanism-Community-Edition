@@ -521,6 +521,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					case ELITE_FACTORY:
 						for(RecipeType recipe : RecipeType.values())
 						{
+							if(recipe == RecipeType.SAWING && !recipe.isEnabled())
+							{
+								continue;
+							}
+
 							ItemStack stack = new ItemStack(item, 1, type.meta);
 							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 							list.add(stack);

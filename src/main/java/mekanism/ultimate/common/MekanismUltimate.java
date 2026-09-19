@@ -8,11 +8,13 @@ import java.io.IOException;
 import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.ultimate;
 import mekanism.common.Mekanism;
+import mekanism.common.Resource;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Version;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.ultimate.common.item.ItemBlockUltimateFactory;
@@ -64,13 +66,49 @@ public class MekanismUltimate implements IModule
 
     private void addRecipes()
     {
-        if (!MekanismConfig.recipes.enableFactories || !ultimate.factoryEnabled || !ultimate.enableFactoryRecipes)
+        if (!MekanismConfig.recipes.enableFactories)
+        {
+            return;
+        }
+
+        if (RecipeType.SAWING.isEnabled() && UltimateConfig.enableSawmillFactoryRecipes)
+        {
+            RecipeType type = RecipeType.SAWING;
+            MachineType.BASIC_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, type), new Object[] {
+                "RCR", "iOi", "RCR",
+                Character.valueOf('R'), "alloyBasic",
+                Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC),
+                Character.valueOf('i'), "ingotIron",
+                Character.valueOf('O'), type.getStack()
+            }));
+            MachineType.ADVANCED_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.ADVANCED, type), new Object[] {
+                "ECE", "oOo", "ECE",
+                Character.valueOf('E'), "alloyAdvanced",
+                Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED),
+                Character.valueOf('o'), "ingot" + Resource.OSMIUM.getOredictName(),
+                Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.BASIC, type)
+            }));
+            MachineType.ELITE_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.ELITE, type), new Object[] {
+                "RCR", "gOg", "RCR",
+                Character.valueOf('R'), "alloyElite",
+                Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE),
+                Character.valueOf('g'), "ingotGold",
+                Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.ADVANCED, type)
+            }));
+        }
+
+        if (!ultimate.factoryEnabled || !ultimate.enableFactoryRecipes)
         {
             return;
         }
 
         for (RecipeType type : RecipeType.values())
         {
+            if (type == RecipeType.SAWING && (!type.isEnabled() || !UltimateConfig.enableSawmillFactoryRecipes))
+            {
+                continue;
+            }
+
             ItemStack result = MekanismUtils.getFactory(FactoryTier.ULTIMATE, type);
             ItemStack eliteFactory = MekanismUtils.getFactory(FactoryTier.ELITE, type);
             CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(result, new Object[] {
@@ -103,6 +141,8 @@ public class MekanismUltimate implements IModule
         dataStream.writeDouble(ultimate.factoryUsageMultiplier);
         dataStream.writeInt(ultimate.factoryEnergyStorageTicks);
         dataStream.writeBoolean(ultimate.enableFactoryRecipes);
+        dataStream.writeBoolean(ultimate.sawmillFactoriesEnabled);
+        dataStream.writeBoolean(UltimateConfig.enableSawmillFactoryRecipes);
     }
 
     @Override
@@ -113,6 +153,8 @@ public class MekanismUltimate implements IModule
         ultimate.factoryUsageMultiplier = dataStream.readDouble();
         ultimate.factoryEnergyStorageTicks = dataStream.readInt();
         ultimate.enableFactoryRecipes = dataStream.readBoolean();
+        ultimate.sawmillFactoriesEnabled = dataStream.readBoolean();
+        UltimateConfig.enableSawmillFactoryRecipes = dataStream.readBoolean();
     }
 
     @Override

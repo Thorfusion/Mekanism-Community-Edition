@@ -3,6 +3,7 @@ package mekanism.common.base;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.StackUtils;
+import mekanism.api.MekanismConfig.ultimate;
 import mekanism.common.InfuseStorage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
@@ -12,6 +13,7 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -20,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Loader;
 
 import java.util.Map;
 
@@ -53,7 +56,8 @@ public interface IFactory
 		COMBINING("Combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
 		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
 		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER.getStack(), false, false, Recipe.METALLURGIC_INFUSER);
+		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER.getStack(), false, false, Recipe.METALLURGIC_INFUSER),
+		SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL.getStack(), false, false, Recipe.PRECISION_SAWMILL);
 
 		private String name;
 		private ResourceLocation sound;
@@ -82,6 +86,16 @@ public interface IFactory
 		{
 			return getRecipe(new AdvancedMachineInput(input, gas));
 		}
+
+		public ChanceMachineRecipe getChanceRecipe(ItemStackInput input)
+		{
+			return RecipeHandler.getChanceRecipe(input, recipe.get());
+		}
+
+		public ChanceMachineRecipe getChanceRecipe(ItemStack input)
+		{
+			return getChanceRecipe(new ItemStackInput(input));
+		}
 		
 		public MetallurgicInfuserRecipe getRecipe(InfusionInput input)
 		{
@@ -98,6 +112,10 @@ public interface IFactory
 			if(usesFuel())
 			{
 				return getRecipe(slotStack, gasType);
+			}
+			else if(this == SAWING)
+			{
+				return getChanceRecipe(slotStack);
 			}
 			else if(this == INFUSING)
 			{
@@ -241,6 +259,16 @@ public interface IFactory
 		public boolean fuelEnergyUpgrades()
 		{
 			return fuelSpeed;
+		}
+
+		public boolean isChance()
+		{
+			return this == SAWING;
+		}
+
+		public boolean isEnabled()
+		{
+			return this != SAWING || Loader.isModLoaded("MekanismUltimate") && ultimate.sawmillFactoriesEnabled;
 		}
 		
 		public static RecipeType getFromMachine(Block block, int meta)

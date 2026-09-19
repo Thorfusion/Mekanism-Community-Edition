@@ -817,6 +817,10 @@ public class Mekanism
 		//Factory recipes
 		if (MekanismConfig.recipes.enableFactories) {
 			for (RecipeType type : RecipeType.values()) {
+				if (type == RecipeType.SAWING) {
+					continue;
+				}
+
 				MachineType.BASIC_FACTORY.addRecipe(new ShapedMekanismRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, type), new Object[]{
 						"RCR", "iOi", "RCR", Character.valueOf('R'), "alloyBasic", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('i'), "ingotIron", Character.valueOf('O'), type.getStack()
 				}));

@@ -23,6 +23,10 @@ public class UltimateCommonProxy implements IGuiHandler
             "Number of ticks of full nine-process base usage that an Ultimate Factory can store.", 1, Integer.MAX_VALUE).getInt();
         ultimate.enableFactoryRecipes = MekanismUltimate.configuration.get("recipes", "EnableUltimateFactoryRecipes", true,
             "Enable crafting recipes for all Ultimate Factory variants.").getBoolean();
+        ultimate.sawmillFactoriesEnabled = MekanismUltimate.configuration.get("machines", "SawingFactoriesEnabled", true,
+            "Enable the backported Basic, Advanced, Elite, and Ultimate Sawing Factories. Existing placed factories remain usable when disabled.").setRequiresMcRestart(true).getBoolean();
+        UltimateConfig.enableSawmillFactoryRecipes = MekanismUltimate.configuration.get("recipes", "EnableSawingFactoryRecipes", true,
+            "Enable crafting recipes for all Sawing Factory tiers.").setRequiresMcRestart(true).getBoolean();
 
         if (MekanismUltimate.configuration.hasChanged())
         {

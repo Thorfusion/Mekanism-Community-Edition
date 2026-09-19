@@ -51,6 +51,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -226,6 +227,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
         factory.recipeType = recipeType;
         factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
+        factory.updateOutputSlots();
         factory.securityComponent.readFrom(securityComponent);
 
         for (int i = 0; i < tier.processes + 5; i++) {
@@ -282,7 +284,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
             if (inventory[2] != null && inventory[3] == null) {
                 RecipeType toSet = null;
                 for (RecipeType type : RecipeType.values()) {
-                    if (inventory[2].isItemEqual(type.getStack())) {
+                    if ((type != RecipeType.SAWING || type.isEnabled()) && inventory[2].isItemEqual(type.getStack())) {
                         toSet = type;
                         break;
                     }
@@ -304,6 +306,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
                         recipeType = toSet;
                         gasTank.setGas(null);
                         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+                        updateOutputSlots();
 
                         worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
                         MekanismUtils.saveChunk(this);
@@ -428,6 +431,19 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
     }
 
+    public void updateOutputSlots() {
+        if (configComponent != null) {
+            int[] outputSlots = new int[tier.processes + (recipeType.isChance() ? 1 : 0)];
+            for (int process = 0; process < tier.processes; process++) {
+                outputSlots[process] = getOutputSlot(process);
+            }
+            if (recipeType.isChance()) {
+                outputSlots[outputSlots.length - 1] = 4;
+            }
+            configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = outputSlots;
+        }
+    }
+
     public void handleSecondaryFuel() {
         if (inventory[4] != null) {
             if (recipeType.usesFuel() && gasTank.getNeeded() > 0) {
@@ -482,6 +498,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (slotID >= getOutputSlot(0) && slotID < getOutputSlot(0) + tier.processes) {
             return true;
+        } else if (recipeType.isChance() && slotID == 4) {
+            return true;
         }
         return false;
     }
@@ -534,6 +552,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
             return recipe == null ? false : recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
         }
 
+        if (recipeType.isChance()) {
+            ChanceMachineRecipe<?> recipe = recipeType.getChanceRecipe(inventory[inputSlot]);
+            return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, 4);
+        }
+
         if (recipeType == RecipeType.INFUSING) {
             MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, inventory[inputSlot]));
             return recipe == null ? false : recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
@@ -547,6 +570,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         if (recipeType.usesFuel()) {
             AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
             recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
+
+        } else if (recipeType.isChance()) {
+            ChanceMachineRecipe<?> recipe = recipeType.getChanceRecipe(inventory[inputSlot]);
+            if (recipe.getInput().useItemStackFromInventory(inventory, inputSlot, true)) {
+                recipe.getOutput().applyOutputs(inventory, outputSlot, 4, true);
+            }
 
         } else if (recipeType == RecipeType.INFUSING) {
             MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, inventory[inputSlot]));
@@ -586,6 +615,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
             if (recipeType != oldRecipe) {
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
             }
+            updateOutputSlots();
 
             recipeTicks = dataStream.readInt();
             controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -631,6 +661,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         if (recipeType != oldRecipe) {
             secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
         }
+        updateOutputSlots();
 
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];

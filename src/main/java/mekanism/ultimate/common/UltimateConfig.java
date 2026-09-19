@@ -6,6 +6,8 @@ import mekanism.common.Tier.FactoryTier;
 
 public final class UltimateConfig
 {
+    public static boolean enableSawmillFactoryRecipes = true;
+
     private UltimateConfig()
     {
     }

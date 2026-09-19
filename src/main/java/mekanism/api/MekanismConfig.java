@@ -206,6 +206,7 @@ public class MekanismConfig
 		public static double factoryUsageMultiplier = 1D;
 		public static int factoryEnergyStorageTicks = 400;
 		public static boolean enableFactoryRecipes = true;
+		public static boolean sawmillFactoriesEnabled = true;
 	}
 
 	public static class recipes

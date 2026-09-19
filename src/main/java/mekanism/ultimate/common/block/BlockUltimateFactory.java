@@ -100,6 +100,11 @@ public class BlockUltimateFactory extends BlockMachine
 
         for (RecipeType type : RecipeType.values())
         {
+            if (type == RecipeType.SAWING && !type.isEnabled())
+            {
+                continue;
+            }
+
             ItemStack stack = new ItemStack(item);
             ((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
             list.add(stack);
