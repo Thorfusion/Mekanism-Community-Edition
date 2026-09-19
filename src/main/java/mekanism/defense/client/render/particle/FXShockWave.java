@@ -37,22 +37,26 @@ public class FXShockWave extends EntityFX
     public void renderParticle(Tessellator tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
         GL11.glPushMatrix();
-        GL11.glTranslated(this.posX, this.posY, this.posZ);
+        try {
+            GL11.glTranslated(this.posX, this.posY, this.posZ);
 
-        RenderUtils.enableBlending();
-        RenderUtils.disableLighting();
+            RenderUtils.enableBlending();
+            try {
+                RenderUtils.disableLighting();
+                try {
+                    GL11.glColor4f(this.particleRed / 255, this.particleGreen / 255, this.particleBlue / 255, 0.5f);
 
-        GL11.glColor4f(this.particleRed / 255, this.particleGreen / 255, this.particleBlue / 255, 0.5f);
-
-        Sphere sphere = new Sphere();
-        sphere.draw(this.particleScale, 32, 32);
-
-        // Enable Lighting/Glow Off
-        RenderUtils.enableLighting();
-
-        // Disable Blending
-        RenderUtils.disableBlending();
-        GL11.glPopMatrix();
+                    Sphere sphere = new Sphere();
+                    sphere.draw(this.particleScale, 32, 32);
+                } finally {
+                    RenderUtils.enableLighting();
+                }
+            } finally {
+                RenderUtils.disableBlending();
+            }
+        } finally {
+            GL11.glPopMatrix();
+        }
     }
 
     /** Called to update the entity's position/logic. */

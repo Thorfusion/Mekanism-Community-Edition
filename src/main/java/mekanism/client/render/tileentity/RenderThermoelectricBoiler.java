@@ -52,42 +52,47 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				if(data.location != null && data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null)
 				{
 					push();
+					try {
+						GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+						MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
+						try {
+							MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
 
-					MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-					MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
+							DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj());
 
-					DisplayInteger[] displayList = getLowerDisplay(data, tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj());
-
-					if(tileEntity.structure.waterStored.getFluid().isGaseous())
-					{
-						GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.waterStored.amount / (float)tileEntity.clientWaterCapacity)+MekanismRenderer.GAS_RENDER_BASE));
-						displayList[getStages(data.height)-1].render();
+							if(tileEntity.structure.waterStored.getFluid().isGaseous())
+							{
+								GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.waterStored.amount / (float)tileEntity.clientWaterCapacity)+MekanismRenderer.GAS_RENDER_BASE));
+								displayList[getStages(data.height)-1].render();
+							}
+							else {
+								displayList[Math.min(getStages(data.height)-1, (int)(tileEntity.prevWaterScale*((float)getStages(data.height)-1)))].render();
+							}
+						} finally {
+							MekanismRenderer.glowOff();
+							MekanismRenderer.resetColor();
+						}
+					} finally {
+						pop();
 					}
-					else {
-						displayList[Math.min(getStages(data.height)-1, (int)(tileEntity.prevWaterScale*((float)getStages(data.height)-1)))].render();
-					}
-
-					MekanismRenderer.glowOff();
-					MekanismRenderer.resetColor();
-
-					pop();
 
 					for(ValveData valveData : tileEntity.valveViewing)
 					{
 						push();
+						try {
+							GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
-
-						MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj()).render();
-
-						MekanismRenderer.glowOff();
-						MekanismRenderer.resetColor();
-
-						pop();
+							MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
+							try {
+								getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.waterStored.getFluid(), tileEntity.getWorldObj()).render();
+							} finally {
+								MekanismRenderer.glowOff();
+								MekanismRenderer.resetColor();
+							}
+						} finally {
+							pop();
+						}
 					}
 				}
 			}
@@ -106,21 +111,24 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				if(data.location != null && data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null)
 				{
 					push();
-					
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
-					
-					MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
-					MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
-	
-					DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorldObj());
-	
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+MekanismRenderer.GAS_RENDER_BASE));
-					display.render();
-	
-					MekanismRenderer.glowOff();
-					MekanismRenderer.resetColor();
-	
-					pop();
+					try {
+						GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+
+						MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
+						try {
+							MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
+
+							DisplayInteger display = getUpperDisplay(data, tileEntity.structure.steamStored.getFluid(), tileEntity.getWorldObj());
+
+							GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.steamStored.amount / (float)tileEntity.clientSteamCapacity)+MekanismRenderer.GAS_RENDER_BASE));
+							display.render();
+						} finally {
+							MekanismRenderer.glowOff();
+							MekanismRenderer.resetColor();
+						}
+					} finally {
+						pop();
+					}
 				}
 			}
 		}
@@ -340,6 +348,9 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 	
 	public static void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedLowerFluids);
+		MekanismRenderer.deleteDisplayLists(cachedUpperFluids);
+		MekanismRenderer.deleteDisplayLists(cachedValveFluids);
 		cachedLowerFluids.clear();
 		cachedUpperFluids.clear();
 		cachedValveFluids.clear();

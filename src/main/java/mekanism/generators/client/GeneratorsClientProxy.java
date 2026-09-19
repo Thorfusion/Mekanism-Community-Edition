@@ -128,6 +128,10 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		RenderIndustrialTurbine.resetDisplayInts();
+		if(event.map.getTextureType() == 0)
+		{
+			RenderIndustrialTurbine.resetDisplayInts();
+			RenderBioGenerator.resetDisplayInts();
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package mekanism.client.render.block;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import mekanism.api.MekanismConfig;
 import mekanism.client.ClientProxy;
@@ -18,9 +19,10 @@ import net.minecraft.world.IBlockAccess;
  * Code licensed under GPLv2
  * @author AUTOMATIC_MAIDEN, asie, pokefenn, unpairedbracket
  */
+@ThreadSafeISBRH(perThread = true)
 public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 {
-	RenderBlocksCTM rendererCTM = new RenderBlocksCTM();
+	private final RenderBlocksCTM rendererCTM = new RenderBlocksCTM();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -42,10 +44,12 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 
 		if(MekanismConfig.client.renderCTM && blockCTM != null)
 		{
+			rendererCTM.facingOverride = -1;
+
 			if(blockCTM.hasFacingOverride() && world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
 			{
 				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-				blockCTM.setFacing(tile.facing);
+				rendererCTM.facingOverride = tile.facing;
 			}
 			
 			rendererCTM.blockAccess = world;

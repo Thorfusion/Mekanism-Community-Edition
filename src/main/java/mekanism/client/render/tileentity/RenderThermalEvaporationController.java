@@ -49,24 +49,25 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 				Coord4D renderLoc = tileEntity.getRenderLocation();
 
 				push();
+				try {
+					GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
 
-				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
+					MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
+					try {
+						int stages = getStages(data.height);
+						int displayIndex = Math.min(stages - 1, (int)(((float)tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()) * (stages - 1)));
+						DisplayInteger displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid(), displayIndex, stages);
 
-				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
-
-				int stages = getStages(data.height);
-				int displayIndex = Math.min(stages - 1, (int)(((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()) * (stages - 1)));
-				DisplayInteger displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid(), displayIndex, stages);
-
-				if(displayList != null)
-				{
-					displayList.render();
+						if(displayList != null)
+						{
+							displayList.render();
+						}
+					} finally {
+						MekanismRenderer.glowOff();
+					}
+				} finally {
+					pop();
 				}
-
-
-				MekanismRenderer.glowOff();
-
-				pop();
 			}
 		}
 	}
@@ -217,6 +218,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 	public static void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedCenterFluids);
 		cachedCenterFluids.clear();
 	}
 }

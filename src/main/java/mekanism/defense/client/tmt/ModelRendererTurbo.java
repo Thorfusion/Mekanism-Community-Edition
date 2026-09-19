@@ -1880,6 +1880,7 @@ public class ModelRendererTurbo extends ModelRenderer
 	 */
 	public void clear()
 	{
+		deleteDisplayLists();
 		vertices = new PositionTextureVertex[0];
 		faces = new TexturedPolygon[0];
 		transformGroup.clear();
@@ -2222,6 +2223,8 @@ public class ModelRendererTurbo extends ModelRenderer
 
 	private void compileDisplayList(float worldScale)
 	{
+		deleteDisplayLists();
+
 		if(useLegacyCompiler)
 			compileLegacyDisplayList(worldScale);
 		else
@@ -2247,6 +2250,29 @@ public class ModelRendererTurbo extends ModelRenderer
 		}
 
 		compiled = true;
+	}
+
+	private void deleteDisplayLists()
+	{
+		if(displayList > 0)
+		{
+			GLAllocation.deleteDisplayLists(displayList);
+			displayList = 0;
+		}
+
+		if(displayListArray != null)
+		{
+			for(int list : displayListArray)
+			{
+				if(list > 0)
+				{
+					GLAllocation.deleteDisplayLists(list);
+				}
+			}
+			displayListArray = null;
+		}
+
+		compiled = false;
 	}
 	
 	private void compileLegacyDisplayList(float worldScale)

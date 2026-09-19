@@ -44,6 +44,7 @@ repositories {
         content {
             includeGroup 'com.gtnewhorizons'
             includeGroupByRegex 'com\\.gtnewhorizons\\..+'
+            includeGroup 'com.github.GTNewHorizons'
         }
     }
 
@@ -92,6 +93,11 @@ dependencies {
     implementation "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
     implementation "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     implementation "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
+
+    // Optional compile-time API only. Angelica is never bundled or required at runtime.
+    compileOnly("com.github.GTNewHorizons:Angelica:${angelica_version}:api") {
+        transitive = false
+    }
 
     // Optional integrations that are intentionally checked into libs/.
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])

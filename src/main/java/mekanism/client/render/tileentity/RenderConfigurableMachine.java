@@ -32,7 +32,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
-	private HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>>();
+	private static final HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>>();
 
 	public RenderConfigurableMachine()
 	{
@@ -48,54 +48,56 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	public void renderAModelAt(ISideConfiguration configurable, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
+		try {
+			TileEntity tileEntity = (TileEntity)configurable;
+			EntityPlayer player = mc.thePlayer;
+			World world = mc.thePlayer.worldObj;
+			ItemStack itemStack = player.getCurrentEquippedItem();
+			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 
-		TileEntity tileEntity = (TileEntity)configurable;
-		EntityPlayer player = mc.thePlayer;
-		World world = mc.thePlayer.worldObj;
-		ItemStack itemStack = player.getCurrentEquippedItem();
-		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
-
-		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())
-		{
-			int xPos = MathHelper.floor_double(pos.blockX);
-			int yPos = MathHelper.floor_double(pos.blockY);
-			int zPos = MathHelper.floor_double(pos.blockZ);
-
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
-			TransmissionType type = ((ItemConfigurator)itemStack.getItem()).getState(itemStack).getTransmission();
-
-			if(configurable.getConfig().supports(type))
+			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())
 			{
-				if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
+				int xPos = MathHelper.floor_double(pos.blockX);
+				int yPos = MathHelper.floor_double(pos.blockY);
+				int zPos = MathHelper.floor_double(pos.blockZ);
+
+				Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
+				TransmissionType type = ((ItemConfigurator)itemStack.getItem()).getState(itemStack).getTransmission();
+
+				if(configurable.getConfig().supports(type))
 				{
-					SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
-					
-					if(data != TileComponentConfig.EMPTY)
+					if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
 					{
-						push();
-		
-						MekanismRenderer.color(data.color, 0.6F);
-		
-						bindTexture(MekanismRenderer.getBlocksTexture());
-						GL11.glTranslatef((float)x, (float)y, (float)z);
-		
-						int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
-						GL11.glCallList(display);
-		
-						pop();
+						SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+
+						if(data != TileComponentConfig.EMPTY)
+						{
+							push();
+							try {
+								MekanismRenderer.color(data.color, 0.6F);
+
+								bindTexture(MekanismRenderer.getBlocksTexture());
+								GL11.glTranslatef((float)x, (float)y, (float)z);
+
+								int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
+								GL11.glCallList(display);
+							} finally {
+								pop();
+							}
+						}
 					}
 				}
 			}
+		} finally {
+			GL11.glPopMatrix();
 		}
-
-		GL11.glPopMatrix();
 	}
 
 	private void pop()
 	{
-		GL11.glPopAttrib();
-		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
+		MekanismRenderer.glowOff();
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
@@ -210,5 +212,11 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		display.endList();
 
 		return display;
+	}
+
+	public static void resetDisplayInts()
+	{
+		MekanismRenderer.deleteDisplayLists(cachedOverlays);
+		cachedOverlays.clear();
 	}
 }

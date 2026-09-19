@@ -55,8 +55,30 @@ public class MekanismRenderer
 	
 	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
 	
-	private static float lightmapLastX;
-    private static float lightmapLastY;
+	private static final ThreadLocal<Deque<LightmapState>> lightmapStates = new ThreadLocal<Deque<LightmapState>>()
+	{
+		@Override
+		protected Deque<LightmapState> initialValue()
+		{
+			return new ArrayDeque<LightmapState>();
+		}
+	};
+	private static final ThreadLocal<Deque<Boolean>> blendStates = new ThreadLocal<Deque<Boolean>>()
+	{
+		@Override
+		protected Deque<Boolean> initialValue()
+		{
+			return new ArrayDeque<Boolean>();
+		}
+	};
+	private static final ThreadLocal<Deque<Boolean>> cullStates = new ThreadLocal<Deque<Boolean>>()
+	{
+		@Override
+		protected Deque<Boolean> initialValue()
+		{
+			return new ArrayDeque<Boolean>();
+		}
+	};
 	private static boolean optifineBreak = false;
 	
 	public static int[] directionMap = new int[] {3, 0, 1, 2};
@@ -149,6 +171,9 @@ public class MekanismRenderer
 			RenderThermalEvaporationController.resetDisplayInts();
 			RenderFluidTank.resetDisplayInts();
 			RenderThermoelectricBoiler.resetDisplayInts();
+			RenderConfigurableMachine.resetDisplayInts();
+			RenderTeleporter.resetDisplayInts();
+			MinerVisualRenderer.resetDisplayInts();
 		}
 	}
 	
@@ -460,39 +485,72 @@ public class MekanismRenderer
     
     public static void glowOn(int glow)
     {
-        GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-        
-        try {
-        	lightmapLastX = OpenGlHelper.lastBrightnessX;
-        	lightmapLastY = OpenGlHelper.lastBrightnessY;
-        } catch(NoSuchFieldError e) {
-        	optifineBreak = true;
-        }
-        
-        RenderHelper.disableStandardItemLighting();
-        
-        float glowRatioX = Math.min((glow/15F)*240F + lightmapLastX, 240);
-        float glowRatioY = Math.min((glow/15F)*240F + lightmapLastY, 240);
-        
-        if(!optifineBreak)
-        {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);        	
-        }
+		float lightmapLastX = 0;
+		float lightmapLastY = 0;
+		boolean restoreLightmap = !optifineBreak;
+
+		if(restoreLightmap)
+		{
+			try {
+				lightmapLastX = OpenGlHelper.lastBrightnessX;
+				lightmapLastY = OpenGlHelper.lastBrightnessY;
+			} catch(NoSuchFieldError e) {
+				optifineBreak = true;
+				restoreLightmap = false;
+			}
+		}
+
+		Deque<LightmapState> states = lightmapStates.get();
+		states.push(new LightmapState(lightmapLastX, lightmapLastY, restoreLightmap));
+		GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+
+		try {
+			RenderHelper.disableStandardItemLighting();
+
+			if(restoreLightmap)
+			{
+				float glowRatioX = Math.min((glow/15F)*240F + lightmapLastX, 240);
+				float glowRatioY = Math.min((glow/15F)*240F + lightmapLastY, 240);
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
+			}
+		} catch(RuntimeException e) {
+			states.pop();
+			GL11.glPopAttrib();
+			throw e;
+		} catch(Error e) {
+			states.pop();
+			GL11.glPopAttrib();
+			throw e;
+		}
     }
 
     public static void glowOff() 
     {
-    	if(!optifineBreak)
-    	{
-    		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
-    	}
-    	
+		Deque<LightmapState> states = lightmapStates.get();
+
+		if(states.isEmpty())
+		{
+			return;
+		}
+
+		LightmapState state = states.pop();
+		if(state.restoreLightmap)
+		{
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, state.x, state.y);
+		}
+
         GL11.glPopAttrib();
+
+		if(states.isEmpty())
+		{
+			lightmapStates.remove();
+		}
     }
     
     public static void blendOn()
     {
-		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
+		blendStates.get().push(Boolean.TRUE);
+		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -501,7 +559,20 @@ public class MekanismRenderer
     
     public static void blendOff()
     {
-    	GL11.glPopAttrib();
+		Deque<Boolean> states = blendStates.get();
+
+		if(states.isEmpty())
+		{
+			return;
+		}
+
+		states.pop();
+		GL11.glPopAttrib();
+
+		if(states.isEmpty())
+		{
+			blendStates.remove();
+		}
     }
 
 	/**
@@ -509,14 +580,42 @@ public class MekanismRenderer
 	 */
 	public static void cullFrontFace()
 	{
+		cullStates.get().push(Boolean.TRUE);
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_POLYGON_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_FRONT);
 	}
 
 	public static void disableCullFace()
 	{
-		GL11.glCullFace(GL11.GL_BACK);
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		Deque<Boolean> states = cullStates.get();
+
+		if(states.isEmpty())
+		{
+			return;
+		}
+
+		states.pop();
+		GL11.glPopAttrib();
+
+		if(states.isEmpty())
+		{
+			cullStates.remove();
+		}
+	}
+
+	private static class LightmapState
+	{
+		private final float x;
+		private final float y;
+		private final boolean restoreLightmap;
+
+		private LightmapState(float x, float y, boolean restoreLightmap)
+		{
+			this.x = x;
+			this.y = y;
+			this.restoreLightmap = restoreLightmap;
+		}
 	}
     
     /**
@@ -681,10 +780,39 @@ public class MekanismRenderer
 	    
 	    GL11.glColor3f(cR, cG, cB);
 	}
+
+	public static void deleteDisplayLists(Object displays)
+	{
+		if(displays instanceof DisplayInteger)
+		{
+			((DisplayInteger)displays).delete();
+		}
+		else if(displays instanceof DisplayInteger[])
+		{
+			for(DisplayInteger display : (DisplayInteger[])displays)
+			{
+				deleteDisplayLists(display);
+			}
+		}
+		else if(displays instanceof Map)
+		{
+			for(Object value : ((Map)displays).values())
+			{
+				deleteDisplayLists(value);
+			}
+		}
+		else if(displays instanceof Iterable)
+		{
+			for(Object value : (Iterable)displays)
+			{
+				deleteDisplayLists(value);
+			}
+		}
+	}
     
     public static class DisplayInteger
     {
-    	public int display;
+		public int display = -1;
     	
     	@Override
     	public int hashCode()
@@ -713,10 +841,22 @@ public class MekanismRenderer
     		GL11.glEndList();
     	}
     	
-    	public void render()
-    	{
-    		GL11.glCallList(display);
-    	}
+		public void render()
+		{
+			if(display >= 0)
+			{
+				GL11.glCallList(display);
+			}
+		}
+
+		public void delete()
+		{
+			if(display >= 0)
+			{
+				GLAllocation.deleteDisplayLists(display);
+				display = -1;
+			}
+		}
     }
     
     public static TextureMap getTextureMap(int type)

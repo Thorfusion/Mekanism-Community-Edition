@@ -46,63 +46,71 @@ public class RenderFluidTank extends TileEntitySpecialRenderer
 		if(fluid != null && fluidScale > 0)
 		{
 			push();
-			
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x, y, z);
-	
-			MekanismRenderer.glowOn(fluid.getLuminosity());
-			MekanismRenderer.colorFluid(fluid);
-	
-			DisplayInteger[] displayList = getListAndRender(fluid);
-	
-			if(fluid.isGaseous())
-			{
-				GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale+MekanismRenderer.GAS_RENDER_BASE));
-				displayList[stages-1].render();
+			try {
+				bindTexture(MekanismRenderer.getBlocksTexture());
+				GL11.glTranslated(x, y, z);
+
+				MekanismRenderer.glowOn(fluid.getLuminosity());
+				try {
+					MekanismRenderer.colorFluid(fluid);
+
+					DisplayInteger[] displayList = getListAndRender(fluid);
+
+					if(fluid.isGaseous())
+					{
+						GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale+MekanismRenderer.GAS_RENDER_BASE));
+						displayList[stages-1].render();
+					}
+					else {
+						displayList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
+					}
+				} finally {
+					MekanismRenderer.glowOff();
+					MekanismRenderer.resetColor();
+				}
+			} finally {
+				pop();
 			}
-			else {
-				displayList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
-			}
-	
-			MekanismRenderer.glowOff();
-			MekanismRenderer.resetColor();
-			
-			pop();
 		}
 		
 		if(valveFluid != null && !valveFluid.isGaseous())
 		{
 			push();
-			
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x, y, z);
-			
-			MekanismRenderer.glowOn(valveFluid.getLuminosity());
-			MekanismRenderer.colorFluid(valveFluid);
-			
-			DisplayInteger[] valveList = getValveRender(valveFluid);
-			
-			valveList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
-			
-			MekanismRenderer.glowOff();
-			MekanismRenderer.resetColor();
-			
-			pop();
+			try {
+				bindTexture(MekanismRenderer.getBlocksTexture());
+				GL11.glTranslated(x, y, z);
+
+				MekanismRenderer.glowOn(valveFluid.getLuminosity());
+				try {
+					MekanismRenderer.colorFluid(valveFluid);
+
+					DisplayInteger[] valveList = getValveRender(valveFluid);
+					valveList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
+				} finally {
+					MekanismRenderer.glowOff();
+					MekanismRenderer.resetColor();
+				}
+			} finally {
+				pop();
+			}
 		}
 		
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank" + (active ? "On" : "") + ".png"));
+		try {
+			GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank" + (active ? "On" : "") + ".png"));
 
-		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F, tier);
-		GL11.glPopMatrix();
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			model.render(0.0625F, tier);
+		} finally {
+			GL11.glPopMatrix();
+		}
 	}
 	
 	private void pop()
 	{
-		GL11.glPopAttrib();
 		MekanismRenderer.blendOff();
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
@@ -191,6 +199,8 @@ public class RenderFluidTank extends TileEntitySpecialRenderer
 
 	public static void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedCenterFluids);
+		MekanismRenderer.deleteDisplayLists(cachedValveFluids);
 		cachedCenterFluids.clear();
 		cachedValveFluids.clear();
 	}

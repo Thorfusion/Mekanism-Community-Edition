@@ -80,6 +80,11 @@ public class CTMData
 
 	public CTMTextureData getTextureData(int side)
 	{
+		return getTextureData(side, facing);
+	}
+
+	public CTMTextureData getTextureData(int side, int facing)
+	{
 		if(hasFacingOverride() && side == facing)
 		{
 			return facingOverride;
@@ -98,14 +103,29 @@ public class CTMData
 		return getTextureData(side).icon;
 	}
 
+	public IIcon getIcon(int side, int facing)
+	{
+		return getTextureData(side, facing).icon;
+	}
+
 	public TextureSubmap getSubmap(int side)
 	{
 		return getTextureData(side).submap;
 	}
 
+	public TextureSubmap getSubmap(int side, int facing)
+	{
+		return getTextureData(side, facing).submap;
+	}
+
 	public TextureSubmap getSmallSubmap(int side)
 	{
 		return getTextureData(side).submapSmall;
+	}
+
+	public TextureSubmap getSmallSubmap(int side, int facing)
+	{
+		return getTextureData(side, facing).submapSmall;
 	}
 
 	public CTMData addOtherBlockConnectivities(Block block, List<Integer> connectableMeta)

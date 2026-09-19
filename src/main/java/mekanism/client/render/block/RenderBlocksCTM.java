@@ -21,7 +21,6 @@ public class RenderBlocksCTM extends RenderBlocks
 		resetVertices();
 	}
 
-	Tessellator tessellator;
 	double[] X = new double[26];
 	double[] Y = new double[26];
 	double[] Z = new double[26];
@@ -33,6 +32,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	float[] B = new float[26];
 	CTMData dataCTM;
 	RenderBlocks rendererOld;
+	int facingOverride = -1;
 
 	int bx, by, bz;
 
@@ -43,16 +43,15 @@ public class RenderBlocksCTM extends RenderBlocks
 		by = y;
 		bz = z;
 
-		tessellator = Tessellator.instance;
+		Tessellator tessellator = Tessellator.instance;
 		tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
 
 		tessellator.addTranslation(x, y, z);
-
-		boolean res = super.renderStandardBlock(block, x, y, z);
-
-		tessellator.addTranslation(-x, -y, -z);
-
-		return res;
+		try {
+			return super.renderStandardBlock(block, x, y, z);
+		} finally {
+			tessellator.addTranslation(-x, -y, -z);
+		}
 	}
 
 	void setupSides(int a, int b, int c, int d, int xa, int xb, int xc, int xd, int e)
@@ -100,7 +99,7 @@ public class RenderBlocksCTM extends RenderBlocks
 
 	void side(int a, int b, int c, int d, int iconIndex, boolean flip, int side)
 	{
-		IIcon icon = iconIndex >= 16 ? dataCTM.getSmallSubmap(side).icons[iconIndex - 16] : dataCTM.getSubmap(side).icons[iconIndex];
+		IIcon icon = iconIndex >= 16 ? dataCTM.getSmallSubmap(side, facingOverride).icons[iconIndex - 16] : dataCTM.getSubmap(side, facingOverride).icons[iconIndex];
 
 		double u0 = icon.getMaxU();
 		double u1 = icon.getMinU();
@@ -125,6 +124,8 @@ public class RenderBlocksCTM extends RenderBlocks
 
 	void vert(int index)
 	{
+		Tessellator tessellator = Tessellator.instance;
+
 		if(enableAO)
 		{
 			tessellator.setColorOpaque_F(R[index], G[index], B[index]);
@@ -139,6 +140,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 0.0, i.getMinU(), i.getMinV());
@@ -162,6 +164,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(1.0, 1.0, 1.0, i.getMaxU(), i.getMinV());
@@ -185,6 +188,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(1.0, 1.0, 0.0, i.getMaxU(), i.getMinV());
@@ -209,6 +213,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 1.0, i.getMinU(), i.getMinV());
@@ -232,6 +237,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 0.0, 1.0, i.getMinU(), i.getMaxV());
@@ -255,6 +261,7 @@ public class RenderBlocksCTM extends RenderBlocks
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
+			Tessellator tessellator = Tessellator.instance;
 			IIcon i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 0.0, i.getMinU(), i.getMinV());

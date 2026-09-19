@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer
 {
-	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
+	private static final HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -31,32 +31,33 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		if(tileEntity.shouldRender)
 		{
 			push();
+			try {
+				GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
 
-			GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
+				bindTexture(MekanismRenderer.getBlocksTexture());
+				GL11.glTranslatef((float)x, (float)y, (float)z);
 
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslatef((float)x, (float)y, (float)z);
+				Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
+				int type = 0;
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
-			int type = 0;
+				if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)
+				{
+					type = 1;
+				}
 
-			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)
-			{
-				type = 1;
+				int display = getOverlayDisplay(type).display;
+				GL11.glCallList(display);
+			} finally {
+				pop();
 			}
-
-			int display = getOverlayDisplay(type).display;
-			GL11.glCallList(display);
-
-			pop();
 		}
 	}
 
 	private void pop()
 	{
-		GL11.glPopAttrib();
-		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
+		MekanismRenderer.glowOff();
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
@@ -121,5 +122,11 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		display.endList();
 
 		return display;
+	}
+
+	public static void resetDisplayInts()
+	{
+		MekanismRenderer.deleteDisplayLists(cachedOverlays);
+		cachedOverlays.clear();
 	}
 }

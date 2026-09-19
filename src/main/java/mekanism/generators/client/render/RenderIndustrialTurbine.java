@@ -43,22 +43,24 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null)
 		{
 			RenderTurbineRotor.internalRender = true;
-			Coord4D coord = tileEntity.structure.complex;
-			
-			while(true)
-			{
-				coord = coord.getFromSide(ForgeDirection.DOWN);
-				TileEntity tile = coord.getTileEntity(tileEntity.getWorldObj());
-				
-				if(!(tile instanceof TileEntityTurbineRotor))
+			try {
+				Coord4D coord = tileEntity.structure.complex;
+
+				while(true)
 				{
-					break;
+					coord = coord.getFromSide(ForgeDirection.DOWN);
+					TileEntity tile = coord.getTileEntity(tileEntity.getWorldObj());
+
+					if(!(tile instanceof TileEntityTurbineRotor))
+					{
+						break;
+					}
+
+					TileEntityRendererDispatcher.instance.renderTileEntity(tile, partialTick);
 				}
-				
-				TileEntityRendererDispatcher.instance.renderTileEntity(tile, partialTick);
+			} finally {
+				RenderTurbineRotor.internalRender = false;
 			}
-			
-			RenderTurbineRotor.internalRender = false;
 			
 			if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0 && tileEntity.structure.volLength > 0)
 			{
@@ -74,21 +76,24 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 				if(data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null)
 				{
 					push();
-	
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
-					
-					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-					MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
-	
-					DisplayInteger display = getListAndRender(data, tileEntity.getWorldObj());
-	
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+MekanismRenderer.GAS_RENDER_BASE));
-					display.render();
-	
-					MekanismRenderer.glowOff();
-					MekanismRenderer.resetColor();
-	
-					pop();
+					try {
+						GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+
+						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+						try {
+							MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+
+							DisplayInteger display = getListAndRender(data, tileEntity.getWorldObj());
+
+							GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.structure.getFluidCapacity())+MekanismRenderer.GAS_RENDER_BASE));
+							display.render();
+						} finally {
+							MekanismRenderer.glowOff();
+							MekanismRenderer.resetColor();
+						}
+					} finally {
+						pop();
+					}
 				}
 			}
 		}
@@ -96,15 +101,14 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 	
 	private void pop()
 	{
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
 	private void push()
 	{
 		GL11.glPushMatrix();
-		
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -166,6 +170,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 	
 	public static void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedFluids);
 		cachedFluids.clear();
 	}
 }

@@ -211,18 +211,19 @@ public class RenderPartTransmitter implements IIconSelfRegister
 					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
 
 					pushTransporter();
+					try {
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+						CCRenderState.changeTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
+						GL11.glTranslatef((float)vec.x, (float)vec.y, (float)vec.z);
+						GL11.glScalef(0.5F, 0.5F, 0.5F);
+						GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 
-					CCRenderState.changeTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
-					GL11.glTranslatef((float)vec.x, (float)vec.y, (float)vec.z);
-					GL11.glScalef(0.5F, 0.5F, 0.5F);
-					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-
-					int display = getOverlayDisplay(world, side, mode).display;
-					GL11.glCallList(display);
-
-					popTransporter();
+						int display = getOverlayDisplay(world, side, mode).display;
+						GL11.glCallList(display);
+					} finally {
+						popTransporter();
+					}
 				}
 			}
 		}
@@ -668,9 +669,9 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	private void popTransporter()
 	{
-		GL11.glPopAttrib();
-		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
+		MekanismRenderer.glowOff();
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
@@ -804,6 +805,8 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedLiquids);
+		MekanismRenderer.deleteDisplayLists(cachedOverlays);
 		cachedLiquids.clear();
 		cachedOverlays.clear();
 	}

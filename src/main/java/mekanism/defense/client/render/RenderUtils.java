@@ -1,22 +1,25 @@
 package defense.client.render;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_FLAT;
-import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CURRENT_BIT;
+import static org.lwjgl.opengl.GL11.GL_ENABLE_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING_BIT;
+import static org.lwjgl.opengl.GL11.GL_LINE_BIT;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH;
+import static org.lwjgl.opengl.GL11.GL_POLYGON_BIT;
 import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopAttrib;
+import static org.lwjgl.opengl.GL11.glPushAttrib;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glShadeModel;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.OpenGlHelper;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -49,6 +52,7 @@ public class RenderUtils
     /** Enables blending. */
     public static void enableBlending()
     {
+		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT | GL_LINE_BIT | GL_POLYGON_BIT);
         glShadeModel(GL_SMOOTH);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -57,22 +61,18 @@ public class RenderUtils
     /** Disables blending. */
     public static void disableBlending()
     {
-        glShadeModel(GL_FLAT);
-        glDisable(GL_LINE_SMOOTH);
-        glDisable(GL_POLYGON_SMOOTH);
-        glDisable(GL_BLEND);
+		glPopAttrib();
     }
 
     public static void enableLighting()
     {
-        RenderHelper.enableStandardItemLighting();
+		MekanismRenderer.glowOff();
     }
 
     /** Disables lighting and turns glow on. */
     public static void disableLighting()
     {
-        RenderHelper.disableStandardItemLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+		MekanismRenderer.glowOn();
     }
     
     public static void renderNormalBlockAsItem(Block block, int metadata, RenderBlocks renderer)

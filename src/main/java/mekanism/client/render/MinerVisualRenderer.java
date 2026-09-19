@@ -26,16 +26,25 @@ public final class MinerVisualRenderer
 	public static void render(TileEntityDigitalMiner miner)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
-		MekanismRenderer.blendOn();
-		MekanismRenderer.glowOn();
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-		getList(new MinerRenderData(miner)).render();
-		MekanismRenderer.glowOff();
-		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		try {
+			GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
+			MekanismRenderer.blendOn();
+			try {
+				MekanismRenderer.glowOn();
+				try {
+					GL11.glEnable(GL11.GL_CULL_FACE);
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+					mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+					getList(new MinerRenderData(miner)).render();
+				} finally {
+					MekanismRenderer.glowOff();
+				}
+			} finally {
+				MekanismRenderer.blendOff();
+			}
+		} finally {
+			GL11.glPopMatrix();
+		}
 	}
 	
 	private static DisplayInteger getList(MinerRenderData data)
@@ -98,6 +107,12 @@ public final class MinerVisualRenderer
 	private static double getZ(int z)
 	{
 		return z - TileEntityRendererDispatcher.staticPlayerZ;
+	}
+
+	public static void resetDisplayInts()
+	{
+		MekanismRenderer.deleteDisplayLists(cachedVisuals);
+		cachedVisuals.clear();
 	}
 	
 	public static class MinerRenderData

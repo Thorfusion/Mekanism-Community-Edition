@@ -26,7 +26,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
 
-	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
+	private static final Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
 
 	private static final int stages = 40;
 
@@ -41,33 +41,40 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		if(tileEntity.fuelTank.getStored() > 0)
 		{
 			push();
+			try {
+				boolean isEthanol = tileEntity.getFuelType() == 1;
 
-			boolean isEthanol = tileEntity.getFuelType() == 1;
-
-			MekanismRenderer.glowOn();
-			GL11.glTranslatef((float)x, (float)y, (float)z);
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(isEthanol, ForgeDirection.getOrientation(tileEntity.facing)) [tileEntity.getScaledFuelLevel(stages-1)].render();
-			MekanismRenderer.glowOff();
-
-			pop();
+				MekanismRenderer.glowOn();
+				try {
+					GL11.glTranslatef((float)x, (float)y, (float)z);
+					bindTexture(MekanismRenderer.getBlocksTexture());
+					getDisplayList(isEthanol, ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+				} finally {
+					MekanismRenderer.glowOff();
+				}
+			} finally {
+				pop();
+			}
 		}
 		
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
+		try {
+			GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-		switch(tileEntity.facing)
-		{
-			case 2: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			switch(tileEntity.facing)
+			{
+				case 2: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+				case 3: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+				case 4: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
+				case 5: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			}
+
+			GL11.glRotatef(180, 0F, 0F, 1F);
+			model.render(0.0625F);
+		} finally {
+			GL11.glPopMatrix();
 		}
-		
-		GL11.glRotatef(180, 0F, 0F, 1F);
-		model.render(0.0625F);
-		GL11.glPopMatrix();
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -163,5 +170,11 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	public static void resetDisplayInts()
+	{
+		MekanismRenderer.deleteDisplayLists(energyDisplays);
+		energyDisplays.clear();
 	}
 }

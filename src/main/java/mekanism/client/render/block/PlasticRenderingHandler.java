@@ -1,5 +1,6 @@
 package mekanism.client.render.block;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 
 @SideOnly(Side.CLIENT)
+@ThreadSafeISBRH(perThread = false)
 public class PlasticRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	@Override

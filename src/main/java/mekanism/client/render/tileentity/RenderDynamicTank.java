@@ -49,42 +49,47 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			if(data.location != null && data.height >= 3 && tileEntity.structure.fluidStored.getFluid() != null)
 			{
 				push();
+				try {
+					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
-				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+					try {
+						MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
-				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+						DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
-
-				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
-				{
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+MekanismRenderer.GAS_RENDER_BASE));
-					displayList[getStages(data.height)-1].render();
+						if(tileEntity.structure.fluidStored.getFluid().isGaseous())
+						{
+							GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+MekanismRenderer.GAS_RENDER_BASE));
+							displayList[getStages(data.height)-1].render();
+						}
+						else {
+							displayList[Math.min(getStages(data.height)-1, (int)(tileEntity.prevScale*((float)getStages(data.height)-1)))].render();
+						}
+					} finally {
+						MekanismRenderer.glowOff();
+						MekanismRenderer.resetColor();
+					}
+				} finally {
+					pop();
 				}
-				else {
-					displayList[Math.min(getStages(data.height)-1, (int)(tileEntity.prevScale*((float)getStages(data.height)-1)))].render();
-				}
-
-				MekanismRenderer.glowOff();
-				MekanismRenderer.resetColor();
-
-				pop();
 
 				for(ValveData valveData : tileEntity.valveViewing)
 				{
 					push();
+					try {
+						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
-					GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
-
-					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-
-					getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
-
-					MekanismRenderer.glowOff();
-					MekanismRenderer.resetColor();
-
-					pop();
+						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+						try {
+							getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
+						} finally {
+							MekanismRenderer.glowOff();
+							MekanismRenderer.resetColor();
+						}
+					} finally {
+						pop();
+					}
 				}
 			}
 		}
@@ -351,6 +356,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	public static void resetDisplayInts()
 	{
+		MekanismRenderer.deleteDisplayLists(cachedCenterFluids);
+		MekanismRenderer.deleteDisplayLists(cachedValveFluids);
 		cachedCenterFluids.clear();
 		cachedValveFluids.clear();
 	}

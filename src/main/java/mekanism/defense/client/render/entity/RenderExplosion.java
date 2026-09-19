@@ -39,22 +39,26 @@ public class RenderExplosion extends Render
 
                 /** Draw Sphere */
                 GL11.glPushMatrix();
-                GL11.glTranslatef((float) x, (float) y, (float) z);
+                try {
+                    GL11.glTranslatef((float) x, (float) y, (float) z);
 
-                RenderUtils.enableBlending();
-                RenderUtils.disableLighting();
+                    RenderUtils.enableBlending();
+                    try {
+                        RenderUtils.disableLighting();
+                        try {
+                            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.9f);
 
-                GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.9f);
-
-                Sphere sphere = new Sphere();
-                sphere.draw(5, 32, 32);
-
-                // Enable Lighting/Glow Off
-                RenderUtils.enableLighting();
-
-                // Disable Blending
-                RenderUtils.disableBlending();
-                GL11.glPopMatrix();
+                            Sphere sphere = new Sphere();
+                            sphere.draw(5, 32, 32);
+                        } finally {
+                            RenderUtils.enableLighting();
+                        }
+                    } finally {
+                        RenderUtils.disableBlending();
+                    }
+                } finally {
+                    GL11.glPopMatrix();
+                }
 
                 /** Draw Vortex
                  * 
@@ -94,6 +98,7 @@ public class RenderExplosion extends Render
                 while (par2 > 200)
                     par2 -= 100;
 
+                GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
                 RenderHelper.disableStandardItemLighting();
                 float var41 = (5 + par2) / 200.0F;
                 float var51 = 0.0F;
@@ -148,17 +153,21 @@ public class RenderExplosion extends Render
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
                 RenderHelper.enableStandardItemLighting();
                 GL11.glPopMatrix();
+                GL11.glPopAttrib();
             }
             else
             {
                 if (eZhaPin.blast.getRenderModel() != null && eZhaPin.blast.getRenderResource() != null)
                 {
                     GL11.glPushMatrix();
-                    GL11.glTranslatef((float) x, (float) y + 1F, (float) z);
-                    GL11.glRotatef(eZhaPin.rotationPitch, 0.0F, 0.0F, 1.0F);
-                    this.bindTexture(eZhaPin.blast.getRenderResource());
-                    eZhaPin.blast.getRenderModel().render(eZhaPin, (float) x, (float) y, (float) z, par8, par9, 0.0625F);
-                    GL11.glPopMatrix();
+                    try {
+                        GL11.glTranslatef((float) x, (float) y + 1F, (float) z);
+                        GL11.glRotatef(eZhaPin.rotationPitch, 0.0F, 0.0F, 1.0F);
+                        this.bindTexture(eZhaPin.blast.getRenderResource());
+                        eZhaPin.blast.getRenderModel().render(eZhaPin, (float) x, (float) y, (float) z, par8, par9, 0.0625F);
+                    } finally {
+                        GL11.glPopMatrix();
+                    }
                 }
             }
         }
@@ -166,20 +175,25 @@ public class RenderExplosion extends Render
 
     public void drawCircle(double x, double y, double radius, double accuracy)
     {
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+        try {
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-        double da = Math.min((2.0 * Math.asin(1.0 / radius) / accuracy), 10000);
+            double da = Math.min((2.0 * Math.asin(1.0 / radius) / accuracy), 10000);
 
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-        GL11.glVertex2d(x, y);
+            GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+            GL11.glVertex2d(x, y);
 
-        for (double a = 0.0; a <= 2 * Math.PI; a += da)
-        {
-            GL11.glVertex2d(x + Math.cos(a) * radius, y + Math.sin(a) * radius);
+            for (double a = 0.0; a <= 2 * Math.PI; a += da)
+            {
+                GL11.glVertex2d(x + Math.cos(a) * radius, y + Math.sin(a) * radius);
+            }
+
+            GL11.glVertex2d(x + radius, y);
+            GL11.glEnd();
+        } finally {
+            GL11.glPopAttrib();
         }
-
-        GL11.glVertex2d(x + radius, y);
-        GL11.glEnd();
     }
 
     @Override
