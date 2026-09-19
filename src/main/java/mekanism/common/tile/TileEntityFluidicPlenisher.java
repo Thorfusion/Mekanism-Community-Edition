@@ -98,7 +98,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
                 });
             }
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME
+                  && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
                 if (!finishedCalc) {
                     setEnergy(getEnergy() - energyPerTick);
                 }
