@@ -1,8 +1,12 @@
 package mekanism.ultimate.common;
 
 import io.netty.buffer.ByteBuf;
+
+import java.io.File;
 import java.io.IOException;
+
 import mekanism.api.MekanismConfig;
+import mekanism.api.MekanismConfig.ultimate;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
@@ -14,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.ultimate.common.item.ItemBlockUltimateFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -23,7 +28,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = MekanismUltimate.MODID, name = "Mekanism Community Edition: Ultimate", version = "GRADLE_MODVERSION", dependencies = "required-after:Mekanism")
+@Mod(modid = MekanismUltimate.MODID, name = "Mekanism Community Edition: Ultimate", version = "GRADLE_MODVERSION", dependencies = "required-after:Mekanism", guiFactory = "mekanism.ultimate.client.gui.UltimateGuiFactory")
 public class MekanismUltimate implements IModule
 {
     public static final String MODID = "MekanismUltimate";
@@ -36,9 +41,13 @@ public class MekanismUltimate implements IModule
 
     public static Version versionNumber = new Version(GRADLE_VERSIONMOD);
 
+    public static Configuration configuration;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        configuration = new Configuration(new File(event.getModConfigurationDirectory(), "mekanism/MekanismUltimate.cfg"));
+        proxy.loadConfiguration();
         GameRegistry.registerBlock(UltimateBlocks.UltimateFactory, ItemBlockUltimateFactory.class, "UltimateFactory");
     }
 
@@ -55,7 +64,7 @@ public class MekanismUltimate implements IModule
 
     private void addRecipes()
     {
-        if (!MekanismConfig.recipes.enableFactories)
+        if (!MekanismConfig.recipes.enableFactories || !ultimate.factoryEnabled || !ultimate.enableFactoryRecipes)
         {
             return;
         }
@@ -89,11 +98,21 @@ public class MekanismUltimate implements IModule
     @Override
     public void writeConfig(ByteBuf dataStream) throws IOException
     {
+        dataStream.writeBoolean(ultimate.factoryEnabled);
+        dataStream.writeBoolean(ultimate.allowTierInstallerUpgrade);
+        dataStream.writeDouble(ultimate.factoryUsageMultiplier);
+        dataStream.writeInt(ultimate.factoryEnergyStorageTicks);
+        dataStream.writeBoolean(ultimate.enableFactoryRecipes);
     }
 
     @Override
     public void readConfig(ByteBuf dataStream) throws IOException
     {
+        ultimate.factoryEnabled = dataStream.readBoolean();
+        ultimate.allowTierInstallerUpgrade = dataStream.readBoolean();
+        ultimate.factoryUsageMultiplier = dataStream.readDouble();
+        ultimate.factoryEnergyStorageTicks = dataStream.readInt();
+        ultimate.enableFactoryRecipes = dataStream.readBoolean();
     }
 
     @Override

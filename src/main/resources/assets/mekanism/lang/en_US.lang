@@ -1129,10 +1129,16 @@ item.SteelSword.name=Steel Sword
 mekanism.configgui.ctgy.tools.general=General
 mekanism.configgui.ctgy.tools.armor=Armor Balance
 mekanism.configgui.ctgy.tools.tools=Tools Balance
+mekanism.configgui.ctgy.ultimate.machines=Machines
+mekanism.configgui.ctgy.ultimate.usage=Energy Usage
+mekanism.configgui.ctgy.ultimate.recipes=Recipes
 
 //Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+mekanism.configgui.ctgy.ultimate.machines.tooltip=Settings for enabling Ultimate Factories and tier-installer upgrades
+mekanism.configgui.ctgy.ultimate.usage.tooltip=Settings for Ultimate Factory energy usage and storage
+mekanism.configgui.ctgy.ultimate.recipes.tooltip=Settings for Ultimate Factory crafting recipes
 
 mekanism.gui.noWind=No wind

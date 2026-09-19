@@ -1,7 +1,6 @@
 package mekanism.ultimate.common.tile;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
@@ -11,12 +10,16 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.InventoryUtils;
+import mekanism.ultimate.common.UltimateConfig;
 
 public class TileEntityUltimateFactory extends TileEntityFactory
 {
     public TileEntityUltimateFactory()
     {
-        super(FactoryTier.ULTIMATE, "Factory", usage.factoryUsage * FactoryTier.ULTIMATE.processes * 400);
+        super(FactoryTier.ULTIMATE, "Factory", UltimateConfig.getFactoryMaxEnergy());
+
+        BASE_ENERGY_PER_TICK = UltimateConfig.getFactoryUsage();
+        energyPerTick = BASE_ENERGY_PER_TICK;
 
         int[] inputSlots = new int[FactoryTier.ULTIMATE.processes];
         int[] outputSlots = new int[FactoryTier.ULTIMATE.processes];

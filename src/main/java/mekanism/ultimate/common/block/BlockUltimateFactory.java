@@ -3,6 +3,7 @@ package mekanism.ultimate.common.block;
 import java.util.List;
 
 import buildcraft.api.tools.IToolWrench;
+import mekanism.api.MekanismConfig.ultimate;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DefIcon;
 import mekanism.common.Tier.BaseTier;
@@ -92,6 +93,11 @@ public class BlockUltimateFactory extends BlockMachine
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item item, CreativeTabs tab, List list)
     {
+        if (!ultimate.factoryEnabled)
+        {
+            return;
+        }
+
         for (RecipeType type : RecipeType.values())
         {
             ItemStack stack = new ItemStack(item);

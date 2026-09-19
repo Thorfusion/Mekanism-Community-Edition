@@ -199,6 +199,15 @@ public class MekanismConfig
 		public static double armorSpawnRate;
 	}
 
+	public static class ultimate
+	{
+		public static boolean factoryEnabled = true;
+		public static boolean allowTierInstallerUpgrade = true;
+		public static double factoryUsageMultiplier = 1D;
+		public static int factoryEnergyStorageTicks = 400;
+		public static boolean enableFactoryRecipes = true;
+	}
+
 	public static class recipes
 	{
 		public static boolean enableOsmiumBlock = true;

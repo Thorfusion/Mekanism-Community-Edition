@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.ultimate;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
@@ -175,6 +176,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         int targetMetadata = 5 + upgradeTier.ordinal();
 
         if (upgradeTier == BaseTier.ULTIMATE) {
+            if (!ultimate.factoryEnabled || !ultimate.allowTierInstallerUpgrade) {
+                return false;
+            }
+
             targetBlock = GameRegistry.findBlock("MekanismUltimate", "UltimateFactory");
             targetMetadata = 0;
 

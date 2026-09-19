@@ -3,14 +3,13 @@ package mekanism.ultimate.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.ultimate.common.UltimateConfig;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -63,7 +62,7 @@ public class ItemBlockUltimateFactory extends ItemBlockMachine
     @Override
     public double getMaxEnergy(ItemStack stack)
     {
-        return MekanismUtils.getMaxEnergy(stack, usage.factoryUsage * FactoryTier.ULTIMATE.processes * 400);
+        return MekanismUtils.getMaxEnergy(stack, UltimateConfig.getFactoryMaxEnergy());
     }
 
     @Override
