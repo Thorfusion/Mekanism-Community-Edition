@@ -94,6 +94,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiSolarNeutronActivator.class, SolarNeutronRecipeHandler.xOffset, SolarNeutronRecipeHandler.yOffset);
 		
 		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());
+		SawingFactoryRecipeHandler.register();
 		
 		API.registerNEIGuiHandler(new ElementBoundHandler());
 
