@@ -1,35 +1,176 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Check code
+name: Build and publish development artifacts
 
 on:
   push:
+    branches:
+      - '**'
+    paths-ignore:
+      - '**/README.md'
+      - '**/Mekanism.txt'
+  pull_request:
+    paths-ignore:
+      - '**/README.md'
+      - '**/Mekanism.txt'
+  # Trusted PRs run from the base branch's workflow so Maven credentials are
+  # available even when a team member opens the PR from a fork. The job-level
+  # trust check prevents unknown PRs from running under this event.
+  pull_request_target:
     paths-ignore:
       - '**/README.md'
       - '**/Mekanism.txt'
   schedule:
     - cron: '0 12 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    if: >-
+      ${{ (github.event_name == 'pull_request' &&
+      !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)) ||
+      (github.event_name == 'pull_request_target' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)) ||
+      !contains(fromJSON('["pull_request","pull_request_target"]'), github.event_name) }}
+    name: >-
+      Build (${{ github.event_name == 'pull_request' && 'GitHub-hosted' || 'self-hosted' }})
+    # Pull requests from repository owners, organization members, and explicit
+    # collaborators are trusted on our runner. All other PR code is isolated on
+    # a fresh GitHub-hosted runner. Pushes, schedules, and manual runs are
+    # maintainer-controlled and use the self-hosted runner.
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04' || 'self-hosted' }}
+    timeout-minutes: 90
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 8
-        uses: actions/setup-java@v2
+      - name: Check out repository
+        uses: actions/checkout@v7
         with:
+          clean: true
+          fetch-depth: 0
+          persist-credentials: false
+          repository: >-
+            ${{ github.event_name == 'pull_request_target' &&
+            github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: >-
+            ${{ github.event_name == 'pull_request_target' &&
+            github.event.pull_request.head.sha || '' }}
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
           java-version: '8'
-          distribution: 'adopt'
-      - name: Grant execute permission for gradlew
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          validate-wrappers: true
+
+      - name: Grant execute permission for Gradle
         run: chmod +x gradlew
-      - name: Build and Publish
-        run: ./gradlew fullbuild artifactoryPublish
+
+      - name: Determine exact artifact names
+        id: artifacts
+        shell: bash
         env:
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        run: |
+          minecraft_version="$(sed -n 's/^minecraft_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+          mod_version="$(sed -n 's/^mod_version=//p' gradle.properties | tr -d '\r' | tail -n 1)"
+
+          if [[ -z "$minecraft_version" || -z "$mod_version" ]]; then
+            echo "Could not determine artifact versions from gradle.properties." >&2
+            exit 1
+          fi
+
+          case "$GITHUB_EVENT_NAME" in
+            pull_request|pull_request_target)
+              build_suffix="pr-${PR_NUMBER}-${GITHUB_RUN_NUMBER}"
+              ;;
+            *)
+              build_suffix="$GITHUB_RUN_NUMBER"
+              ;;
+          esac
+
+          artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}-${build_suffix}"
+
+          case "$minecraft_version" in
+            1.7.10)
+              artifact_specs=(ALL.jar API.jar Core.jar DEV.jar DefenseTech.jar Generators.jar MDK.zip Tools.jar Ultimate.jar)
+              ;;
+            1.12.2)
+              artifact_specs=(ALL.jar API.jar Core.jar Generators.jar Tools.jar Ultimate.jar)
+              ;;
+            *)
+              echo "Unsupported Minecraft version: $minecraft_version" >&2
+              exit 1
+              ;;
+          esac
+
+          echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
+          {
+            echo 'artifact_files<<ARTIFACT_FILES'
+            for spec in "${artifact_specs[@]}"; do
+              echo "output/${artifact_prefix}-${spec}"
+            done
+            echo 'ARTIFACT_FILES'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Empty output directory
+        shell: bash
+        run: |
+          mkdir -p output
+          find output -mindepth 1 -delete
+
+      - name: Build external pull request
+        if: github.event_name == 'pull_request'
+        run: ./gradlew --no-daemon --stacktrace clean fullBuild
+        env:
+          BUILD_VER: ${{ format('pr-{0}-{1}', github.event.pull_request.number, github.run_number) }}
+
+      - name: Build trusted team pull request
+        if: github.event_name == 'pull_request_target'
+        run: ./gradlew --no-daemon --stacktrace clean fullBuild
+        env:
+          BUILD_VER: ${{ format('pr-{0}-{1}', github.event.pull_request.number, github.run_number) }}
+
+      - name: Build development version
+        if: >-
+          ${{ !contains(fromJSON('["pull_request","pull_request_target"]'), github.event_name) }}
+        run: ./gradlew --no-daemon --stacktrace clean fullBuild
+        env:
+          BUILD_VER: ${{ github.run_number }}
+
+      - name: Validate packaged artifacts
+        shell: bash
+        run: >-
+          bash .github/scripts/validate-release-artifacts.sh
+          output '${{ steps.artifacts.outputs.prefix }}'
+
+      # Preserve the development Maven publication used by the external test
+      # servers. Trusted team PRs publish a unique pr-N-RUN version. Unknown PRs
+      # use pull_request on GitHub-hosted runners and never receive credentials.
+      - name: Publish development version to Maven
+        if: github.event_name != 'pull_request'
+        run: ./gradlew --no-daemon --stacktrace artifactoryPublish
+        env:
+          BUILD_VER: >-
+            ${{ github.event_name == 'pull_request_target' &&
+            format('pr-{0}-{1}', github.event.pull_request.number, github.run_number) || github.run_number }}
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_TOKEN }}
           MAVEN_REPO: ${{ secrets.MAVEN_DEVREPO }}
-          BUILD_VER: ${{ github.run_number }}
+
+      # External contributors cannot publish to Maven, so retain their build
+      # output in Actions for review and testing. All trusted builds use Maven.
+      - name: Upload external pull request artifacts
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: mekanism-ce-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.artifacts.outputs.artifact_files }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
