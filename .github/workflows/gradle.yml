@@ -93,12 +93,29 @@ jobs:
               ;;
           esac
 
-          artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}"
-          if [[ -n "$build_suffix" ]]; then
-            artifact_prefix="${artifact_prefix}-${build_suffix}"
-          fi
+          artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}-${build_suffix}"
+
+          case "$minecraft_version" in
+            1.7.10)
+              artifact_specs=(ALL.jar API.jar Core.jar DEV.jar DefenseTech.jar Generators.jar MDK.zip Tools.jar Ultimate.jar)
+              ;;
+            1.12.2)
+              artifact_specs=(ALL.jar API.jar Core.jar Generators.jar Tools.jar Ultimate.jar)
+              ;;
+            *)
+              echo "Unsupported Minecraft version: $minecraft_version" >&2
+              exit 1
+              ;;
+          esac
 
           echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
+          {
+            echo 'artifact_files<<ARTIFACT_FILES'
+            for spec in "${artifact_specs[@]}"; do
+              echo "output/${artifact_prefix}-${spec}"
+            done
+            echo 'ARTIFACT_FILES'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Empty output directory
         shell: bash
@@ -153,16 +170,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: mekanism-ce-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            output/${{ steps.artifacts.outputs.prefix }}-ALL.jar
-            output/${{ steps.artifacts.outputs.prefix }}-API.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Core.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DEV.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DefenseTech.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Generators.jar
-            output/${{ steps.artifacts.outputs.prefix }}-MDK.zip
-            output/${{ steps.artifacts.outputs.prefix }}-Tools.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Ultimate.jar
+          path: ${{ steps.artifacts.outputs.artifact_files }}
           if-no-files-found: error
           retention-days: 14
           compression-level: 0

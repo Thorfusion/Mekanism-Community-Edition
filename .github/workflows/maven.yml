@@ -1,5 +1,8 @@
 name: Publish release
 
+# GitHub resolves release-event workflows from the repository's default branch.
+# Keep this workflow branch-aware so both 1.7.10 and 1.12.2 tags publish correctly.
+
 on:
   release:
     types: [published]
@@ -19,6 +22,9 @@ jobs:
     environment: release
     outputs:
       artifact_prefix: ${{ steps.artifacts.outputs.prefix }}
+      minecraft_version: ${{ steps.artifacts.outputs.minecraft_version }}
+      release_files: ${{ steps.artifacts.outputs.release_files }}
+      main_files: ${{ steps.artifacts.outputs.main_files }}
 
     steps:
       - name: Check out release tag
@@ -54,7 +60,37 @@ jobs:
             exit 1
           fi
 
-          echo "prefix=Mekanism-Community-Edition-${minecraft_version}-${mod_version}" >> "$GITHUB_OUTPUT"
+          artifact_prefix="Mekanism-Community-Edition-${minecraft_version}-${mod_version}"
+
+          case "$minecraft_version" in
+            1.7.10)
+              release_specs=(ALL.jar API.jar Core.jar DEV.jar DefenseTech.jar Generators.jar MDK.zip Tools.jar Ultimate.jar)
+              main_specs=(Core.jar API.jar DEV.jar MDK.zip)
+              ;;
+            1.12.2)
+              release_specs=(ALL.jar API.jar Core.jar Generators.jar Tools.jar Ultimate.jar)
+              main_specs=(Core.jar API.jar)
+              ;;
+            *)
+              echo "Unsupported Minecraft version: $minecraft_version" >&2
+              exit 1
+              ;;
+          esac
+
+          echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
+          echo "minecraft_version=$minecraft_version" >> "$GITHUB_OUTPUT"
+          {
+            echo 'release_files<<RELEASE_FILES'
+            for spec in "${release_specs[@]}"; do
+              echo "output/${artifact_prefix}-${spec}"
+            done
+            echo 'RELEASE_FILES'
+            echo 'main_files<<MAIN_FILES'
+            for spec in "${main_specs[@]}"; do
+              echo "output/${artifact_prefix}-${spec}"
+            done
+            echo 'MAIN_FILES'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Verify tag matches the project version
         shell: bash
@@ -96,32 +132,14 @@ jobs:
           github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           github-tag: ${{ github.event.release.tag_name }}
           github-generate-changelog: false
-          files: |
-            output/${{ steps.artifacts.outputs.prefix }}-ALL.jar
-            output/${{ steps.artifacts.outputs.prefix }}-API.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Core.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DEV.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DefenseTech.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Generators.jar
-            output/${{ steps.artifacts.outputs.prefix }}-MDK.zip
-            output/${{ steps.artifacts.outputs.prefix }}-Tools.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Ultimate.jar
+          files: ${{ steps.artifacts.outputs.release_files }}
           version: ${{ github.event.release.tag_name }}
 
       - name: Save release artifacts for publishing jobs
         uses: actions/upload-artifact@v7
         with:
           name: release-${{ github.event.release.tag_name }}
-          path: |
-            output/${{ steps.artifacts.outputs.prefix }}-ALL.jar
-            output/${{ steps.artifacts.outputs.prefix }}-API.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Core.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DEV.jar
-            output/${{ steps.artifacts.outputs.prefix }}-DefenseTech.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Generators.jar
-            output/${{ steps.artifacts.outputs.prefix }}-MDK.zip
-            output/${{ steps.artifacts.outputs.prefix }}-Tools.jar
-            output/${{ steps.artifacts.outputs.prefix }}-Ultimate.jar
+          path: ${{ steps.artifacts.outputs.release_files }}
           if-no-files-found: error
           # This artifact only passes the verified files to the parallel
           # publishing jobs; GitHub Releases and Maven are the durable stores.
@@ -149,17 +167,13 @@ jobs:
         with:
           modrinth-id: toGHjw6t
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          files: |
-            output/${{ needs.build.outputs.artifact_prefix }}-Core.jar
-            output/${{ needs.build.outputs.artifact_prefix }}-API.jar
-            output/${{ needs.build.outputs.artifact_prefix }}-DEV.jar
-            output/${{ needs.build.outputs.artifact_prefix }}-MDK.zip
+          files: ${{ needs.build.outputs.main_files }}
           name: Mekanism CE - CORE ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
-          game-versions: '1.7.10'
+          game-versions: ${{ needs.build.outputs.minecraft_version }}
           game-version-filter: none
           java: '8'
           environment: client | server
@@ -179,27 +193,33 @@ jobs:
             project-id: qBExn86I
             classifier: DefenseTech
             beta-only: false
+            only_version: '1.7.10'
           - name: Generators
             project-id: ksSEAhTL
             classifier: Generators
             beta-only: false
+            only_version: ''
           - name: Tools
             project-id: CD05L8Jr
             classifier: Tools
             beta-only: false
+            only_version: ''
           - name: Ultimate
             project-id: Q6fY4JVC
             classifier: Ultimate
             beta-only: true
+            only_version: ''
 
     steps:
       - name: Download release artifacts
+        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
         uses: actions/download-artifact@v8
         with:
           name: release-${{ github.event.release.tag_name }}
           path: output
 
       - name: Publish ${{ matrix.name }} to Modrinth
+        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
         uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
         with:
           modrinth-id: ${{ matrix.project-id }}
@@ -210,7 +230,7 @@ jobs:
           version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
-          game-versions: '1.7.10'
+          game-versions: ${{ needs.build.outputs.minecraft_version }}
           game-version-filter: none
           java: '8'
           environment: client | server
@@ -232,35 +252,42 @@ jobs:
             classifier: Core
             dependencies: ''
             beta-only: false
+            only_version: ''
           - name: DefenseTech
             project-id: '1488821'
             classifier: DefenseTech
             dependencies: mekanism-ce(required)
             beta-only: false
+            only_version: '1.7.10'
           - name: Generators
             project-id: '813408'
             classifier: Generators
             dependencies: mekanism-ce(required)
             beta-only: false
+            only_version: ''
           - name: Tools
             project-id: '813407'
             classifier: Tools
             dependencies: mekanism-ce(required)
             beta-only: false
+            only_version: ''
           - name: Ultimate
             project-id: '872280'
             classifier: Ultimate
             dependencies: mekanism-ce(required)
             beta-only: true
+            only_version: ''
 
     steps:
       - name: Download release artifacts
+        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
         uses: actions/download-artifact@v8
         with:
           name: release-${{ github.event.release.tag_name }}
           path: output
 
       - name: Publish ${{ matrix.name }} to CurseForge
+        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
         uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
         with:
           curseforge-id: ${{ matrix.project-id }}
@@ -271,7 +298,7 @@ jobs:
           version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
-          game-versions: '1.7.10'
+          game-versions: ${{ needs.build.outputs.minecraft_version }}
           game-version-filter: none
           java: '8'
           environment: client | server
