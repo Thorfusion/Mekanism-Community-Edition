@@ -4,11 +4,11 @@
     "model": "mekanism:machine",
     "textures": {
       "sides": "mekanismultimate:blocks/factory/ultimate/ultimatefactoryside",
-      "front": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryfront",
-      "south": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryback",
+      "front": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactoryfront",
+      "south": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactoryback",
       "west": "mekanismultimate:blocks/factory/ultimate/ultimatefactoryside",
       "east": "mekanismultimate:blocks/factory/ultimate/ultimatefactoryside",
-      "up": "mekanism:blocks/factory/elite/sawing/elitesawingfactorytop",
+      "up": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactorytop",
       "down": "mekanismultimate:blocks/factory/ultimate/ultimatefactorybottom"
     }
   },
@@ -22,9 +22,9 @@
     "active": {
       "true": {
         "textures": {
-          "front": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryfronton",
-          "south": "mekanism:blocks/factory/elite/sawing/elitesawingfactorybackon",
-          "up": "mekanism:blocks/factory/elite/sawing/elitesawingfactorytopon"
+          "front": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactoryfronton",
+          "south": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactorybackon",
+          "up": "mekanismultimate:blocks/factory/ultimate/sawing/ultimatesawingfactorytopon"
         }
       },
       "false": {}
