@@ -46,6 +46,19 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 	public abstract boolean needsEnergy(ForgeDirection side);
 
+	/**
+	 * Calculates how much energy this acceptor can receive without modifying it.
+	 */
+	public double simulateEnergyToAcceptor(ForgeDirection side, double amount)
+	{
+		if(!canReceiveEnergy(side) || amount <= 0)
+		{
+			return 0;
+		}
+
+		return Math.min(amount, Math.max(0, getMaxEnergy() - getEnergy()));
+	}
+
 	public static class MekanismAcceptor extends EnergyAcceptorWrapper
 	{
 		private IStrictEnergyAcceptor acceptor;
@@ -141,6 +154,18 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 			return acceptor.receiveEnergy(side, 1, true) > 0 || getEnergyNeeded(side) > 0;
 		}
 
+		@Override
+		public double simulateEnergyToAcceptor(ForgeDirection side, double amount)
+		{
+			if(!canReceiveEnergy(side) || amount <= 0)
+			{
+				return 0;
+			}
+
+			int transferred = acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), true);
+			return Math.min(amount, fromRF(transferred));
+		}
+
 		public int toRF(double joules)
 		{
 			return (int)Math.round(joules * general.TO_TE);
@@ -203,6 +228,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public boolean needsEnergy(ForgeDirection side)
 		{
 			return acceptor.getDemandedEnergy() > 0;
+		}
+
+		@Override
+		public double simulateEnergyToAcceptor(ForgeDirection side, double amount)
+		{
+			if(!canReceiveEnergy(side) || amount <= 0)
+			{
+				return 0;
+			}
+
+			return fromEU(Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE));
 		}
 
 		public double toEU(double joules)

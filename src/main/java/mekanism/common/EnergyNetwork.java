@@ -3,19 +3,24 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.mekce;
+import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.multipart.MultipartTransmitter;
+import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -24,13 +29,24 @@ import cpw.mods.fml.common.eventhandler.Event;
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {
 	private static final int UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS = 10;
+	private static final int SHARE_SAVE_INTERVAL_TICKS = 20;
+	private static final Comparator<AcceptorTarget> ACCEPTOR_DEMAND_COMPARATOR = new Comparator<AcceptorTarget>()
+	{
+		@Override
+		public int compare(AcceptorTarget first, AcceptorTarget second)
+		{
+			return Double.compare(first.demand, second.demand);
+		}
+	};
 
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double jouleBufferLastTick = 0;
 	private int visualUpdateDelay = 0;
+	private int shareSaveDelay = 0;
 
 	public double clientEnergyScale = 0;
+	public double currentPower = 0;
 
 	public EnergyStack buffer = new EnergyStack(0);
 
@@ -42,6 +58,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 		{
 			if(net != null)
 			{
+				currentPower = Math.max(currentPower, net.currentPower);
+
 				if(net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale)
 				{
 					clientEnergyScale = net.clientEnergyScale;
@@ -76,9 +94,9 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	@Override
 	public void clampBuffer()
 	{
-		if(buffer.amount > getCapacity())
+		if(buffer.amount > getCapacityAsDouble())
 		{
-			buffer.amount = getCapacity();
+			buffer.amount = getCapacityAsDouble();
 		}
 
 		if(buffer.amount < 0)
@@ -91,6 +109,13 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	protected void updateMeanCapacity()
 	{
         int numCables = transmitters.size();
+
+		if(numCables == 0)
+		{
+			meanCapacity = 0;
+			return;
+		}
+
         double reciprocalSum = 0;
         
         for(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> cable : transmitters)
@@ -98,7 +123,19 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             reciprocalSum += 1.0/(double)cable.getCapacity();
         }
 
-        meanCapacity = (double)numCables / reciprocalSum;            
+		meanCapacity = (double)numCables / reciprocalSum;
+	}
+
+	@Override
+	public synchronized void updateCapacity()
+	{
+		updateMeanCapacity();
+		capacity = (int)Math.min(Integer.MAX_VALUE, getCapacityAsDouble());
+	}
+
+	public double getCapacityAsDouble()
+	{
+		return meanCapacity * transmitters.size();
 	}
     
 	public double getEnergyNeeded()
@@ -108,7 +145,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			return 0;
 		}
 
-		return getCapacity()-buffer.amount;
+		return Math.max(0, getCapacityAsDouble()-buffer.amount);
 	}
 
 	public double tickEmit(double energyToSend)
@@ -118,19 +155,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			return 0;
 		}
 
-		double sent = 0;
-		boolean tryAgain;
-		int i = 0;
-
-		do {
-			double prev = sent;
-			sent += doEmit(energyToSend-sent);
-
-			tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
-
-			i++;
-		} while(tryAgain);
-
+		double sent = doEmit(energyToSend);
 		joulesTransmitted = sent;
 		
 		return sent;
@@ -153,44 +178,59 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	 */
 	public double doEmit(double energyToSend)
 	{
-		double sent = 0;
-
-		List<EnergyAcceptorWrapper> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(null));
-
-		Collections.shuffle(availableAcceptors);
-
-		if(!availableAcceptors.isEmpty())
+		if(energyToSend <= 0)
 		{
-			int divider = availableAcceptors.size();
-			double remaining = energyToSend % divider;
-			double sending = (energyToSend-remaining)/divider;
+			return 0;
+		}
 
-			for(EnergyAcceptorWrapper acceptor : availableAcceptors)
+		List<AcceptorTarget> targets = new ArrayList<>(possibleAcceptors.size());
+
+		for(Entry<Coord4D, EnergyAcceptorWrapper> entry : possibleAcceptors.entrySet())
+		{
+			EnergyAcceptorWrapper acceptor = entry.getValue();
+			EnumSet<ForgeDirection> sides = acceptorDirections.get(entry.getKey());
+
+			if(acceptor == null || sides == null || sides.isEmpty())
 			{
-				double currentSending = sending+remaining;
-				EnumSet<ForgeDirection> sides = acceptorDirections.get(acceptor.coord);
+				continue;
+			}
 
-				if(sides == null || sides.isEmpty())
+			for(ForgeDirection side : sides)
+			{
+				if(!acceptor.canReceiveEnergy(side))
 				{
 					continue;
 				}
 
-				for(ForgeDirection side : sides)
+				double demand = acceptor.simulateEnergyToAcceptor(side, energyToSend);
+
+				if(demand > 0 && !Double.isNaN(demand))
 				{
-					double prev = sent;
-
-					sent += acceptor.transferEnergyToAcceptor(side, currentSending);
-
-					if(sent > prev)
-					{
-						break;
-					}
+					targets.add(new AcceptorTarget(acceptor, side, Math.min(demand, energyToSend)));
+					break;
 				}
 			}
 		}
 
-		return sent;
+		Collections.sort(targets, ACCEPTOR_DEMAND_COMPARATOR);
+
+		double remaining = energyToSend;
+		int targetsRemaining = targets.size();
+
+		for(AcceptorTarget target : targets)
+		{
+			double offer = Math.min(target.demand, remaining / targetsRemaining);
+			double accepted = target.acceptor.transferEnergyToAcceptor(target.side, offer);
+
+			if(!Double.isNaN(accepted) && accepted > 0)
+			{
+				remaining -= Math.min(offer, accepted);
+			}
+
+			targetsRemaining--;
+		}
+
+		return energyToSend - remaining;
 	}
 
 	@Override
@@ -203,8 +243,9 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			return toReturn;
 		}
 
-		for(Coord4D coord : possibleAcceptors.keySet())
+		for(Entry<Coord4D, EnergyAcceptorWrapper> entry : possibleAcceptors.entrySet())
 		{
+			Coord4D coord = entry.getKey();
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 
 			if(sides == null || sides.isEmpty())
@@ -212,8 +253,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 				continue;
 			}
 
-			TileEntity tile = coord.getTileEntity(getWorld());
-			EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile);
+			EnergyAcceptorWrapper acceptor = entry.getValue();
 
 			if(acceptor != null)
 			{
@@ -255,50 +295,116 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	{
 		super.onUpdate();
 
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			updateClientPower();
+			return;
+		}
+
 		clearJoulesTransmitted();
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(!mekce.disableUniversalCableServerVisualUpdates)
 		{
-			if(!mekce.disableUniversalCableServerVisualUpdates)
+			double currentPowerScale = getPowerScale();
+
+			if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
 			{
-				double currentPowerScale = getPowerScale();
+				needsUpdate = true;
+			}
 
-				if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
+			if(needsUpdate)
+			{
+				visualUpdateDelay++;
+
+				if(visualUpdateDelay >= UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS)
 				{
-					needsUpdate = true;
-				}
-
-				if(needsUpdate)
-				{
-					visualUpdateDelay++;
-
-					if(visualUpdateDelay >= UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS)
-					{
-						MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-						lastPowerScale = currentPowerScale;
-						needsUpdate = false;
-						visualUpdateDelay = 0;
-					}
-				}
-				else {
+					MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+					lastPowerScale = currentPowerScale;
+					needsUpdate = false;
 					visualUpdateDelay = 0;
 				}
 			}
 			else {
-				needsUpdate = false;
 				visualUpdateDelay = 0;
 			}
+		}
+		else {
+			needsUpdate = false;
+			visualUpdateDelay = 0;
+		}
 
-			if(buffer.amount > 0)
+		if(buffer.amount > 0)
+		{
+			buffer.amount -= tickEmit(buffer.amount);
+		}
+
+		shareSaveDelay++;
+
+		if(shareSaveDelay >= SHARE_SAVE_INTERVAL_TICKS)
+		{
+			updateAndSaveShares();
+			shareSaveDelay = 0;
+		}
+	}
+
+	private void updateClientPower()
+	{
+		if(mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable)
+		{
+			currentPower = 0;
+			return;
+		}
+
+		double targetPower = mekce.disableUniversalCableServerVisualUpdates ? 1 : clientEnergyScale;
+
+		if(Math.abs(currentPower - targetPower) > 0.01)
+		{
+			currentPower = (9 * currentPower + targetPower) / 10;
+		}
+		else {
+			currentPower = targetPower;
+		}
+	}
+
+	@Override
+	public void clientTick()
+	{
+		updateClientPower();
+	}
+
+	private void updateAndSaveShares()
+	{
+		for(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> transmitter : transmitters)
+		{
+			transmitter.updateShare();
+		}
+
+		onSharesUpdated();
+	}
+
+	@Override
+	protected void onSharesUpdated()
+	{
+		Set<Chunk3D> dirtyChunks = new HashSet<>();
+
+		for(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> transmitter : transmitters)
+		{
+			if(transmitter instanceof MultipartTransmitter && ((MultipartTransmitter)transmitter).getPart() instanceof PartUniversalCable)
 			{
-				buffer.amount -= tickEmit(buffer.amount);
+				PartUniversalCable cable = (PartUniversalCable)((MultipartTransmitter)transmitter).getPart();
+
+				if(cable.flushShareSave() && dirtyChunks.add(transmitter.coord().getChunk3D()))
+				{
+					MekanismUtils.saveChunk(cable.tile());
+				}
 			}
 		}
 	}
 
 	public double getPowerScale()
 	{
-		return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), getCapacity() == 0 ? 0 : buffer.amount/getCapacity());
+		double networkCapacity = getCapacityAsDouble();
+		return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), networkCapacity == 0 ? 0 : buffer.amount/networkCapacity);
 	}
 
 	public void clearJoulesTransmitted()
@@ -328,5 +434,19 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	public String getFlowInfo()
 	{
 		return MekanismUtils.getEnergyDisplay(joulesTransmitted) + "/t";
+	}
+
+	private static class AcceptorTarget
+	{
+		private final EnergyAcceptorWrapper acceptor;
+		private final ForgeDirection side;
+		private final double demand;
+
+		private AcceptorTarget(EnergyAcceptorWrapper acceptor, ForgeDirection side, double demand)
+		{
+			this.acceptor = acceptor;
+			this.side = side;
+			this.demand = demand;
+		}
 	}
 }

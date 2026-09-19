@@ -49,6 +49,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		if(!transmittersToAdd.isEmpty())
 		{
+			packetRange = null;
+
 			for(IGridTransmitter<A, N> transmitter : transmittersToAdd)
 			{
 				if(transmitter.isValid())
@@ -160,6 +162,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
             transmitter.updateShare();
         }
 
+		onSharesUpdated();
+
         //Now invalidate the transmitters
 		for(IGridTransmitter<A, N> transmitter : transmitters)
 		{
@@ -197,6 +201,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	public void adoptTransmittersAndAcceptorsFrom(N net)
 	{
+		packetRange = null;
+
 		for(IGridTransmitter<A, N> transmitter : net.transmitters)
 		{
 			transmitter.setTransmitterNetwork((N)this);
@@ -225,11 +231,16 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		if(packetRange == null)
 		{
-			return genPacketRange();
+			packetRange = genPacketRange();
 		}
 		
 		return packetRange;
 	}
+
+	/**
+	 * Called after all transmitter shares have been recalculated during a network rebuild.
+	 */
+	protected void onSharesUpdated() {}
 	
 	protected Range4D genPacketRange()
 	{

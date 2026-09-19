@@ -62,11 +62,17 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	private static final int stages = 100;
 	private static final double height = 0.45;
 	private static final double offset = 0.015;
+	private static final int ENERGY_STAGES = 16;
+	private static final int MAX_CACHED_ENERGY_MODELS = 512;
 
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
 
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	private HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>>();
+	private DisplayInteger[] cachedEnergy = new DisplayInteger[1 << 16];
+	private int[] cachedEnergyKeys = new int[MAX_CACHED_ENERGY_MODELS];
+	private int cachedEnergyCount = 0;
+	private int nextEnergyCacheEviction = 0;
 
 	private Minecraft mc = Minecraft.getMinecraft();
 
@@ -259,27 +265,21 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
-		if(cable.currentPower <= 0.01)
+		double currentPower = cable.getCurrentPower();
+
+		if(currentPower <= 0.01)
 		{
 			return;
 		}
 
 		push();
-		CCRenderState.reset();
-		CodeChickenRenderCompat.setUseNormals(true);
-		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			renderEnergySide(side, cable);
-		}
 
 		MekanismRenderer.glowOn();
 		MekanismRenderer.cullFrontFace();
 
-		CCRenderState.draw();
+		getEnergyDisplay(cable, currentPower).render();
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
@@ -616,7 +616,81 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
-		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
+		renderEnergySide(side, cable, cable.getCurrentPower());
+	}
+
+	private void renderEnergySide(ForgeDirection side, PartUniversalCable cable, double power)
+	{
+		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, power));
+	}
+
+	private DisplayInteger getEnergyDisplay(PartUniversalCable cable, double power)
+	{
+		int stage = Math.max(1, Math.min(ENERGY_STAGES - 1, (int)Math.round(power * (ENERGY_STAGES - 1))));
+		int cacheKey = stage;
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			cacheKey |= cable.getConnectionType(side).ordinal() << (4 + side.ordinal() * 2);
+		}
+
+		DisplayInteger cached = cachedEnergy[cacheKey];
+
+		if(cached != null)
+		{
+			return cached;
+		}
+
+		DisplayInteger display = DisplayInteger.createAndStart();
+		CCRenderState.reset();
+		CodeChickenRenderCompat.setUseNormals(true);
+		CCRenderState.startDrawing();
+		double alpha = (double)stage / (ENERGY_STAGES - 1);
+		ColourRGBA color = new ColourRGBA(1.0, 1.0, 1.0, alpha);
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), color);
+		}
+
+		CCRenderState.draw();
+		display.endList();
+		cacheEnergyDisplay(cacheKey, display);
+		return display;
+	}
+
+	private void cacheEnergyDisplay(int cacheKey, DisplayInteger display)
+	{
+		if(cachedEnergyCount < MAX_CACHED_ENERGY_MODELS)
+		{
+			cachedEnergyKeys[cachedEnergyCount++] = cacheKey;
+		}
+		else {
+			int evictedKey = cachedEnergyKeys[nextEnergyCacheEviction];
+			cachedEnergy[evictedKey].delete();
+			cachedEnergy[evictedKey] = null;
+			cachedEnergyKeys[nextEnergyCacheEviction] = cacheKey;
+			nextEnergyCacheEviction = (nextEnergyCacheEviction + 1) % MAX_CACHED_ENERGY_MODELS;
+		}
+
+		cachedEnergy[cacheKey] = display;
+	}
+
+	private void clearEnergyCache()
+	{
+		for(int i = 0; i < cachedEnergyCount; i++)
+		{
+			int cacheKey = cachedEnergyKeys[i];
+
+			if(cachedEnergy[cacheKey] != null)
+			{
+				cachedEnergy[cacheKey].delete();
+				cachedEnergy[cacheKey] = null;
+			}
+		}
+
+		cachedEnergyCount = 0;
+		nextEnergyCacheEviction = 0;
 	}
 
 	public void renderHeatSide(ForgeDirection side, PartThermodynamicConductor cable)
@@ -834,5 +908,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		MekanismRenderer.deleteDisplayLists(cachedOverlays);
 		cachedLiquids.clear();
 		cachedOverlays.clear();
+		clearEnergyCache();
 	}
 }

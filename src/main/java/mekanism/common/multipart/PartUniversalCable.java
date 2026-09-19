@@ -3,9 +3,7 @@ package mekanism.common.multipart;
 import ic2.api.energy.tile.IEnergySource;
 
 import java.util.Collection;
-import java.util.List;
 
-import mekanism.api.MekanismConfig.mekce;
 import mekanism.api.MekanismConfig.mekce_client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergyStack;
@@ -36,17 +34,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
-	private static final int CLIENT_VISUAL_UPDATE_TICKS = 10;
-	private static final int SHARE_SAVE_INTERVAL_TICKS = 20;
-
 	public Tier.CableTier tier;
 
 	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
 
-	public double currentPower = 0;
-	private int clientVisualUpdateDelay = 0;
-	private int shareSaveDelay = 0;
-	private double lastSavedWrite = Double.NaN;
 	private boolean shareSavePending = false;
 	public double lastWrite = 0;
 
@@ -61,53 +52,31 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void update()
 	{
-		if(world().isRemote)
+		if(!world().isRemote)
 		{
-			if(mekce_client.opaqueTransmitters || mekce_client.opaqueUniversalCable)
+			boolean hasPullConnection = false;
+
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				currentPower = 0;
-				clientVisualUpdateDelay = 0;
-				super.update();
-				return;
+				if(getConnectionType(side) == ConnectionType.PULL)
+				{
+					hasPullConnection = true;
+					break;
+				}
 			}
 
-			clientVisualUpdateDelay++;
-
-			if(clientVisualUpdateDelay >= CLIENT_VISUAL_UPDATE_TICKS)
-			{
-				double targetPower;
-
-				clientVisualUpdateDelay = 0;
-
-				if(mekce.disableUniversalCableServerVisualUpdates)
-				{
-					targetPower = getTransmitter().hasTransmitterNetwork() ? 1 : 0;
-				}
-				else {
-					targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
-				}
-
-				if(Math.abs(currentPower - targetPower) > 0.01)
-				{
-					currentPower = (9 * currentPower + targetPower) / 10;
-				}
-				else {
-					currentPower = targetPower;
-				}
-			}
-		} 
-		else {
-			updateShare();
-
-			List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
-
-			if(!sides.isEmpty())
+			if(hasPullConnection)
 			{
 				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
 				double canDraw = tier.cableCapacity/10F;
 
-				for(ForgeDirection side : sides)
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
+					if(getConnectionType(side) != ConnectionType.PULL)
+					{
+						continue;
+					}
+
 					if(connectedOutputters[side.ordinal()] != null)
 					{
 						TileEntity outputter = connectedOutputters[side.ordinal()];
@@ -162,40 +131,31 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
     @Override
     public void updateShare()
     {
-        if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
-        {
-            double last = getSaveShare();
-			double forceSaveDelta = Math.max(1, tier.cableCapacity / 1000D);
+		double last = getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0 ? getSaveShare() : buffer.amount;
 
-            if(last != lastWrite)
-            {
-                lastWrite = last;
-				shareSavePending = true;
-            }
-
-			if(shareSavePending)
-			{
-				shareSaveDelay++;
-
-				if(Double.isNaN(lastSavedWrite) || Math.abs(lastWrite - lastSavedWrite) >= forceSaveDelta || shareSaveDelay >= SHARE_SAVE_INTERVAL_TICKS)
-				{
-					MekanismUtils.saveChunk(tile());
-					lastSavedWrite = lastWrite;
-					shareSaveDelay = 0;
-					shareSavePending = false;
-				}
-			}
+		if(last != lastWrite)
+		{
+			lastWrite = last;
+			shareSavePending = true;
 		}
-		else {
-			shareSaveDelay = 0;
-        }
     }
+
+	public boolean flushShareSave()
+	{
+		if(shareSavePending)
+		{
+			shareSavePending = false;
+			return true;
+		}
+
+		return false;
+	}
 
 	private double getSaveShare()
 	{
 		if(getTransmitter().hasTransmitterNetwork())
 		{
-			return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().buffer.amount * (1F / getTransmitter().getTransmitterNetwork().transmitters.size()));
+			return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().buffer.amount / getTransmitter().getTransmitterNetwork().transmitters.size());
 		}
 		else {
 			return buffer.amount;
@@ -287,6 +247,12 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
+	public double getCurrentPower()
+	{
+		return getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().currentPower : 0;
+	}
+
 	@Override
 	public EnergyNetwork createNewNetwork()
 	{
@@ -296,15 +262,16 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void onChunkUnload()
 	{
-		if(!world().isRemote && shareSavePending)
+		if(!world().isRemote)
 		{
-			MekanismUtils.saveChunk(tile());
-			lastSavedWrite = lastWrite;
-			shareSaveDelay = 0;
-			shareSavePending = false;
+			updateShare();
+
+			if(flushShareSave())
+			{
+				MekanismUtils.saveChunk(tile());
+			}
 		}
 
-		takeShare();
 		super.onChunkUnload();
 	}
 
@@ -329,7 +296,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		if(canReceiveEnergy(from))
 		{
-			return maxReceive - (int)Math.round(takeEnergy(maxReceive * general.FROM_TE, !simulate) * general.TO_TE);
+			return maxReceive - (int)Math.round(Math.min(Integer.MAX_VALUE, takeEnergy(maxReceive * general.FROM_TE, !simulate) * general.TO_TE));
 		}
 
 		return 0;
@@ -350,13 +317,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy() * general.TO_TE);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_TE));
 	}
 
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy() * general.TO_TE);
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_TE));
 	}
 
 	@Override
@@ -373,7 +340,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			return 0;
 		}
 
-		double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
+		double toUse = Math.min(Math.max(0, getMaxEnergy() - getEnergy()), amount);
 		setEnergy(getEnergy() + toUse);
 
 		return toUse;
@@ -390,7 +357,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		if(getTransmitter().hasTransmitterNetwork())
 		{
-			return getTransmitter().getTransmitterNetwork().getCapacity();
+			return getTransmitter().getTransmitterNetwork().getCapacityAsDouble();
 		} 
 		else {
 			return getCapacity();
