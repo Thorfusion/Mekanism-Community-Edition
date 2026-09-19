@@ -857,14 +857,7 @@ public class Mekanism {
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();
 
-        //Add baby skeleton spawner
-        if (MekanismConfig.current().general.spawnBabySkeletons.val()) {
-            for (Biome biome : BiomeProvider.allowedBiomes) {
-                if (biome.getSpawnableList(EnumCreatureType.MONSTER) != null && biome.getSpawnableList(EnumCreatureType.MONSTER).size() > 0) {
-                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.MONSTER, biome);
-                }
-            }
-        }
+        updateBabySkeletonSpawns();
 
         //Load this module
         registerTileEntities();
@@ -1035,6 +1028,18 @@ public class Mekanism {
         if (event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
             proxy.onConfigSync(false);
+            updateBabySkeletonSpawns();
+        }
+    }
+
+    private static void updateBabySkeletonSpawns() {
+        boolean enabled = MekanismConfig.local().general.spawnBabySkeletons.val();
+        for (Biome biome : BiomeProvider.allowedBiomes) {
+            boolean hasMonsterSpawns = !biome.getSpawnableList(EnumCreatureType.MONSTER).isEmpty();
+            EntityRegistry.removeSpawn(EntityBabySkeleton.class, EnumCreatureType.MONSTER, biome);
+            if (enabled && hasMonsterSpawns) {
+                EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.MONSTER, biome);
+            }
         }
     }
 
