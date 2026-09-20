@@ -15,11 +15,13 @@ public class BlastAntimatter extends Blast
     private boolean destroyBedrock;
     private boolean scanInitialized;
     private boolean scanComplete;
+    private int scanShell;
     private int scanX;
     private int scanY;
     private int scanZ;
     private int scanMaxY;
     private int scanMaxZ;
+    private int scanMinAbsZ;
 
     public BlastAntimatter(World world, Entity entity, double x, double y, double z, float size)
     {
@@ -98,21 +100,29 @@ public class BlastAntimatter extends Blast
             return;
         }
 
-        // The planes at +/- radius cannot be inside a strict-radius sphere.
-        scanX = -radius + 1;
-        resetYAndZ(radius);
+        scanShell = 1;
+        resetXAndYAndZ();
     }
 
-    private void resetYAndZ(int radius)
+    private void resetXAndYAndZ()
     {
-        scanMaxY = getMaxOffset(radius, scanX, 0);
+        // The planes at +/- shell radius cannot be inside a strict-radius sphere.
+        scanX = -scanShell + 1;
+        resetYAndZ();
+    }
+
+    private void resetYAndZ()
+    {
+        scanMaxY = getMaxOffset(scanShell, scanX, 0);
         scanY = -scanMaxY;
-        resetZ(radius);
+        resetZ();
     }
 
-    private void resetZ(int radius)
+    private void resetZ()
     {
-        scanMaxZ = getMaxOffset(radius, scanX, scanY);
+        // Shell N contains points where (N - 1)^2 <= distanceSquared < N^2.
+        scanMaxZ = getMaxOffset(scanShell, scanX, scanY);
+        scanMinAbsZ = getMinAbsOffset(scanShell - 1, scanX, scanY);
         scanZ = -scanMaxZ;
     }
 
@@ -122,26 +132,51 @@ public class BlastAntimatter extends Blast
         return remaining <= 0 ? 0 : (int)Math.sqrt(remaining);
     }
 
-    private void advanceScan(int radius)
+    private int getMinAbsOffset(int radius, int x, int y)
     {
-        if(++scanZ <= scanMaxZ)
+        long remaining = (long)radius * radius - (long)x * x - (long)y * y;
+        if(remaining <= 0)
+        {
+            return 0;
+        }
+
+        int result = (int)Math.sqrt(remaining);
+        return (long)result * result == remaining ? result : result + 1;
+    }
+
+    private void advanceScan(int maxRadius)
+    {
+        scanZ++;
+        if(scanMinAbsZ > 0 && scanZ > -scanMinAbsZ && scanZ < scanMinAbsZ)
+        {
+            scanZ = scanMinAbsZ;
+        }
+
+        if(scanZ <= scanMaxZ)
         {
             return;
         }
 
         if(++scanY <= scanMaxY)
         {
-            resetZ(radius);
+            resetZ();
             return;
         }
 
-        if(++scanX < radius)
+        if(++scanX < scanShell)
         {
-            resetYAndZ(radius);
+            resetYAndZ();
             return;
         }
 
-        scanComplete = true;
+        if(++scanShell <= maxRadius)
+        {
+            resetXAndYAndZ();
+        }
+        else
+        {
+            scanComplete = true;
+        }
     }
 
     private void removeCurrentBlock(int radius)
@@ -230,15 +265,24 @@ public class BlastAntimatter extends Blast
 
         scanInitialized = nbt.getBoolean("antimatterScanInitialized");
         scanComplete = nbt.getBoolean("antimatterScanComplete");
+        scanShell = nbt.getInteger("antimatterScanShell");
         scanX = nbt.getInteger("antimatterScanX");
         scanY = nbt.getInteger("antimatterScanY");
         scanZ = nbt.getInteger("antimatterScanZ");
 
         if(scanInitialized && !scanComplete)
         {
-            int radius = getScanRadius();
-            scanMaxY = getMaxOffset(radius, scanX, 0);
-            scanMaxZ = getMaxOffset(radius, scanX, scanY);
+            if(!nbt.hasKey("antimatterScanShell") || scanShell < 1 || scanShell > getScanRadius())
+            {
+                // Safely restart procedural explosions saved by the older plane-scan format.
+                scanInitialized = false;
+            }
+            else
+            {
+                scanMaxY = getMaxOffset(scanShell, scanX, 0);
+                scanMaxZ = getMaxOffset(scanShell, scanX, scanY);
+                scanMinAbsZ = getMinAbsOffset(scanShell - 1, scanX, scanY);
+            }
         }
     }
 
@@ -249,6 +293,7 @@ public class BlastAntimatter extends Blast
         nbt.setBoolean("destroyBedrock", destroyBedrock);
         nbt.setBoolean("antimatterScanInitialized", scanInitialized);
         nbt.setBoolean("antimatterScanComplete", scanComplete);
+        nbt.setInteger("antimatterScanShell", scanShell);
         nbt.setInteger("antimatterScanX", scanX);
         nbt.setInteger("antimatterScanY", scanY);
         nbt.setInteger("antimatterScanZ", scanZ);

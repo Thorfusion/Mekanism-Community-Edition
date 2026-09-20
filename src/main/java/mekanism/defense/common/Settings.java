@@ -17,7 +17,7 @@ public class Settings
     public static boolean LOAD_CHUNKS = true;
     public static int MAX_MISSILE_DISTANCE = 10000;
     public static int ANTIMATTER_SIZE = 55;
-    public static int ANTIMATTER_BLOCKS_PER_TICK = 4096;
+    public static int ANTIMATTER_BLOCKS_PER_TICK = 6144;
     public static boolean DESTROY_BEDROCK = true;
     public static int MAX_ROCKET_LAUNCHER_TIER = 1;
     public static boolean GENERATE_SULFUR = true;
@@ -35,7 +35,7 @@ public class Settings
         LOAD_CHUNKS = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Allow Chunk Loading", true).getBoolean(true);
         MAX_MISSILE_DISTANCE = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Max Missile Distance", 10000).getInt(10000);
         ANTIMATTER_SIZE = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Explosion Size", 55).getInt(55);
-        ANTIMATTER_BLOCKS_PER_TICK = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Block Checks Per Tick", 4096,
+        ANTIMATTER_BLOCKS_PER_TICK = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Block Checks Per Tick", 6144,
             "Maximum number of positions an antimatter explosion checks per server tick. Lower values reduce tick spikes but make the explosion take longer to finish.", 1, 1000000).getInt();
         DESTROY_BEDROCK = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Antimatter Destroy Bedrock", true).getBoolean(true);
         MAX_ROCKET_LAUNCHER_TIER = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Rocket Launcher Max Missile Tier", 1).getInt(1);
