@@ -614,6 +614,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
             if (recipeType != oldRecipe) {
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+                MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
             }
             updateOutputSlots();
 
@@ -653,9 +654,17 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        if (nbtTags.hasKey("isActive")) {
+            clientActive = isActive = nbtTags.getBoolean("isActive");
+        }
+
         RecipeType oldRecipe = recipeType;
-        recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
+        if (nbtTags.hasKey("recipeType")) {
+            int savedRecipe = nbtTags.getInteger("recipeType");
+            if (savedRecipe >= 0 && savedRecipe < RecipeType.values().length) {
+                recipeType = RecipeType.values()[savedRecipe];
+            }
+        }
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 
         if (recipeType != oldRecipe) {
@@ -663,17 +672,38 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         }
         updateOutputSlots();
 
-        recipeTicks = nbtTags.getInteger("recipeTicks");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        sorting = nbtTags.getBoolean("sorting");
-        infuseStored.amount = nbtTags.getInteger("infuseStored");
-        infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
-
-        for (int i = 0; i < tier.processes; i++) {
-            progress[i] = nbtTags.getInteger("progress" + i);
+        if (nbtTags.hasKey("recipeTicks")) {
+            recipeTicks = nbtTags.getInteger("recipeTicks");
         }
 
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
+        if (nbtTags.hasKey("controlType")) {
+            int savedControl = nbtTags.getInteger("controlType");
+            if (savedControl >= 0 && savedControl < RedstoneControl.values().length) {
+                controlType = RedstoneControl.values()[savedControl];
+            }
+        }
+
+        if (nbtTags.hasKey("sorting")) {
+            sorting = nbtTags.getBoolean("sorting");
+        }
+
+        if (nbtTags.hasKey("infuseStored")) {
+            infuseStored.amount = nbtTags.getInteger("infuseStored");
+        }
+
+        if (nbtTags.hasKey("type")) {
+            infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
+        }
+
+        for (int i = 0; i < tier.processes; i++) {
+            if (nbtTags.hasKey("progress" + i)) {
+                progress[i] = nbtTags.getInteger("progress" + i);
+            }
+        }
+
+        if (nbtTags.hasKey("gasTank")) {
+            gasTank.read(nbtTags.getCompoundTag("gasTank"));
+        }
     }
 
     @Override

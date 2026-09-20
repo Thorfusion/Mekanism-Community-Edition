@@ -29,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
@@ -38,9 +39,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler, IFrequencyHandler
 {
 	/** The direction this block is facing. */
-	public int facing;
+	public int facing = ForgeDirection.NORTH.ordinal();
 
-	public int clientFacing;
+	public int clientFacing = facing;
 
 	/** The players currently using this block. */
 	public HashSet<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
@@ -184,8 +185,19 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		super.readFromNBT(nbtTags);
 
-		facing = nbtTags.getInteger("facing");
-		redstone = nbtTags.getBoolean("redstone");
+		if(nbtTags.hasKey("facing"))
+		{
+			int savedFacing = nbtTags.getInteger("facing");
+			if(savedFacing >= 0 && savedFacing < ForgeDirection.VALID_DIRECTIONS.length)
+			{
+				facing = savedFacing;
+			}
+		}
+
+		if(nbtTags.hasKey("redstone"))
+		{
+			redstone = nbtTags.getBoolean("redstone");
+		}
 
 		for(ITileComponent component : components)
 		{
