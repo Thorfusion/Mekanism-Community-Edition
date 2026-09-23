@@ -25,10 +25,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
@@ -40,6 +42,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.Side;
@@ -139,21 +142,47 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         if (coord.equals(orig)) {
                             continue;
                         }
-                        int destroyEnergy = getDestroyEnergy(itemstack, coord.getBlockState(player.world).getBlockHardness(player.world, coord.getPos()));
-                        if (getEnergy(itemstack) < destroyEnergy) {
-                            continue;
-                        }
-                        Block block2 = coord.getBlock(player.world);
-                        block2.onBlockHarvested(player.world, coord.getPos(), state, player);
-                        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
-                        block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
-                        player.world.setBlockToAir(coord.getPos());
-                        setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
+                        tryHarvestBlock(itemstack, coord.getPos(), player);
                     }
                 }
             }
         }
         return false;
+    }
+
+    private void tryHarvestBlock(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+        World world = player.world;
+        IBlockState state = world.getBlockState(pos);
+        int destroyEnergy = getDestroyEnergy(itemstack, state.getBlockHardness(world, pos));
+        if (getEnergy(itemstack) < destroyEnergy) {
+            return;
+        }
+
+        int experience = 0;
+        if (player instanceof EntityPlayerMP) {
+            EntityPlayerMP playerMP = (EntityPlayerMP) player;
+            experience = ForgeHooks.onBlockBreakEvent(world, playerMP.interactionManager.getGameType(), playerMP, pos);
+            if (experience == -1) {
+                return;
+            }
+        }
+
+        Block block = state.getBlock();
+        TileEntity tile = world.getTileEntity(pos);
+        boolean canHarvest = block.canHarvestBlock(world, pos, player);
+        ItemStack harvestTool = itemstack.copy();
+        itemstack.onBlockDestroyed(world, state, pos, player);
+        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
+
+        if (block.removedByPlayer(state, world, pos, player, canHarvest)) {
+            block.onPlayerDestroy(world, pos, state);
+            if (canHarvest) {
+                block.harvestBlock(world, player, pos, state, tile, harvestTool);
+            }
+            if (experience > 0) {
+                block.dropXpOnBlockBreak(world, pos, experience);
+            }
+        }
     }
 
     @Override
