@@ -96,7 +96,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[]{0};
         configComponent.getOutputs(TransmissionType.GAS).get(2).availableSlots = new int[]{1};
 
-        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent = new TileComponentEjector(this,
+              () -> MekanismConfig.current().general.quantumEntangloporterGasBuffer.val(),
+              () -> MekanismConfig.current().general.quantumEntangloporterFluidBuffer.val());
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
         ejectorComponent.setOutputData(TransmissionType.FLUID, configComponent.getOutputs(TransmissionType.FLUID).get(2));
         ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
