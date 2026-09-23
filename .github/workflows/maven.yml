@@ -25,6 +25,7 @@ jobs:
       minecraft_version: ${{ steps.artifacts.outputs.minecraft_version }}
       release_files: ${{ steps.artifacts.outputs.release_files }}
       main_files: ${{ steps.artifacts.outputs.main_files }}
+      release_type: ${{ steps.release_type.outputs.value }}
 
     steps:
       - name: Check out release tag
@@ -62,6 +63,18 @@ jobs:
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
+
+      - name: Determine publishing release type
+        id: release_type
+        shell: bash
+        env:
+          IS_PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          if [[ "$IS_PRERELEASE" == 'true' ]]; then
+            echo 'value=beta' >> "$GITHUB_OUTPUT"
+          else
+            echo 'value=release' >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Verify GTNH CodeChicken compatibility
         shell: bash
@@ -195,7 +208,7 @@ jobs:
           files: ${{ needs.build.outputs.main_files }}
           name: Mekanism CE - CORE ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
-          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          version-type: ${{ needs.build.outputs.release_type }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
           game-versions: ${{ needs.build.outputs.minecraft_version }}
@@ -217,22 +230,22 @@ jobs:
           - name: DefenseTech
             project-id: qBExn86I
             classifier: DefenseTech
-            beta-only: false
+            release_policy: follow_release
             only_version: '1.7.10'
           - name: Generators
             project-id: ksSEAhTL
             classifier: Generators
-            beta-only: false
+            release_policy: follow_release
             only_version: ''
           - name: Tools
             project-id: CD05L8Jr
             classifier: Tools
-            beta-only: false
+            release_policy: follow_release
             only_version: ''
           - name: Ultimate
             project-id: Q6fY4JVC
             classifier: Ultimate
-            beta-only: true
+            release_policy: beta_only
             only_version: ''
 
     steps:
@@ -252,7 +265,7 @@ jobs:
           files: output/${{ needs.build.outputs.artifact_prefix }}-${{ matrix.classifier }}.jar
           name: Mekanism CE - ${{ matrix.name }} ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
-          version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
+          version-type: ${{ matrix.release_policy == 'beta_only' && 'beta' || needs.build.outputs.release_type }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
           game-versions: ${{ needs.build.outputs.minecraft_version }}
@@ -276,31 +289,31 @@ jobs:
             project-id: '399904'
             classifier: Core
             dependencies: ''
-            beta-only: false
+            release_policy: follow_release
             only_version: ''
           - name: DefenseTech
             project-id: '1488821'
             classifier: DefenseTech
             dependencies: mekanism-ce(required)
-            beta-only: false
+            release_policy: follow_release
             only_version: '1.7.10'
           - name: Generators
             project-id: '813408'
             classifier: Generators
             dependencies: mekanism-ce(required)
-            beta-only: false
+            release_policy: follow_release
             only_version: ''
           - name: Tools
             project-id: '813407'
             classifier: Tools
             dependencies: mekanism-ce(required)
-            beta-only: false
+            release_policy: follow_release
             only_version: ''
           - name: Ultimate
             project-id: '872280'
             classifier: Ultimate
             dependencies: mekanism-ce(required)
-            beta-only: true
+            release_policy: beta_only
             only_version: ''
 
     steps:
@@ -320,7 +333,7 @@ jobs:
           files: output/${{ needs.build.outputs.artifact_prefix }}-${{ matrix.classifier }}.jar
           name: Mekanism CE - ${{ matrix.name }} ${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
-          version-type: ${{ matrix.beta-only && 'beta' || (github.event.release.prerelease && 'beta' || 'release') }}
+          version-type: ${{ matrix.release_policy == 'beta_only' && 'beta' || needs.build.outputs.release_type }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
           game-versions: ${{ needs.build.outputs.minecraft_version }}
