@@ -8,6 +8,8 @@ Originally made for Terralization Modpack with fixes from several different fork
 
 ### Building Mekanism 1.12.2 Community Edition
 
+Use JDK 25 to run Gradle. RetroFuturaGradle automatically provisions a Java 8 toolchain for Minecraft-compatible bytecode.
+
 ```bash
 ./gradlew fullBuild
 ```

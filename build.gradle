@@ -1,284 +1,308 @@
-buildscript {
-    repositories {
-        maven {
-            name = "central"
-            url = "https://maven.thorfusion.com/artifactory/central/"
-        }
-    }
-    dependencies {
-        classpath("com.anatawa12.forge:ForgeGradle:2.3-1.0.+") {
-            changing = true
-        }
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.33.1"
-    }
-}
-
+import com.gtnewhorizons.retrofuturagradle.mcp.ReobfuscatedJar
 
 plugins {
-    id 'org.ajoberstar.grgit' version '3.1.1'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id 'java'
+    id 'java-library'
     id 'idea'
     id 'maven-publish'
+    id 'com.gtnewhorizons.retrofuturagradle' version '2.0.4'
 }
 
 defaultTasks 'fullBuild'
 
+def baseModVersion = mod_version
+def buildVersion = System.getenv('BUILD_VER')
+if (buildVersion) {
+    mod_version = "${baseModVersion}-${buildVersion}"
+}
+
+group = 'mekanism'
+version = "${minecraft_version}-${mod_version}"
+
+base {
+    archivesName = 'Mekanism-Community-Edition'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 idea {
     module {
-        // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: "com.jfrog.artifactory"
-//apply plugin: 'net.minecraftforge.gradle'
-
-
 repositories {
+    mavenCentral()
+
     maven {
-        name = "central"
-        url = "https://maven.thorfusion.com/artifactory/central/"
+        name = 'GTNH Maven'
+        url = uri('https://nexus.gtnewhorizons.com/repository/public/')
+        content {
+            includeGroup 'com.gtnewhorizons'
+            includeGroupByRegex 'com\\.gtnewhorizons\\..+'
+        }
     }
-}
 
+    maven {
+        name = 'Amadornes Maven'
+        url = uri('https://maven.amadornes.com/')
+        content { includeGroup 'MCMultiPart2' }
+    }
+    maven {
+        name = 'JEI Maven'
+        url = uri('https://dvs1.progwml6.com/files/maven/')
+        content { includeGroup 'mezz.jei' }
+    }
+    maven {
+        name = 'BlameJared Maven'
+        url = uri('https://maven.blamejared.com/')
+        content {
+            includeGroup 'CraftTweaker2'
+            includeGroup 'net.darkhax.tesla'
+        }
+    }
+    maven {
+        name = 'CIL Maven'
+        url = uri('https://maven.cil.li/')
+        content {
+            includeGroup 'li.cil.oc'
+            includeGroup 'mcp.mobius.waila'
+        }
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+    }
+    maven {
+        name = 'BuildCraft Maven'
+        url = uri('https://mod-buildcraft.com/maven/')
+        content { includeGroup 'com.mod-buildcraft' }
+    }
+    maven {
+        name = 'tterrag Maven'
+        url = uri('https://maven.tterrag.com/')
+        content { includeGroup 'team.chisel.ctm' }
+    }
+    maven {
+        name = 'IC2 Maven'
+        url = uri('https://maven.ic2.player.to/')
+        content { includeGroup 'net.industrial-craft' }
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+    }
+    maven {
+        name = 'Thiakil Maven'
+        url = uri('https://maven.thiakil.com/')
+        content { includeGroup 'dan200.computercraft' }
+    }
+    maven {
+        name = 'ModMaven'
+        url = uri('https://modmaven.dev/')
+        content { includeGroup 'mcjty.theoneprobe' }
+    }
 
-if (System.getenv("BUILD_VER") == null){
-    mod_version = mod_version
-} else {
-    mod_version = mod_version + "-" + System.getenv("BUILD_VER")
-}
-version = minecraft_version + "-" + mod_version
-group = "mekanism"
-archivesBaseName = "Mekanism-Community-Edition"
-libsDirName = "../output"
-distsDirName = "../output"
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+    // Narrow legacy fallback for artifacts that disappeared with their
+    // original repository. This is deliberately not a general Maven proxy.
+    maven {
+        name = 'Thorfusion Legacy Fallback'
+        url = uri('https://maven.thorfusion.com/artifactory/central/')
+        content { includeGroup 'net.darkhax.tesla' }
+    }
 
-/*
-minecraft {
-    mappings channel: 'official', version: "1.12.2"
-}
-*/
-
-minecraft {
-    version = "${minecraft_version}-${forge_version}"
-    mappings = "${mappings_version}"
-    runDir = "run"
-    useDepAts = true
-
-    replace '${version}', mod_version
-    replaceIn "Mekanism.java"
-    replaceIn "MekanismGenerators.java"
-    replaceIn "MekanismTools.java"
-    replaceIn "MekanismUltimate.java"
+    // Keep the hosted project repositories available for Mekanism artifacts,
+    // without using them as general dependency proxies.
+    maven {
+        name = 'Thorfusion Releases'
+        url = uri('https://maven.thorfusion.com/artifactory/thorfusion/')
+        content { includeGroup 'mekanism' }
+    }
+    maven {
+        name = 'Thorfusion Development'
+        url = uri('https://maven.thorfusion.com/artifactory/dev/')
+        content { includeGroup 'mekanism' }
+    }
 }
 
 dependencies {
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    // compileOnly fg.deobf("MCMultiPart2:MCMultiPart:${mcmp_version}")
-    deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
+    implementation rfg.deobf("MCMultiPart2:MCMultiPart:${mcmp_version}")
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    // runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
     compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
-    // compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    // Not updated yet
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
-    // deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
-    // runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
-        exclude module: "asm-debug-all"
+        exclude module: 'asm-debug-all'
     }
-    /*
-    compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
-        exclude module: "asm-debug-all"
-    }
-    */
-    deobfCompile("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
-        exclude module: "asm-debug-all"
+    implementation(rfg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}")) {
+        exclude module: 'asm-debug-all'
     }
     compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
-    /*
-    compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
-        exclude module: "jei_1.12.2"
-    }
-    */
+
+    // Optional integrations whose API jars are deliberately checked into libs/.
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-processResources {
-    duplicatesStrategy = 'include'
-    inputs.property "version", mod_version
-    inputs.property "mc_version", minecraft_version
+minecraft {
+    mcVersion.set(minecraft_version)
+    mcpMappingChannel.set(mappings_version.split('_')[0])
+    mcpMappingVersion.set(mappings_version.split('_')[1])
+    useDependencyAccessTransformers.set(true)
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
+    injectedTags.put('${version}', mod_version)
+    tagReplacementFiles.add('Mekanism.java')
+}
 
-        // replace version and mcversion
-        expand "version": mod_version, "mc_version": minecraft_version
+tasks.named('deobfuscateMergedJarToSrg') {
+    accessTransformerFiles.from('src/main/resources/mekanism_at.cfg')
+}
+
+tasks.named('srgifyBinpatchedJar') {
+    accessTransformerFiles.from('src/main/resources/mekanism_at.cfg')
+}
+
+tasks.named('processResources') {
+    inputs.property 'version', mod_version
+    inputs.property 'mc_version', minecraft_version
+    filesMatching('mcmod.info') {
+        expand 'version': mod_version, 'mc_version': minecraft_version
     }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude '**/*.blend*'
-    }
+    exclude '**/*.blend*'
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-def setMainManifestProps = { Manifest manifest->
-    manifest.attributes (
+def setMainManifestProps = { Manifest manifest ->
+    manifest.attributes(
             'FMLAT': 'mekanism_at.cfg',
             'FMLCorePluginContainsFMLMod': 'true',
-            'FMLCorePlugin': 'mekanism.coremod.MekanismCoremod'
-    )
+            'FMLCorePlugin': 'mekanism.coremod.MekanismCoremod')
 }
 
-jar {
+tasks.named('jar') {
     manifest(setMainManifestProps)
 }
 
-task coreJar(type: Jar) {
-    dependsOn 'reobfJar'
-    classifier "Core"
+def artifactOutputDir = layout.projectDirectory.dir('output')
+def reobfuscatedJar = tasks.named('reobfJar', ReobfuscatedJar)
+def reobfuscatedContents = {
+    zipTree(reobfuscatedJar.get().archiveFile.get().asFile)
+}
 
+tasks.register('coreJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Core')
+    destinationDirectory.set(artifactOutputDir)
     from('etc/core') {
         include '*.info'
-        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+    from(reobfuscatedContents) {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/ultimate/**',
-                'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'assets/mekanismultimate/**', 'mcmod.info'
+                'assets/mekanismtools/**', 'assets/mekanismgenerators/**',
+                'assets/mekanismultimate/**', 'mcmod.info'
     }
-
     manifest(setMainManifestProps)
 }
 
-task alltJar(type: Jar) {
-    dependsOn 'reobfJar'
-    classifier "ALL"
-
+tasks.register('alltJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('ALL')
+    destinationDirectory.set(artifactOutputDir)
     from('etc/all') {
         include '*.info'
-        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+    from(reobfuscatedContents) {
         exclude 'mcmod.info'
     }
-
     manifest(setMainManifestProps)
 }
 
-task toolsJar(type: Jar) {
-    dependsOn 'reobfJar'
-    classifier "Tools"
-
+tasks.register('toolsJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Tools')
+    destinationDirectory.set(artifactOutputDir)
     from('etc/tools') {
         include '*.info'
-        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+    from(reobfuscatedContents) {
         include 'mekanism/tools/**', 'assets/mekanismtools/**'
     }
 }
 
-task generatorsJar(type: Jar) {
-    dependsOn 'reobfJar'
-    classifier "Generators"
-
+tasks.register('generatorsJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Generators')
+    destinationDirectory.set(artifactOutputDir)
     from('etc/generators') {
         include '*.info'
-        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+    from(reobfuscatedContents) {
         include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
     }
 }
 
-task ultimateJar(type: Jar) {
-    dependsOn 'reobfJar'
-    classifier "Ultimate"
-
+tasks.register('ultimateJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Ultimate')
+    destinationDirectory.set(artifactOutputDir)
     from('etc/ultimate') {
         include '*.info'
-        expand 'version':mod_version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+    from(reobfuscatedContents) {
         include 'mekanism/ultimate/**', 'assets/mekanismultimate/**'
     }
 }
 
-
-task apiJar(type: Jar) {
-    classifier "API"
-    dependsOn "sourceMainJava"
-    include 'mekanism/api/**'
+tasks.register('apiJar', Jar) {
+    dependsOn tasks.named('classes')
+    archiveClassifier.set('API')
+    destinationDirectory.set(artifactOutputDir)
     from sourceSets.main.java.srcDirs
     from sourceSets.main.output
+    include 'mekanism/api/**'
 }
 
-artifacts {
-    archives apiJar
-    archives coreJar
-    archives toolsJar
-    archives generatorsJar
-    archives alltJar
-    archives ultimateJar
+def distributionArtifacts = [
+        tasks.named('toolsJar'),
+        tasks.named('coreJar'),
+        tasks.named('generatorsJar'),
+        tasks.named('alltJar'),
+        tasks.named('apiJar'),
+        tasks.named('ultimateJar')
+]
+
+tasks.register('fullBuild') {
+    group = 'build'
+    description = 'Builds every distribution artifact.'
+    dependsOn distributionArtifacts
 }
 
-task fullBuild(type: Delete) {
-    delete jar
-    dependsOn "build"
-}
-
-artifactory {
-    contextUrl = System.getenv("MAVEN_URL")
-    publish {
-        repository {
-            repoKey = System.getenv("MAVEN_REPO")
-            username = System.getenv("MAVEN_USERNAME")
-            password = System.getenv("MAVEN_PASSWORD")
-            maven = true
-        }
-        defaults {
-            publications('mavenJava')
-        }
-        publishBuildInfo = false
-        publishArtifacts = true
-        publishPom = true
-    }
-    resolve {
-        repository {
-            repoKey = System.getenv("MAVEN_REPO")
-            username = System.getenv("MAVEN_USERNAME")
-            password = System.getenv("MAVEN_PASSWORD")
-            maven = true
-
-        }
-    }
-}
+def publishBaseUrl = providers.environmentVariable('MAVEN_URL')
+        .orElse('https://maven.thorfusion.com/artifactory')
+def publishRepository = providers.environmentVariable('MAVEN_REPO').orElse('dev')
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.archivesBaseName
+            artifactId = 'Mekanism-Community-Edition'
             groupId = project.group
             version = project.version
-            artifacts = [toolsJar, coreJar, generatorsJar, alltJar, apiJar, ultimateJar]
+            distributionArtifacts.each { artifact it }
             pom {
-                name.set("Mekanism Community Edition")
+                name.set('Mekanism Community Edition')
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
                 url.set('https://github.com/Thorfusion/Mekanism-Community-Edition')
                 issueManagement {
@@ -294,4 +318,20 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = 'thorfusion'
+            url = uri("${publishBaseUrl.get().replaceAll('/+$', '')}/${publishRepository.get()}")
+            credentials {
+                username = providers.environmentVariable('MAVEN_USERNAME').orElse('').get()
+                password = providers.environmentVariable('MAVEN_PASSWORD').orElse('').get()
+            }
+        }
+    }
+}
+
+tasks.register('artifactoryPublish') {
+    group = 'publishing'
+    description = 'Publishes the complete artifact set to the configured Maven repository.'
+    dependsOn tasks.named('publishMavenJavaPublicationToThorfusionRepository')
 }
