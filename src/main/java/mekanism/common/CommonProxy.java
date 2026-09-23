@@ -35,6 +35,7 @@ import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerFuelwoodHeater;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
+import mekanism.common.inventory.container.ContainerInductionMatrixStats;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -371,7 +372,7 @@ public class CommonProxy implements IGuiProvider {
             case 49:
                 return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing) tileEntity);
             case 50:
-                return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
+                return new ContainerInductionMatrixStats(player.inventory, (TileEntityInductionCasing) tileEntity);
             case 51:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 52:

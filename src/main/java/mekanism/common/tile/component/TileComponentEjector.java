@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntSupplier;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
@@ -38,6 +39,8 @@ public class TileComponentEjector implements ITileComponent {
     private static final int GAS_OUTPUT = 256;
     private static final int FLUID_OUTPUT = 256;
     private TileEntityContainerBlock tileEntity;
+    private final IntSupplier gasOutput;
+    private final IntSupplier fluidOutput;
     private boolean strictInput;
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
@@ -45,7 +48,13 @@ public class TileComponentEjector implements ITileComponent {
     private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityContainerBlock tile) {
+        this(tile, () -> GAS_OUTPUT, () -> FLUID_OUTPUT);
+    }
+
+    public TileComponentEjector(TileEntityContainerBlock tile, IntSupplier gasOutput, IntSupplier fluidOutput) {
         tileEntity = tile;
+        this.gasOutput = gasOutput;
+        this.fluidOutput = fluidOutput;
         tile.components.add(this);
     }
 
@@ -92,7 +101,7 @@ public class TileComponentEjector implements ITileComponent {
 
     private void ejectGas(Set<EnumFacing> outputSides, GasTank tank) {
         if (tank.getGas() != null && tank.getStored() > 0) {
-            GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+            GasStack toEmit = tank.getGas().copy().withAmount(Math.min(gasOutput.getAsInt(), tank.getStored()));
             int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
             tank.draw(emit, true);
         }
@@ -100,7 +109,7 @@ public class TileComponentEjector implements ITileComponent {
 
     private void ejectFluid(Set<EnumFacing> outputSides, FluidTank tank) {
         if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
-            FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+            FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(fluidOutput.getAsInt(), tank.getFluidAmount()));
             int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
             tank.drain(emit, true);
         }

@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container.ContainerInductionMatrixStats;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
 
     public GuiMatrixStats(InventoryPlayer inventory, TileEntityInductionCasing tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerInductionMatrixStats(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));
         addGuiElement(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));

@@ -118,7 +118,11 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
             tile.cachedData.locations.add(Coord4D.get(tile));
             inventories.put(tile.cachedID, tile.cachedData);
         } else {
-            inventories.get(tile.cachedID).locations.add(Coord4D.get(tile));
+            MultiblockCache<T> cache = inventories.get(tile.cachedID);
+            cache.locations.add(Coord4D.get(tile));
+            if (tile.structure != null) {
+                cache.sync(tile.structure);
+            }
         }
     }
 }
