@@ -175,7 +175,6 @@ public class RenderResizableCuboid {
         tess.draw();
 
         GlStateManager.enableLighting();
-        GlStateManager.disableAlpha();
     }
 
     private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
