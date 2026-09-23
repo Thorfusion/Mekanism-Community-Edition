@@ -126,13 +126,25 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
             if (structure != null) {
                 structure.didTick = false;
-                if (structure.inventoryID != null) {
-                    cachedData.sync(structure);
-                    cachedID = structure.inventoryID;
-                    getManager().updateCache(this);
-                }
+                syncStructureToCache();
             }
         }
+    }
+
+    private void syncStructureToCache() {
+        if (structure != null && structure.inventoryID != null) {
+            cachedData.sync(structure);
+            cachedID = structure.inventoryID;
+            getManager().updateCache(this);
+        }
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if (world != null && !world.isRemote) {
+            syncStructureToCache();
+        }
+        super.onChunkUnload();
     }
 
     @Override
@@ -232,6 +244,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        if (world != null && !world.isRemote) {
+            syncStructureToCache();
+        }
         super.writeToNBT(nbtTags);
         if (cachedID != null) {
             nbtTags.setString("cachedID", cachedID);

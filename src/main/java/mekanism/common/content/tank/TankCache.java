@@ -20,14 +20,20 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     @Override
     public void apply(SynchronizedTankData data) {
         data.inventory = inventory;
-        data.fluidStored = fluid;
+        data.fluidStored = fluid == null ? null : fluid.copy();
         data.editMode = editMode;
     }
 
     @Override
     public void sync(SynchronizedTankData data) {
         inventory = data.inventory;
-        fluid = data.fluidStored;
+        if (data.fluidStored == null) {
+            fluid = null;
+        } else if (fluid == null || !fluid.isFluidEqual(data.fluidStored)) {
+            fluid = data.fluidStored.copy();
+        } else {
+            fluid.amount = data.fluidStored.amount;
+        }
         editMode = data.editMode;
     }
 
