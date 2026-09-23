@@ -1,10 +1,8 @@
 package mekanism.common.content.matrix;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
@@ -201,37 +199,6 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         }
     }
 
-    public TileNetworkList addStructureData(TileNetworkList data) {
-        data.add(cachedTotal);
-        data.add(storageCap);
-        data.add(transferCap);
-        data.add(lastInput);
-        data.add(lastOutput);
-
-        data.add(volWidth);
-        data.add(volHeight);
-        data.add(volLength);
-
-        data.add(cells.size());
-        data.add(providers.size());
-        return data;
-    }
-
-    public void readStructureData(ByteBuf dataStream) {
-        cachedTotal = dataStream.readDouble();
-        storageCap = dataStream.readDouble();
-        transferCap = dataStream.readDouble();
-        lastInput = dataStream.readDouble();
-        lastOutput = dataStream.readDouble();
-
-        volWidth = dataStream.readInt();
-        volHeight = dataStream.readInt();
-        volLength = dataStream.readInt();
-
-        clientCells = dataStream.readInt();
-        clientProviders = dataStream.readInt();
-    }
-
     public double getStorageCap() {
         return storageCap;
     }
@@ -266,5 +233,54 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     public int getProviderCount() {
         return providers.isEmpty() ? clientProviders : providers.size();
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setCachedTotal(double cachedTotal) {
+        this.cachedTotal = cachedTotal;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setStorageCap(double storageCap) {
+        this.storageCap = storageCap;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setTransferCap(double transferCap) {
+        this.transferCap = transferCap;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setLastInput(double lastInput) {
+        this.lastInput = lastInput;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setLastOutput(double lastOutput) {
+        this.lastOutput = lastOutput;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setClientCells(int clientCells) {
+        this.clientCells = clientCells;
+    }
+
+    /**
+     * Only call this from the client when synchronizing container data.
+     */
+    public void setClientProviders(int clientProviders) {
+        this.clientProviders = clientProviders;
     }
 }
