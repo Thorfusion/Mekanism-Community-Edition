@@ -22,3 +22,6 @@ MDK.zip
 *.blend2
 /bin
 !/libs/**
+
+# Local test sources
+/src/test/
