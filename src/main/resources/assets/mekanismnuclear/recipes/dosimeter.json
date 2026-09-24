@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismnuclear:dosimeter"
+  },
+  "pattern": [
+    " I ",
+    "IRI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {
+      "ore": "ingotLead",
+      "type": "forge:ore_dict"
+    },
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

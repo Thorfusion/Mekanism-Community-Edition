@@ -1,11 +1,12 @@
 package mekanism.nuclear.client;
 
 import mekanism.nuclear.client.gui.GuiIsotopicCentrifuge;
+import mekanism.nuclear.client.radiation.ClientRadiationData;
+import mekanism.nuclear.client.radiation.RadiationHudOverlay;
 import mekanism.nuclear.common.MekanismNuclear;
 import mekanism.nuclear.common.NuclearBlocks;
 import mekanism.nuclear.common.NuclearCommonProxy;
 import mekanism.nuclear.common.NuclearItems;
-import mekanism.nuclear.common.item.ItemNuclearMaterial;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -16,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,10 +40,25 @@ public class NuclearClientProxy extends NuclearCommonProxy {
 
     @Override
     public void registerItemRenders() {
-        for (ItemNuclearMaterial item : NuclearItems.all()) {
+        for (Item item : NuclearItems.allRegistered()) {
             ModelLoader.setCustomModelResourceLocation(item, 0,
                   new ModelResourceLocation(item.getRegistryName(), "inventory"));
         }
+        NuclearItems.GeigerCounter.addPropertyOverride(
+              new ResourceLocation(MekanismNuclear.MODID, "radiation"),
+              (stack, world, entity) -> ClientRadiationData.getEnvironmentalScale());
+    }
+
+    @Override
+    public void registerPackets() {
+        super.registerPackets();
+        MinecraftForge.EVENT_BUS.register(RadiationHudOverlay.INSTANCE);
+    }
+
+    @Override
+    public void handleRadiationData(double environmental, double dose) {
+        net.minecraft.client.Minecraft.getMinecraft().addScheduledTask(
+              () -> ClientRadiationData.set(environmental, dose));
     }
 
     @Override

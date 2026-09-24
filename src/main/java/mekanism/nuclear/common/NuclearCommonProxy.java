@@ -2,6 +2,7 @@ package mekanism.nuclear.common;
 
 import mekanism.common.base.IGuiProvider;
 import mekanism.nuclear.common.inventory.ContainerIsotopicCentrifuge;
+import mekanism.nuclear.common.network.PacketRadiationData;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
 import mekanism.nuclear.common.tile.TileEntityRadioactiveWasteBarrel;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class NuclearCommonProxy implements IGuiProvider {
 
@@ -18,6 +20,14 @@ public class NuclearCommonProxy implements IGuiProvider {
     }
 
     public void registerItemRenders() {
+    }
+
+    public void registerPackets() {
+        MekanismNuclear.network.registerMessage(PacketRadiationData.Handler.class,
+              PacketRadiationData.class, 0, Side.CLIENT);
+    }
+
+    public void handleRadiationData(double environmental, double dose) {
     }
 
     public void registerTileEntities() {

@@ -1,0 +1,9 @@
+{
+  "result": {"item": "mekanismnuclear:hazmat_pants"},
+  "pattern": ["III", "IDI", "I I"],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {"ore": "ingotLead", "type": "forge:ore_dict"},
+    "D": {"ore": "dyeOrange", "type": "forge:ore_dict"}
+  }
+}

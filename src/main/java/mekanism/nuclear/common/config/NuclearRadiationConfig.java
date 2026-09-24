@@ -12,6 +12,8 @@ public final class NuclearRadiationConfig {
     private static boolean radiationEnabled;
     private static int radiationChunkCheckRadius;
     private static double sourceDecayRate;
+    private static double targetDecayRate;
+    private static double negativeEffectsMinSeverity;
     private static long wasteBarrelCapacity;
     private static int wasteBarrelProcessTicks;
     private static long wasteBarrelDecayAmount;
@@ -32,6 +34,10 @@ public final class NuclearRadiationConfig {
               "Chunk radius considered when calculating nearby environmental radiation.");
         sourceDecayRate = config.get(CATEGORY, "SourceDecayRate", 0.9995D,
               "Multiplier applied to environmental radiation sources every 20 ticks.", 0, 1).getDouble();
+        targetDecayRate = config.get(CATEGORY, "TargetDecayRate", 0.9995D,
+              "Multiplier applied to accumulated player radiation every 20 ticks.", 0, 1).getDouble();
+        negativeEffectsMinSeverity = config.get(CATEGORY, "NegativeEffectsMinSeverity", 0.1D,
+              "Minimum normalized radiation severity that can cause damage and exhaustion.", 0, 1).getDouble();
 
         Property capacity = config.get(CATEGORY, "WasteBarrelCapacity", 512_000L,
               "Radioactive Waste Barrel capacity in mB.");
@@ -60,6 +66,14 @@ public final class NuclearRadiationConfig {
         return sourceDecayRate;
     }
 
+    public static double getTargetDecayRate() {
+        return targetDecayRate;
+    }
+
+    public static double getNegativeEffectsMinSeverity() {
+        return negativeEffectsMinSeverity;
+    }
+
     public static long getWasteBarrelCapacity() {
         return wasteBarrelCapacity;
     }
@@ -76,6 +90,8 @@ public final class NuclearRadiationConfig {
         radiationEnabled = true;
         radiationChunkCheckRadius = 5;
         sourceDecayRate = 0.9995D;
+        targetDecayRate = 0.9995D;
+        negativeEffectsMinSeverity = 0.1D;
         wasteBarrelCapacity = 512_000L;
         wasteBarrelProcessTicks = 20;
         wasteBarrelDecayAmount = 1;

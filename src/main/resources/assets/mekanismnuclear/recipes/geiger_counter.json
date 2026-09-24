@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismnuclear:geiger_counter"
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {
+      "ore": "ingotLead",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    }
+  }
+}

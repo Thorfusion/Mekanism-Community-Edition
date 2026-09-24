@@ -9,6 +9,7 @@ import mekanism.nuclear.common.config.NuclearWorldGenConfig;
 import mekanism.nuclear.common.config.NuclearRadiationConfig;
 import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
 import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
+import mekanism.nuclear.common.radiation.RadiationCapabilities;
 import mekanism.nuclear.common.world.NuclearWorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -43,6 +45,7 @@ public final class MekanismNuclear implements IModule {
     public static NuclearCommonProxy proxy;
 
     public static Version versionNumber = new Version(999, 999, 999);
+    public static final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -66,6 +69,8 @@ public final class MekanismNuclear implements IModule {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        RadiationCapabilities.register();
+        proxy.registerPackets();
         NuclearWorldGenConfig.load(event.getSuggestedConfigurationFile());
         NuclearRadiationConfig.load(event.getSuggestedConfigurationFile());
         NuclearChemicals.register();
