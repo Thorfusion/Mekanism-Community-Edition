@@ -1,0 +1,7 @@
+tile.IsotopicCentrifuge.name=Isotopic Centrifuge
+gas.uranium_hexafluoride=Uranium Hexafluoride
+gas.fissile_fuel=Fissile Fuel
+gas.nuclear_waste=Nuclear Waste
+gas.plutonium=Plutonium
+gui.jei.category.centrifuging=Centrifuging
+tooltip.IsotopicCentrifuge=Separates isotopes in chemical form.

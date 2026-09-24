@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanismnuclear:isotopic_centrifuge"
+  },
+  "pattern": [
+    "III",
+    "CTC",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {
+      "ore": "ingotLead",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:controlcircuit",
+      "data": 3
+    },
+    "T": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

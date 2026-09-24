@@ -5,19 +5,28 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * Entry point for the separately packaged Nuclear module.
  *
- * <p>Content registration begins with the Isotopic Centrifuge after the shared
- * Ultimate recipe layer is complete. Keeping this entry point content-free
- * verifies the artifact and dependency boundary before registry names exist.</p>
+ * <p>The first registered vertical slice is the Isotopic Centrifuge, built on
+ * the shared Ultimate chemical and recipe layer.</p>
  */
 @Mod(modid = MekanismNuclear.MODID, useMetadata = true)
+@Mod.EventBusSubscriber
 public final class MekanismNuclear implements IModule {
 
     public static final String MODID = "mekanismnuclear";
@@ -25,11 +34,37 @@ public final class MekanismNuclear implements IModule {
     @Instance(MODID)
     public static MekanismNuclear instance;
 
+    @SidedProxy(clientSide = "mekanism.nuclear.client.NuclearClientProxy", serverSide = "mekanism.nuclear.common.NuclearCommonProxy")
+    public static NuclearCommonProxy proxy;
+
     public static Version versionNumber = new Version(999, 999, 999);
+
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        NuclearBlocks.registerBlocks(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        NuclearBlocks.registerItemBlocks(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerModels(ModelRegistryEvent event) {
+        proxy.registerBlockRenders();
+    }
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        NuclearChemicals.register();
+        NuclearRecipeRegistry.registerDefaults();
+    }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         Mekanism.modulesLoaded.add(this);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new NuclearGuiHandler());
+        proxy.registerTileEntities();
         Mekanism.logger.info("Loaded Mekanism Nuclear module.");
     }
 

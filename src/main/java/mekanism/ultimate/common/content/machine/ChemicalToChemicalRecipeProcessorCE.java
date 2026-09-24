@@ -61,6 +61,20 @@ public final class ChemicalToChemicalRecipeProcessorCE {
         return outputTank.getStored();
     }
 
+    /**
+     * Exposes the authoritative long-backed input tank to machine integrations.
+     * Mutating operations remain atomic at the tank level; recipes should still
+     * be committed through {@link #processOnce()}.
+     */
+    public LongChemicalTank getInputTank() {
+        return inputTank;
+    }
+
+    /** Exposes the authoritative long-backed output tank to API adapters. */
+    public LongChemicalTank getOutputTank() {
+        return outputTank;
+    }
+
     public synchronized RecipeProcessResultCE processOnce() {
         IChemicalStackCE input = inputTank.getStack();
         if (input == null || input.isEmpty()) {
