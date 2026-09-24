@@ -5,6 +5,7 @@ import mekanism.nuclear.common.inventory.ContainerIsotopicCentrifuge;
 import mekanism.nuclear.common.network.PacketRadiationData;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
 import mekanism.nuclear.common.tile.TileEntityRadioactiveWasteBarrel;
+import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -35,6 +36,8 @@ public class NuclearCommonProxy implements IGuiProvider {
               new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge"));
         GameRegistry.registerTileEntity(TileEntityRadioactiveWasteBarrel.class,
               new ResourceLocation(MekanismNuclear.MODID, "radioactive_waste_barrel"));
+        GameRegistry.registerTileEntity(TileEntityFissionReactorPort.class,
+              new ResourceLocation(MekanismNuclear.MODID, "fission_reactor_port"));
     }
 
     @Override

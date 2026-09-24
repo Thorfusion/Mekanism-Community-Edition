@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/casing" },
+    "inventory": { "model": "mekanismnuclear:fission/casing" }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ICI", "SIS", "SIS"],
+  "key": {
+    "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
+    "S": { "type": "forge:ore_dict", "ore": "ingotSteel" },
+    "C": { "type": "forge:ore_dict", "ore": "circuitElite" }
+  },
+  "result": { "item": "mekanismnuclear:control_rod_assembly" }
+}

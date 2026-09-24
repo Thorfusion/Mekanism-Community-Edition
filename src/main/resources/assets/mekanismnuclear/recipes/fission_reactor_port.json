@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": [" F ", "FCF", " F "],
+  "key": {
+    "F": { "item": "mekanismnuclear:fission_reactor_casing" },
+    "C": { "type": "forge:ore_dict", "ore": "circuitElite" }
+  },
+  "result": { "item": "mekanismnuclear:fission_reactor_port", "count": 2 }
+}

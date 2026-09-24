@@ -31,6 +31,12 @@ public class NuclearClientProxy extends NuclearCommonProxy {
         registerBlockItem(NuclearBlocks.RadioactiveWasteBarrel);
         registerBlockItem(NuclearBlocks.UraniumOre);
         registerBlockItem(NuclearBlocks.FluoriteOre);
+        registerBlockItem(NuclearBlocks.FissionReactorCasing);
+        registerBlockItem(NuclearBlocks.ReactorGlass);
+        registerBlockItem(NuclearBlocks.FissionReactorPort);
+        registerBlockItem(NuclearBlocks.FissionReactorLogicAdapter);
+        registerBlockItem(NuclearBlocks.FissionFuelAssembly);
+        registerBlockItem(NuclearBlocks.ControlRodAssembly);
     }
 
     private static void registerBlockItem(net.minecraft.block.Block block) {

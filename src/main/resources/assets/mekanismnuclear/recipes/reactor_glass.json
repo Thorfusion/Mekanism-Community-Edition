@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["SIS", "IGI", "SIS"],
+  "key": {
+    "S": { "item": "mekanism:enrichediron" },
+    "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
+    "G": { "type": "forge:ore_dict", "ore": "blockGlass" }
+  },
+  "result": { "item": "mekanismnuclear:reactor_glass", "count": 4 }
+}

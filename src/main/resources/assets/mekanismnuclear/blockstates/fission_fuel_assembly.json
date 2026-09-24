@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/fuel_assembly" },
+    "inventory": { "model": "mekanismnuclear:fission/fuel_assembly" }
+  }
+}

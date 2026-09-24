@@ -7,6 +7,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.nuclear.common.config.NuclearWorldGenConfig;
 import mekanism.nuclear.common.config.NuclearRadiationConfig;
+import mekanism.nuclear.common.content.fission.FissionReactorFormationManager;
 import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
 import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
 import mekanism.nuclear.common.radiation.RadiationCapabilities;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Entry point for the separately packaged Nuclear module.
@@ -83,6 +85,7 @@ public final class MekanismNuclear implements IModule {
         NuclearLegacyRecipeRegistry.register();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new NuclearGuiHandler());
         proxy.registerTileEntities();
+        MinecraftForge.EVENT_BUS.register(FissionReactorFormationManager.INSTANCE);
         GameRegistry.registerWorldGenerator(NuclearWorldGenerator.INSTANCE, 2);
         Mekanism.logger.info("Loaded Mekanism Nuclear module.");
     }

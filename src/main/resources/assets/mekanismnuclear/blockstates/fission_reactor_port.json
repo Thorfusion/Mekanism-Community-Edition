@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/port_input" },
+    "inventory": { "model": "mekanismnuclear:fission/port_input" }
+  }
+}

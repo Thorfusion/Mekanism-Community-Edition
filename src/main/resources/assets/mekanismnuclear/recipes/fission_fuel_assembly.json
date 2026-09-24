@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ISI", "ITI", "ISI"],
+  "key": {
+    "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
+    "S": { "type": "forge:ore_dict", "ore": "ingotSteel" },
+    "T": {
+      "type": "mekanism:item_nbt",
+      "item": "mekanism:gastank",
+      "data": 0,
+      "nbt": { "tier": 0 }
+    }
+  },
+  "result": { "item": "mekanismnuclear:fission_fuel_assembly" }
+}

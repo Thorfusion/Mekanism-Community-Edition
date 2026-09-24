@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/control_rod_assembly" },
+    "inventory": { "model": "mekanismnuclear:fission/control_rod_assembly" }
+  }
+}

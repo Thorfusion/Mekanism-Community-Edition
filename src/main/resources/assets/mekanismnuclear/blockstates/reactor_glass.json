@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/reactor_glass" },
+    "inventory": { "model": "mekanismnuclear:fission/reactor_glass" }
+  }
+}

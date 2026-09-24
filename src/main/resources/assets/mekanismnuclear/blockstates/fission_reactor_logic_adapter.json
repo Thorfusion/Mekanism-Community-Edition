@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:fission/logic_adapter" },
+    "inventory": { "model": "mekanismnuclear:fission/logic_adapter" }
+  }
+}

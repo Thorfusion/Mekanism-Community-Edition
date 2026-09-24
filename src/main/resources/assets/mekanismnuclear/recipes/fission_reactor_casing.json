@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": [" I ", "IXI", " I "],
+  "key": {
+    "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
+    "X": { "item": "mekanism:basicblock", "data": 8 }
+  },
+  "result": { "item": "mekanismnuclear:fission_reactor_casing", "count": 4 }
+}
