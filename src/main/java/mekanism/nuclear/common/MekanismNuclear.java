@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.nuclear.common.config.NuclearFissionConfig;
 import mekanism.nuclear.common.config.NuclearWorldGenConfig;
 import mekanism.nuclear.common.config.NuclearRadiationConfig;
+import mekanism.nuclear.common.config.NuclearSPSConfig;
 import mekanism.nuclear.common.content.fission.FissionReactorFormationManager;
 import mekanism.nuclear.common.content.sps.SPSFormationManager;
 import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
@@ -78,6 +79,7 @@ public final class MekanismNuclear implements IModule {
         NuclearFissionConfig.load(event.getSuggestedConfigurationFile());
         NuclearWorldGenConfig.load(event.getSuggestedConfigurationFile());
         NuclearRadiationConfig.load(event.getSuggestedConfigurationFile());
+        NuclearSPSConfig.load(event.getSuggestedConfigurationFile());
         NuclearChemicals.register();
         NuclearRecipeRegistry.registerDefaults();
     }

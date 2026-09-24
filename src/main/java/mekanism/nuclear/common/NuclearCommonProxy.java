@@ -3,6 +3,7 @@ package mekanism.nuclear.common;
 import mekanism.common.base.IGuiProvider;
 import mekanism.nuclear.common.inventory.ContainerIsotopicCentrifuge;
 import mekanism.nuclear.common.inventory.ContainerFissionReactor;
+import mekanism.nuclear.common.inventory.ContainerSPS;
 import mekanism.nuclear.common.network.PacketFissionReactorControl;
 import mekanism.nuclear.common.network.PacketRadiationData;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
@@ -61,6 +62,8 @@ public class NuclearCommonProxy implements IGuiProvider {
         return id == 0 && tile instanceof TileEntityIsotopicCentrifuge
               ? new ContainerIsotopicCentrifuge(player.inventory, (TileEntityIsotopicCentrifuge) tile)
               : id == 1 && tile instanceof TileEntityFissionReactorPort
-                    ? new ContainerFissionReactor(player, (TileEntityFissionReactorPort) tile) : null;
+                    ? new ContainerFissionReactor(player, (TileEntityFissionReactorPort) tile)
+                    : id == 2 && tile instanceof TileEntitySPSPort
+                          ? new ContainerSPS(player, (TileEntitySPSPort) tile) : null;
     }
 }

@@ -4,7 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.nuclear.common.NuclearBlocks;
+import mekanism.nuclear.common.MekanismNuclear;
 import mekanism.nuclear.common.content.sps.SPSValidator;
+import mekanism.nuclear.common.content.sps.SPSState;
 import mekanism.nuclear.common.tile.TileEntitySPSPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -56,10 +58,17 @@ public class BlockSPSPort extends BlockMekanismContainer {
             return true;
         }
 
+        TileEntitySPSPort controller = port.getControllerTile();
+        if (controller != null && controller.getSPSState().isFormed()) {
+            player.openGui(MekanismNuclear.instance, 2, world, pos.getX(), pos.getY(), pos.getZ());
+            return true;
+        }
+
         SPSValidator.Result result = port.validateStructure();
         if (result.isFormed()) {
             player.sendMessage(new TextComponentTranslation("sps.mekanismnuclear.formed",
                   result.getPorts().size(), result.getCoils().size()));
+            player.openGui(MekanismNuclear.instance, 2, world, pos.getX(), pos.getY(), pos.getZ());
         } else if (result.getFailurePos() == null) {
             player.sendMessage(new TextComponentTranslation(result.getFailure().getTranslationKey()));
         } else {
@@ -95,6 +104,27 @@ public class BlockSPSPort extends BlockMekanismContainer {
     }
 
     @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntitySPSPort) {
+            TileEntitySPSPort controller = ((TileEntitySPSPort) tile).getControllerTile();
+            if (controller != null) {
+                SPSState sps = controller.getSPSState();
+                long capacity = sps.getPoloniumCapacity();
+                if (capacity > 0 && sps.getPolonium() > 0) {
+                    return 1 + (int) Math.floor(14D * sps.getPolonium() / capacity);
+                }
+            }
+        }
+        return 0;
+    }
+
+    @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -108,6 +138,15 @@ public class BlockSPSPort extends BlockMekanismContainer {
     @Override
     public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
         return new TileEntitySPSPort();
+    }
+
+    @Override
+    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (!world.isRemote && tile instanceof TileEntitySPSPort) {
+            ((TileEntitySPSPort) tile).prepareForRemoval();
+        }
+        super.breakBlock(world, pos, state);
     }
 
     @Nonnull
