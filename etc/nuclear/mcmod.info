@@ -1,0 +1,22 @@
+[
+  {
+    "modid": "mekanismnuclear",
+    "name": "Mekanism Community Edition: Nuclear (Beta)",
+    "description": "Beta nuclear progression expansion for Mekanism Community Edition. Features are under active development.",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "maggi373"
+    ],
+    "credits": "",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]",
+      "mekanismultimate@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]",
+      "mekanismultimate@[${version}]"
+    ]
+  }
+]

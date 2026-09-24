@@ -130,6 +130,7 @@ repositories {
 
 dependencies {
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
+    testImplementation 'junit:junit:4.13.2'
 
     implementation rfg.deobf("MCMultiPart2:MCMultiPart:${mcmp_version}")
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
@@ -206,9 +207,9 @@ tasks.register('coreJar', Jar) {
         expand 'version': mod_version, 'mc_version': minecraft_version, 'mcmp_version': mcmp_version
     }
     from(reobfuscatedContents) {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/ultimate/**',
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/ultimate/**', 'mekanism/nuclear/**',
                 'assets/mekanismtools/**', 'assets/mekanismgenerators/**',
-                'assets/mekanismultimate/**', 'mcmod.info'
+                'assets/mekanismultimate/**', 'assets/mekanismnuclear/**', 'mcmod.info'
     }
     manifest(setMainManifestProps)
 }
@@ -266,6 +267,19 @@ tasks.register('ultimateJar', Jar) {
     }
 }
 
+tasks.register('nuclearJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Nuclear')
+    destinationDirectory.set(artifactOutputDir)
+    from('etc/nuclear') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version
+    }
+    from(reobfuscatedContents) {
+        include 'mekanism/nuclear/**', 'assets/mekanismnuclear/**'
+    }
+}
+
 tasks.register('apiJar', Jar) {
     dependsOn tasks.named('classes')
     archiveClassifier.set('API')
@@ -281,7 +295,8 @@ def distributionArtifacts = [
         tasks.named('generatorsJar'),
         tasks.named('alltJar'),
         tasks.named('apiJar'),
-        tasks.named('ultimateJar')
+        tasks.named('ultimateJar'),
+        tasks.named('nuclearJar')
 ]
 
 tasks.register('fullBuild') {

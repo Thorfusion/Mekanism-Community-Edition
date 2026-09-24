@@ -9,6 +9,7 @@ out
 Mekanism*.jar
 MDK.zip
 /run
+/logs
 /.gradle
 *.classpath
 *.project
