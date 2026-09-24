@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.gas.GasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
@@ -29,9 +30,13 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public FluidStack steamStored;
     public FluidStack prevSteam;
 
+    public final GasTank superheatedCoolantTank = new GasTank(Integer.MAX_VALUE);
+    public final GasTank cooledCoolantTank = new GasTank(Integer.MAX_VALUE);
+
     public double lastEnvironmentLoss;
     public int lastBoilRate;
     public int lastMaxBoil;
+    public int lastCoolantRate;
 
     public boolean clientHot;
 

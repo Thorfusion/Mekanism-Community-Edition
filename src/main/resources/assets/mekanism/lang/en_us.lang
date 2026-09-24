@@ -488,6 +488,7 @@ gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistics
 gui.turbineStats=Turbine Statistics
 gui.boilerStats=Boiler Statistics
+gui.coolantRate=Coolant Rate
 gui.main=Main
 gui.outputting=Outputting
 gui.receiving=Receiving

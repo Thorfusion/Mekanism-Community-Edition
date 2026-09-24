@@ -7,9 +7,15 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
+import mekanism.api.gas.GasCoolantRegistry;
+import mekanism.api.gas.GasCoolantRegistry.Coolant;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerCache;
+import mekanism.common.content.boiler.BoilerCoolantSimulation;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -43,6 +49,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
      */
     public int clientWaterCapacity;
     public int clientSteamCapacity;
+
+    private final GasTank emptyCoolantTank = new GasTank(0);
 
     public float prevWaterScale;
 
@@ -108,6 +116,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     double[] d = structure.simulateHeat();
                     structure.applyTemperatureChange();
                     structure.lastEnvironmentLoss = d[1];
+                    structure.lastCoolantRate = coolHeatedCoolant();
                     if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && structure.waterStored != null) {
                         int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
                         double heatAvailable = structure.getHeatAvailable();
@@ -185,6 +194,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
             TileUtils.addFluidStack(data, structure.waterStored);
             TileUtils.addFluidStack(data, structure.steamStored);
+            data.add(structure.superheatedCoolantTank.getMaxGas());
+            data.add(structure.cooledCoolantTank.getMaxGas());
+            data.add(structure.lastCoolantRate);
+            TileUtils.addTankData(data, structure.superheatedCoolantTank);
+            TileUtils.addTankData(data, structure.cooledCoolantTank);
 
             structure.upperRenderLocation.write(data);
 
@@ -240,6 +254,35 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return structure != null ? structure.superheatingElements : 0;
     }
 
+    public int getLastCoolantRate() {
+        return structure != null ? structure.lastCoolantRate : 0;
+    }
+
+    public GasTank getSuperheatedCoolantTank() {
+        return structure != null ? structure.superheatedCoolantTank : emptyCoolantTank;
+    }
+
+    public GasTank getCooledCoolantTank() {
+        return structure != null ? structure.cooledCoolantTank : emptyCoolantTank;
+    }
+
+    private int coolHeatedCoolant() {
+        GasStack heated = structure.superheatedCoolantTank.getGas();
+        Coolant coolant = heated == null ? null : GasCoolantRegistry.getByHeatedGas(heated.getGas());
+        int amount = BoilerCoolantSimulation.getAmountToCool(coolant, structure.superheatedCoolantTank,
+              structure.cooledCoolantTank, structure.temperature);
+        if (amount <= 0) {
+            return 0;
+        }
+        int accepted = structure.cooledCoolantTank.receive(new GasStack(coolant.getCooledGas(), amount), true);
+        if (accepted > 0) {
+            structure.superheatedCoolantTank.draw(accepted, true);
+            structure.temperature += BoilerCoolantSimulation.getTemperatureIncrease(coolant, accepted,
+                  MekanismConfig.current().general.energyPerHeat.val(), structure.locations.size());
+        }
+        return accepted;
+    }
+
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
@@ -256,6 +299,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
                 structure.waterStored = TileUtils.readFluidStack(dataStream);
                 structure.steamStored = TileUtils.readFluidStack(dataStream);
+                structure.superheatedCoolantTank.setMaxGas(dataStream.readInt());
+                structure.cooledCoolantTank.setMaxGas(dataStream.readInt());
+                structure.lastCoolantRate = dataStream.readInt();
+                TileUtils.readTankData(dataStream, structure.superheatedCoolantTank);
+                TileUtils.readTankData(dataStream, structure.cooledCoolantTank);
 
                 structure.upperRenderLocation = Coord4D.read(dataStream);
 

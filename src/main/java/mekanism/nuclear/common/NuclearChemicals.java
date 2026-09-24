@@ -1,6 +1,7 @@
 package mekanism.nuclear.common;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasCoolantRegistry;
 import mekanism.api.gas.GasRegistry;
 
 /** Modern Nuclear chemicals represented through the 1.12 gas API. */
@@ -41,6 +42,9 @@ public final class NuclearChemicals {
         FissileFuel = registerOrGet(FISSILE_FUEL_NAME, 0x2E332F);
         Sodium = registerOrGet(SODIUM_NAME, 0xE9FEF4);
         SuperheatedSodium = registerOrGet(SUPERHEATED_SODIUM_NAME, 0xD19469);
+        // Stable 10.7.19 coolant data: the Fission Reactor extracts five heat
+        // units per mB and the Boiler recovers that heat from the hot variant.
+        GasCoolantRegistry.register(Sodium, SuperheatedSodium, 5D, 0.4D, 100_000D);
         NuclearWaste = registerOrGet(NUCLEAR_WASTE_NAME, 0x4F412A);
         SpentNuclearWaste = registerOrGet(SPENT_NUCLEAR_WASTE_NAME, 0x262015);
         Plutonium = registerOrGet(PLUTONIUM_NAME, 0x1F919C);

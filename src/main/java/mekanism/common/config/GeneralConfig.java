@@ -205,6 +205,12 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption superheatingHeatTransfer = new DoubleOption(this, "general", "SuperheatingHeatTransfer", 10000D,
           "Amount of heat each Boiler heating element produces.");
 
+    public final IntOption boilerHeatedCoolantPerTank = new IntOption(this, "general", "BoilerHeatedCoolantPerTank", 256000,
+          "Heated coolant capacity per lower Boiler tank block in mB.", 1, Integer.MAX_VALUE);
+
+    public final IntOption boilerCooledCoolantPerTank = new IntOption(this, "general", "BoilerCooledCoolantPerTank", 256000,
+          "Cooled coolant capacity per upper Boiler tank block in mB.", 1, Integer.MAX_VALUE);
+
     public final DoubleOption heatPerFuelTick = new DoubleOption(this, "general", "HeatPerFuelTick", 4D,
           "Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.");
 

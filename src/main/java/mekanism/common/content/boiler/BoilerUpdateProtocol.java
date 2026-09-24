@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -170,6 +172,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         } else if (mergeCache.steam != null && boilerCache.steam.isFluidEqual(mergeCache.steam)) {
             boilerCache.steam.amount += mergeCache.steam.amount;
         }
+        boilerCache.superheatedCoolant = mergeGas(boilerCache.superheatedCoolant, mergeCache.superheatedCoolant);
+        boilerCache.cooledCoolant = mergeGas(boilerCache.cooledCoolant, mergeCache.cooledCoolant);
         boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
     }
 
@@ -182,6 +186,12 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (structureFound.steamStored != null) {
             structureFound.steamStored.amount = Math.min(structureFound.steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
         }
+        structureFound.superheatedCoolantTank.setMaxGas(BoilerCoolantSimulation.capacityForVolume(structureFound.waterVolume,
+              MekanismConfig.current().general.boilerHeatedCoolantPerTank.val()));
+        structureFound.superheatedCoolantTank.setGas(structureFound.superheatedCoolantTank.getGas());
+        structureFound.cooledCoolantTank.setMaxGas(BoilerCoolantSimulation.capacityForVolume(structureFound.steamVolume,
+              MekanismConfig.current().general.boilerCooledCoolantPerTank.val()));
+        structureFound.cooledCoolantTank.setGas(structureFound.cooledCoolantTank.getGas());
     }
 
     @Override
@@ -194,5 +204,15 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 structure.valves.add(data);
             }
         }
+    }
+
+    private static GasStack mergeGas(GasStack primary, GasStack additional) {
+        if (primary == null) {
+            return additional == null ? null : additional.copy();
+        }
+        if (additional != null && primary.isGasEqual(additional)) {
+            primary.amount = (int) Math.min((long) primary.amount + additional.amount, Integer.MAX_VALUE);
+        }
+        return primary;
     }
 }
