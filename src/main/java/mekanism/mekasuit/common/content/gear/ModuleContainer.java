@@ -84,7 +84,7 @@ public final class ModuleContainer {
             }
         }
         if (current == null) {
-            modules.put(type.getId(), new ModuleData(type, amount, type.isEnabledByDefault(), "normal", null));
+            modules.put(type.getId(), new ModuleData(type, amount, type.isEnabledByDefault(), type.getDefaultMode(), null));
         } else {
             current.setInstalledCount(installed + amount);
         }
@@ -119,8 +119,7 @@ public final class ModuleContainer {
         if (data == null || !type.handlesModeChange()) {
             return false;
         }
-        data.setMode(mode);
-        return true;
+        return data.setMode(mode);
     }
 
     public boolean setConfig(ModuleType type, NBTTagCompound config) {

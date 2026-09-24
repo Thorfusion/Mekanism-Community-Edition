@@ -36,12 +36,14 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
     private static final int NEXT = 1;
     private static final int REMOVE = 2;
     private static final int TOGGLE = 3;
+    private static final int MODE = 4;
 
     private int selectedIndex;
     private GuiButton previousButton;
     private GuiButton nextButton;
     private GuiButton removeButton;
     private GuiButton toggleButton;
+    private GuiButton modeButton;
 
     public GuiModificationStation(InventoryPlayer inventory, TileEntityModificationStation tile) {
         super(tile, new ContainerModificationStation(inventory, tile));
@@ -69,9 +71,10 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         super.initGui();
         buttonList.add(previousButton = new GuiButton(PREVIOUS, guiLeft + 8, guiTop + 62, 18, 18, "<"));
         buttonList.add(nextButton = new GuiButton(NEXT, guiLeft + 28, guiTop + 62, 18, 18, ">"));
-        buttonList.add(removeButton = new GuiButton(REMOVE, guiLeft + 48, guiTop + 62, 54, 18,
+        buttonList.add(removeButton = new GuiButton(REMOVE, guiLeft + 48, guiTop + 62, 42, 18,
               LangUtils.localize("gui.mekasuit.remove")));
-        buttonList.add(toggleButton = new GuiButton(TOGGLE, guiLeft + 104, guiTop + 62, 58, 18, ""));
+        buttonList.add(toggleButton = new GuiButton(TOGGLE, guiLeft + 92, guiTop + 62, 32, 18, ""));
+        buttonList.add(modeButton = new GuiButton(MODE, guiLeft + 126, guiTop + 62, 42, 18, ""));
         updateButtons();
     }
 
@@ -100,6 +103,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
             } else if (button.id == TOGGLE && selected.getType().canDisable()) {
                 MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
                       Action.TOGGLE_ENABLED, selected.getType().getId()));
+            } else if (button.id == MODE && selected.getType().hasModes()) {
+                String mode = selected.getType().cycleMode(selected.getMode(), selected.getInstalledCount(),
+                      isShiftKeyDown() ? -1 : 1);
+                MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
+                      Action.SET_MODE, selected.getType().getId(), mode, false));
             }
         }
         updateButtons();
@@ -112,6 +120,9 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         ModuleData selected = selected(installedModules());
         String label = selected == null ? LangUtils.localize("gui.mekasuit.noModules")
               : LangUtils.localize(selected.getType().getTranslationKey()) + " x" + selected.getInstalledCount();
+        if (selected != null && selected.getType().hasModes()) {
+            label += " [" + LangUtils.localize("module.mode." + selected.getMode()) + "]";
+        }
         renderScaledText(label, 8, 52, 0x404040, 154);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -129,8 +140,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         nextButton.enabled = modules.size() > 1;
         removeButton.enabled = selected != null;
         toggleButton.enabled = selected != null && selected.getType().canDisable();
-        toggleButton.displayString = selected == null ? LangUtils.localize("gui.mekasuit.disabled")
-              : LangUtils.localize(selected.isEnabled() ? "gui.mekasuit.enabled" : "gui.mekasuit.disabled");
+        toggleButton.displayString = selected != null && selected.isEnabled()
+              ? LangUtils.localize("gui.mekasuit.on") : LangUtils.localize("gui.mekasuit.off");
+        modeButton.visible = selected != null && selected.getType().hasModes();
+        modeButton.enabled = modeButton.visible;
+        modeButton.displayString = LangUtils.localize("gui.mekasuit.mode");
     }
 
     private List<ModuleData> installedModules() {

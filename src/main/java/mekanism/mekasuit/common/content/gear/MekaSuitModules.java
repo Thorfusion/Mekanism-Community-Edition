@@ -21,9 +21,9 @@ public final class MekaSuitModules {
     public static final ModuleType RADIATION_SHIELDING_UNIT = type("radiation_shielding_unit", ALL_ARMOR).build();
 
     public static final ModuleType EXCAVATION_ESCALATION_UNIT = type("excavation_escalation_unit", ModuleTarget.MEKA_TOOL)
-          .maxInstallCount(4).handlesModeChange().build();
+          .maxInstallCount(4).modes(2, "normal", "off", "slow", "normal", "fast", "super_fast", "extreme").build();
     public static final ModuleType ATTACK_AMPLIFICATION_UNIT = type("attack_amplification_unit", ModuleTarget.MEKA_TOOL)
-          .maxInstallCount(4).build();
+          .maxInstallCount(4).modes(2, "med", "off", "low", "med", "high", "extreme", "max").build();
     public static final ModuleType FARMING_UNIT = type("farming_unit", ModuleTarget.MEKA_TOOL)
           .maxInstallCount(4).exclusive(ModuleExclusive.INTERACT_BLOCK).build();
     public static final ModuleType SHEARING_UNIT = type("shearing_unit", ModuleTarget.MEKA_TOOL)

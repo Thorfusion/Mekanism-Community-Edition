@@ -18,7 +18,7 @@ public final class ModuleData {
         this.type = type;
         setInstalledCount(installedCount);
         this.enabled = type.canDisable() ? enabled : true;
-        this.mode = sanitizeMode(mode);
+        this.mode = type.normalizeMode(sanitizeMode(mode), installedCount);
         this.config = config == null ? new NBTTagCompound() : config.copy();
     }
 
@@ -35,6 +35,9 @@ public final class ModuleData {
             throw new IllegalArgumentException("Installed count is outside the module limit");
         }
         this.installedCount = installedCount;
+        if (mode != null) {
+            mode = type.normalizeMode(mode, installedCount);
+        }
     }
 
     public boolean isEnabled() {
@@ -53,8 +56,13 @@ public final class ModuleData {
         return mode;
     }
 
-    public void setMode(String mode) {
-        this.mode = sanitizeMode(mode);
+    public boolean setMode(String mode) {
+        String sanitized = sanitizeMode(mode);
+        if (!type.isModeAllowed(sanitized, installedCount)) {
+            return false;
+        }
+        this.mode = sanitized;
+        return true;
     }
 
     public NBTTagCompound getConfig() {

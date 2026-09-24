@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_fortune_unit"
+  },
+  "pattern": [
+    "A#A",
+    "DPD",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "alloyElite"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "blockRefinedGlowstone"
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "blockDiamond"
+    },
+    "P": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "H": {
+      "item": "mekanism:atomicalloy"
+    }
+  }
+}

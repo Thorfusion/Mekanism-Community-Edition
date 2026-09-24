@@ -1,5 +1,6 @@
 package mekanism.mekasuit.common.item;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -11,9 +12,11 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
+import mekanism.mekasuit.common.content.gear.MekaToolModuleHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -56,32 +59,66 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
 
     @Override
     public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack) {
-        return state.getBlock() != Blocks.BEDROCK && getEnergy(stack) >= getMiningEnergyCost(1F);
+        long required = getMiningEnergyCost(stack, 1F);
+        double available = getEnergy(stack);
+        return state.getBlock() != Blocks.BEDROCK && MekaToolModuleHelper.getEfficiency(stack) > 0
+              && (available >= required || required > 0 && available / required > 1.0E-5D);
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, IBlockState state) {
-        return getEnergy(stack) >= getMiningEnergyCost(1F)
-              ? MekaSuitConfig.toolEfficiency : 0F;
+        MekaToolModuleHelper.synchronizeHarvestEnchantments(stack);
+        float efficiency = MekaToolModuleHelper.getEfficiency(stack);
+        if (efficiency <= 0) {
+            return 0;
+        }
+        long required = getMiningEnergyCost(stack, 1F);
+        double available = getEnergy(stack);
+        return available >= required ? efficiency
+              : (float) (MekaSuitConfig.toolEfficiency * available / required);
     }
 
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase entity) {
         if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).capabilities.isCreativeMode) {
-            setEnergy(stack, getEnergy(stack) - getMiningEnergyCost(state.getBlockHardness(world, pos)));
+            setEnergy(stack, getEnergy(stack) - getMiningEnergyCost(stack, state.getBlockHardness(world, pos)));
         }
         return true;
     }
 
     public long getMiningEnergyCost(float hardness) {
-        long cost;
         double scaled = MekaSuitConfig.toolMiningUsage * (double) MekaSuitConfig.toolEfficiency;
-        if (scaled >= Long.MAX_VALUE) {
-            cost = Long.MAX_VALUE;
-        } else {
-            cost = Math.max(1L, (long) Math.ceil(scaled));
-        }
+        long cost = scaled >= Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(1L, (long) Math.ceil(scaled));
         return hardness == 0 ? Math.max(1L, cost / 2) : cost;
+    }
+
+    public long getMiningEnergyCost(ItemStack stack, float hardness) {
+        return MekaToolModuleHelper.getMiningEnergyCost(stack, hardness);
+    }
+
+    @Override
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
+        MekaToolModuleHelper.synchronizeHarvestEnchantments(stack);
+        return false;
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.onUpdate(stack, world, entity, slot, selected);
+        if (!world.isRemote) {
+            MekaToolModuleHelper.synchronizeHarvestEnchantments(stack);
+        }
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        if (!(attacker instanceof EntityPlayer) || !((EntityPlayer) attacker).capabilities.isCreativeMode) {
+            int bonusDamage = MekaToolModuleHelper.getAttackDamage(stack);
+            if (bonusDamage > 0) {
+                setEnergy(stack, getEnergy(stack) - MekaToolModuleHelper.getAttackEnergyCost(bonusDamage));
+            }
+        }
+        return true;
     }
 
     @Override
@@ -93,8 +130,14 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
               + EnumColor.GREY + modules.getModules().size());
         if (flag.isAdvanced()) {
             for (ModuleData module : modules.getModules()) {
-                tooltip.add(EnumColor.INDIGO + "- " + LangUtils.localize(module.getType().getTranslationKey())
-                      + " x" + module.getInstalledCount());
+                String details = EnumColor.INDIGO + "- " + LangUtils.localize(module.getType().getTranslationKey())
+                      + " x" + module.getInstalledCount();
+                if (!module.isEnabled()) {
+                    details += " [" + LangUtils.localize("gui.mekasuit.off") + "]";
+                } else if (module.getType().hasModes()) {
+                    details += " [" + LangUtils.localize("module.mode." + module.getMode()) + "]";
+                }
+                tooltip.add(details);
             }
         }
     }
@@ -120,16 +163,15 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
         return EnumRarity.EPIC;
     }
 
-    @Nonnull
     @Override
-    @Deprecated
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot slot) {
-        Multimap<String, AttributeModifier> modifiers = super.getItemAttributeModifiers(slot);
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+        Multimap<String, AttributeModifier> modifiers = HashMultimap.create(super.getAttributeModifiers(slot, stack));
         if (slot == EntityEquipmentSlot.MAINHAND) {
             modifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
-                  new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Meka-Tool damage", 4D, 0));
+                  new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Meka-Tool damage",
+                        MekaToolModuleHelper.getEffectiveAttackDamage(stack), 0));
             modifiers.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
-                  new AttributeModifier(ATTACK_SPEED_MODIFIER, "Meka-Tool speed", -2.4D, 0));
+                  new AttributeModifier(ATTACK_SPEED_MODIFIER, "Meka-Tool speed", MekaSuitConfig.toolAttackSpeed, 0));
         }
         return modifiers;
     }

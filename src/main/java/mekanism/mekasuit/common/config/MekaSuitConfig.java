@@ -13,7 +13,11 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_CAPACITY = 16_000_000L;
     public static final long DEFAULT_SUIT_CHARGE_RATE = 100_000L;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
+    public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
+    public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
     public static final float DEFAULT_TOOL_EFFICIENCY = 4F;
+    public static final int DEFAULT_TOOL_BASE_DAMAGE = 4;
+    public static final double DEFAULT_TOOL_ATTACK_SPEED = -2.4D;
     public static final long DEFAULT_MODIFICATION_STATION_CAPACITY = 40_000L;
     public static final long DEFAULT_MODIFICATION_STATION_USAGE = 400L;
 
@@ -22,7 +26,11 @@ public final class MekaSuitConfig {
     public static long suitCapacity = DEFAULT_SUIT_CAPACITY;
     public static long suitChargeRate = DEFAULT_SUIT_CHARGE_RATE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
+    public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
+    public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
     public static float toolEfficiency = DEFAULT_TOOL_EFFICIENCY;
+    public static int toolBaseDamage = DEFAULT_TOOL_BASE_DAMAGE;
+    public static double toolAttackSpeed = DEFAULT_TOOL_ATTACK_SPEED;
     public static long modificationStationCapacity = DEFAULT_MODIFICATION_STATION_CAPACITY;
     public static long modificationStationUsage = DEFAULT_MODIFICATION_STATION_USAGE;
 
@@ -38,8 +46,19 @@ public final class MekaSuitConfig {
               "Base Meka-Tool charge rate in Joules per tick. Each Energy Unit doubles this value.");
         toolMiningUsage = getLong(config, "meka_tool", "baseMiningEnergyUsage", DEFAULT_TOOL_MINING_USAGE, 1,
               "Base mining energy cost, multiplied by the current mining efficiency.");
+        toolSilkMiningUsage = getLong(config, "meka_tool", "silkMiningEnergyUsage",
+              DEFAULT_TOOL_SILK_MINING_USAGE, 1,
+              "Silk Touch mining energy cost, multiplied by the current mining efficiency.");
+        toolWeaponUsage = getLong(config, "meka_tool", "weaponEnergyUsage",
+              DEFAULT_TOOL_WEAPON_USAGE, 1,
+              "Weapon energy cost at four points of Attack Amplification damage.");
         toolEfficiency = config.getFloat("baseEfficiency", "meka_tool", DEFAULT_TOOL_EFFICIENCY, 0.1F, 100F,
               "Mining speed while the Meka-Tool has enough energy.");
+        toolBaseDamage = config.getInt("baseDamage", "meka_tool", DEFAULT_TOOL_BASE_DAMAGE, 0, 100_000,
+              "Base Meka-Tool attack damage before Attack Amplification.");
+        toolAttackSpeed = Math.max(-4D, Math.min(100D,
+              config.get("meka_tool", "attackSpeed", DEFAULT_TOOL_ATTACK_SPEED,
+                    "Meka-Tool main-hand attack speed modifier.").getDouble(DEFAULT_TOOL_ATTACK_SPEED)));
         suitCapacity = getLong(config, "mekasuit", "baseEnergyCapacity", DEFAULT_SUIT_CAPACITY, 1,
               "Base energy capacity of each MekaSuit piece. Each Energy Unit doubles this value.");
         suitChargeRate = getLong(config, "mekasuit", "chargeRate", DEFAULT_SUIT_CHARGE_RATE, 1,

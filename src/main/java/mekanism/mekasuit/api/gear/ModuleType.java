@@ -1,7 +1,10 @@
 package mekanism.mekasuit.api.gear;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.util.ResourceLocation;
 
@@ -16,6 +19,9 @@ public final class ModuleType {
     private final long energyCost;
     private final Set<ModuleTarget> supportedTargets;
     private final Set<ModuleExclusive> exclusiveFlags;
+    private final List<String> modes;
+    private final String defaultMode;
+    private final int modeInstallOffset;
 
     private ModuleType(Builder builder) {
         id = builder.id;
@@ -27,6 +33,9 @@ public final class ModuleType {
         supportedTargets = Collections.unmodifiableSet(EnumSet.copyOf(builder.supportedTargets));
         exclusiveFlags = builder.exclusiveFlags.isEmpty() ? Collections.emptySet()
               : Collections.unmodifiableSet(EnumSet.copyOf(builder.exclusiveFlags));
+        modes = Collections.unmodifiableList(new ArrayList<>(builder.modes));
+        defaultMode = builder.defaultMode;
+        modeInstallOffset = builder.modeInstallOffset;
     }
 
     public static Builder builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
@@ -51,6 +60,49 @@ public final class ModuleType {
 
     public boolean handlesModeChange() {
         return handlesModeChange;
+    }
+
+    public boolean hasModes() {
+        return !modes.isEmpty();
+    }
+
+    public String getDefaultMode() {
+        return defaultMode;
+    }
+
+    public List<String> getAvailableModes(int installedCount) {
+        if (modes.isEmpty()) {
+            return Collections.emptyList();
+        }
+        int count = Math.min(modes.size(), Math.max(1, installedCount) + modeInstallOffset);
+        return modes.subList(0, count);
+    }
+
+    public boolean isModeAllowed(String mode, int installedCount) {
+        if (mode == null) {
+            return false;
+        }
+        // Older/custom module definitions may opt into free-form mode storage
+        // without declaring an installed-count-bounded schema.
+        return modes.isEmpty() ? handlesModeChange : getAvailableModes(installedCount).contains(mode);
+    }
+
+    public String normalizeMode(String mode, int installedCount) {
+        if (modes.isEmpty()) {
+            // Preserve legacy/free-form values even for definitions that do not
+            // currently expose a mode control; setMode still enforces the flag.
+            return mode == null ? "normal" : mode;
+        }
+        return isModeAllowed(mode, installedCount) ? mode : defaultMode;
+    }
+
+    public String cycleMode(String mode, int installedCount, int shift) {
+        List<String> available = getAvailableModes(installedCount);
+        if (available.isEmpty()) {
+            return "normal";
+        }
+        int current = available.indexOf(normalizeMode(mode, installedCount));
+        return available.get(Math.floorMod(current + shift, available.size()));
     }
 
     public long getEnergyCost() {
@@ -99,6 +151,9 @@ public final class ModuleType {
         private boolean enabledByDefault = true;
         private boolean handlesModeChange;
         private long energyCost;
+        private List<String> modes = Collections.emptyList();
+        private String defaultMode = "normal";
+        private int modeInstallOffset;
 
         private Builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
             if (id == null || firstTarget == null) {
@@ -131,6 +186,27 @@ public final class ModuleType {
         }
 
         public Builder handlesModeChange() {
+            handlesModeChange = true;
+            return this;
+        }
+
+        /**
+         * Defines an ordered, installed-count-bounded mode schema. At a given
+         * install count, {@code installedCount + installOffset} leading modes
+         * are available. This mirrors modern module enum configs without
+         * importing the modern codec/config stack.
+         */
+        public Builder modes(int installOffset, String defaultMode, String... modes) {
+            if (installOffset < 0 || defaultMode == null || modes == null || modes.length == 0) {
+                throw new IllegalArgumentException("A module mode schema requires modes, a default, and a non-negative offset");
+            }
+            List<String> values = new ArrayList<>(Arrays.asList(modes));
+            if (!values.contains(defaultMode) || values.contains(null)) {
+                throw new IllegalArgumentException("The default module mode must be one of the declared modes");
+            }
+            this.modes = values;
+            this.defaultMode = defaultMode;
+            modeInstallOffset = installOffset;
             handlesModeChange = true;
             return this;
         }

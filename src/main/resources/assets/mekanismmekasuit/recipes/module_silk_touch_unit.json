@@ -1,0 +1,30 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_silk_touch_unit"
+  },
+  "pattern": [
+    "A#A",
+    "DPD",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "alloyElite"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "blockRefinedGlowstone"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "P": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "H": {
+      "item": "mekanism:atomicalloy"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_excavation_escalation_unit"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "alloyAdvanced"
+    },
+    "#": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "P": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "H": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    }
+  }
+}

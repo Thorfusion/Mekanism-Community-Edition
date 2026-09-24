@@ -30,9 +30,22 @@ public final class MekaSuitItems {
     public static final Item ModuleBase = init(new ItemMekanism(), "module_base", "ModuleBase");
     public static final ItemMekaModule EnergyUnit = init(
           new ItemMekaModule(MekaSuitModules.ENERGY_UNIT, EnumRarity.UNCOMMON), "module_energy_unit", "ModuleEnergyUnit");
+    public static final ItemMekaModule ExcavationEscalationUnit = init(
+          new ItemMekaModule(MekaSuitModules.EXCAVATION_ESCALATION_UNIT, EnumRarity.UNCOMMON),
+          "module_excavation_escalation_unit", "ModuleExcavationEscalationUnit");
+    public static final ItemMekaModule AttackAmplificationUnit = init(
+          new ItemMekaModule(MekaSuitModules.ATTACK_AMPLIFICATION_UNIT, EnumRarity.UNCOMMON),
+          "module_attack_amplification_unit", "ModuleAttackAmplificationUnit");
+    public static final ItemMekaModule SilkTouchUnit = init(
+          new ItemMekaModule(MekaSuitModules.SILK_TOUCH_UNIT, EnumRarity.RARE),
+          "module_silk_touch_unit", "ModuleSilkTouchUnit");
+    public static final ItemMekaModule FortuneUnit = init(
+          new ItemMekaModule(MekaSuitModules.FORTUNE_UNIT, EnumRarity.RARE),
+          "module_fortune_unit", "ModuleFortuneUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
-          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit));
+          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
+          ExcavationEscalationUnit, AttackAmplificationUnit, SilkTouchUnit, FortuneUnit));
 
     private MekaSuitItems() {
     }

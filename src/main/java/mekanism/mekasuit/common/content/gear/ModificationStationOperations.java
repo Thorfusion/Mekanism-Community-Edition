@@ -41,6 +41,7 @@ public final class ModificationStationOperations {
             return 0;
         }
         container.save(host);
+        modulesChanged(host);
         return count;
     }
 
@@ -60,6 +61,7 @@ public final class ModificationStationOperations {
         }
         container.save(host);
         clampEnergy(host);
+        modulesChanged(host);
         return new ItemStack(moduleItem, removed);
     }
 
@@ -71,6 +73,7 @@ public final class ModificationStationOperations {
             return false;
         }
         container.save(host);
+        modulesChanged(host);
         return true;
     }
 
@@ -82,6 +85,7 @@ public final class ModificationStationOperations {
             return false;
         }
         container.save(host);
+        modulesChanged(host);
         return true;
     }
 
@@ -98,6 +102,7 @@ public final class ModificationStationOperations {
             return false;
         }
         container.save(host);
+        modulesChanged(host);
         return true;
     }
 
@@ -118,6 +123,13 @@ public final class ModificationStationOperations {
         if (host.getItem() instanceof IEnergizedItem) {
             IEnergizedItem energized = (IEnergizedItem) host.getItem();
             energized.setEnergy(host, energized.getEnergy(host));
+        }
+    }
+
+    private static void modulesChanged(ItemStack host) {
+        if (host.getItem() instanceof IModuleContainerItem
+              && ((IModuleContainerItem) host.getItem()).getModuleTarget() == mekanism.mekasuit.api.gear.ModuleTarget.MEKA_TOOL) {
+            MekaToolModuleHelper.synchronizeHarvestEnchantments(host);
         }
     }
 
