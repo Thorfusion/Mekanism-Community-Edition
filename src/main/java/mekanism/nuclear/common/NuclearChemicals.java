@@ -53,6 +53,23 @@ public final class NuclearChemicals {
               || PLUTONIUM_NAME.equals(name) || POLONIUM_NAME.equals(name);
     }
 
+    /** Stable radioactivity in Sv/h per mB for the exact 1.21.1 baseline. */
+    public static double getRadioactivityPerMb(String name) {
+        if (NUCLEAR_WASTE_NAME.equals(name) || SPENT_NUCLEAR_WASTE_NAME.equals(name)) {
+            return 0.01D;
+        } else if (PLUTONIUM_NAME.equals(name)) {
+            return 0.02D;
+        } else if (POLONIUM_NAME.equals(name)) {
+            return 0.05D;
+        }
+        return 0;
+    }
+
+    /** Stable waste-barrel blacklist: usable products do not passively decay. */
+    public static boolean isWasteBarrelDecayBlacklisted(String name) {
+        return PLUTONIUM_NAME.equals(name) || POLONIUM_NAME.equals(name);
+    }
+
     private static Gas registerOrGet(String name, int tint) {
         Gas existing = GasRegistry.getGas(name);
         return existing == null ? GasRegistry.register(new Gas(name, tint)) : existing;

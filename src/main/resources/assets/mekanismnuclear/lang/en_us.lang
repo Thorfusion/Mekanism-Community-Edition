@@ -1,4 +1,5 @@
 tile.IsotopicCentrifuge.name=Isotopic Centrifuge
+tile.RadioactiveWasteBarrel.name=Radioactive Waste Barrel
 tile.UraniumOre.name=Uranium Ore
 tile.FluoriteOre.name=Fluorite Ore
 item.UraniumIngot.name=Uranium Ingot
@@ -23,3 +24,4 @@ gas.polonium=Polonium
 gas.antimatter=Antimatter
 gui.jei.category.centrifuging=Centrifuging
 tooltip.IsotopicCentrifuge=Separates isotopes in chemical form.
+tooltip.RadioactiveWasteBarrel.stored=Stored %1$s: %2$s / %3$s mB

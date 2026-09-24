@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismnuclear:radioactive_waste_barrel"
+  },
+  "pattern": [
+    "SIS",
+    "I I",
+    "SIS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {
+      "ore": "ingotLead",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

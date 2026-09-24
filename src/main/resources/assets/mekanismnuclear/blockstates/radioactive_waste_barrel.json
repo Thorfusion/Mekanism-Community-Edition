@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:radioactive_waste_barrel" },
+    "inventory": { "model": "mekanismnuclear:radioactive_waste_barrel" }
+  }
+}

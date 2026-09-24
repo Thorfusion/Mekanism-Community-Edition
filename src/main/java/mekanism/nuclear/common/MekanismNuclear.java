@@ -6,6 +6,7 @@ import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.nuclear.common.config.NuclearWorldGenConfig;
+import mekanism.nuclear.common.config.NuclearRadiationConfig;
 import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
 import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
 import mekanism.nuclear.common.world.NuclearWorldGenerator;
@@ -66,6 +67,7 @@ public final class MekanismNuclear implements IModule {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         NuclearWorldGenConfig.load(event.getSuggestedConfigurationFile());
+        NuclearRadiationConfig.load(event.getSuggestedConfigurationFile());
         NuclearChemicals.register();
         NuclearRecipeRegistry.registerDefaults();
     }
