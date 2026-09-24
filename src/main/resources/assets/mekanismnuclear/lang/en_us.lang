@@ -1,4 +1,6 @@
 tile.IsotopicCentrifuge.name=Isotopic Centrifuge
+tile.UraniumOre.name=Uranium Ore
+tile.FluoriteOre.name=Fluorite Ore
 item.UraniumIngot.name=Uranium Ingot
 item.UraniumDust.name=Uranium Dust
 item.FluoriteGem.name=Fluorite

@@ -1,5 +1,6 @@
 package mekanism.nuclear.common;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -21,6 +22,11 @@ public final class NuclearOreDictionary {
         registerIfAbsent(DUST_URANIUM, new ItemStack(NuclearItems.UraniumDust));
         registerIfAbsent(GEM_FLUORITE, new ItemStack(NuclearItems.FluoriteGem));
         registerIfAbsent(DUST_FLUORITE, new ItemStack(NuclearItems.FluoriteDust));
+    }
+
+    public static synchronized void registerOreBlocks(Item uraniumOre, Item fluoriteOre) {
+        registerIfAbsent(ORE_URANIUM, new ItemStack(uraniumOre));
+        registerIfAbsent(ORE_FLUORITE, new ItemStack(fluoriteOre));
     }
 
     private static void registerIfAbsent(String name, ItemStack stack) {

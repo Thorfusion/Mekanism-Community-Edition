@@ -27,6 +27,13 @@ public class NuclearClientProxy extends NuclearCommonProxy {
     public void registerBlockRenders() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(NuclearBlocks.IsotopicCentrifuge), 0,
               new ModelResourceLocation(new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge"), "inventory"));
+        registerBlockItem(NuclearBlocks.UraniumOre);
+        registerBlockItem(NuclearBlocks.FluoriteOre);
+    }
+
+    private static void registerBlockItem(net.minecraft.block.Block block) {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0,
+              new ModelResourceLocation(block.getRegistryName(), "inventory"));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.nuclear.common;
 
 import mekanism.nuclear.common.block.BlockIsotopicCentrifuge;
+import mekanism.nuclear.common.block.BlockNuclearOre;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -12,6 +13,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 public final class NuclearBlocks {
 
     public static final Block IsotopicCentrifuge = new BlockIsotopicCentrifuge();
+    public static final BlockNuclearOre UraniumOre = new BlockNuclearOre(NuclearOreType.URANIUM);
+    public static final BlockNuclearOre FluoriteOre = new BlockNuclearOre(NuclearOreType.FLUORITE);
 
     private NuclearBlocks() {
     }
@@ -19,9 +22,20 @@ public final class NuclearBlocks {
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         registry.register(IsotopicCentrifuge.setTranslationKey("IsotopicCentrifuge")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge")));
+        registry.register(UraniumOre.setTranslationKey("UraniumOre")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "uranium_ore")));
+        registry.register(FluoriteOre.setTranslationKey("FluoriteOre")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "fluorite_ore")));
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         registry.register(new ItemBlock(IsotopicCentrifuge).setRegistryName(IsotopicCentrifuge.getRegistryName()));
+        ItemBlock uraniumOre = new ItemBlock(UraniumOre);
+        uraniumOre.setRegistryName(UraniumOre.getRegistryName());
+        ItemBlock fluoriteOre = new ItemBlock(FluoriteOre);
+        fluoriteOre.setRegistryName(FluoriteOre.getRegistryName());
+        registry.register(uraniumOre);
+        registry.register(fluoriteOre);
+        NuclearOreDictionary.registerOreBlocks(uraniumOre, fluoriteOre);
     }
 }

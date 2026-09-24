@@ -46,7 +46,9 @@ public final class NuclearLegacyRecipeRegistry {
 
     private static void registerMaterialRecipes() {
         for (ItemStack ore : OreDictionary.getOres(NuclearOreDictionary.ORE_URANIUM, false)) {
-            addEnrichmentIfAbsent(sized(ore, 1), new ItemStack(NuclearItems.UraniumDust, 2));
+            ItemStack input = sized(ore, 1);
+            addEnrichmentIfAbsent(input, new ItemStack(NuclearItems.UraniumDust, 2));
+            addSmeltingIfAbsent(input, new ItemStack(NuclearItems.UraniumIngot), 0.3F);
         }
         for (ItemStack ingot : OreDictionary.getOres(NuclearOreDictionary.INGOT_URANIUM, false)) {
             ItemStack input = sized(ingot, 1);
