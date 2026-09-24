@@ -9,6 +9,7 @@ import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
 import mekanism.nuclear.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorLogicAdapter;
+import mekanism.nuclear.common.tile.TileEntitySPSPort;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -45,6 +46,8 @@ public class NuclearCommonProxy implements IGuiProvider {
               new ResourceLocation(MekanismNuclear.MODID, "fission_reactor_port"));
         GameRegistry.registerTileEntity(TileEntityFissionReactorLogicAdapter.class,
               new ResourceLocation(MekanismNuclear.MODID, "fission_reactor_logic_adapter"));
+        GameRegistry.registerTileEntity(TileEntitySPSPort.class,
+              new ResourceLocation(MekanismNuclear.MODID, "sps_port"));
     }
 
     @Override

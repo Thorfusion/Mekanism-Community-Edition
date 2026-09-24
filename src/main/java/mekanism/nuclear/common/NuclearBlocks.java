@@ -6,6 +6,9 @@ import mekanism.nuclear.common.block.BlockFissionReactorLogicAdapter;
 import mekanism.nuclear.common.block.BlockFissionReactorPort;
 import mekanism.nuclear.common.block.BlockNuclearOre;
 import mekanism.nuclear.common.block.BlockRadioactiveWasteBarrel;
+import mekanism.nuclear.common.block.BlockSPSCasing;
+import mekanism.nuclear.common.block.BlockSPSPort;
+import mekanism.nuclear.common.block.BlockSuperchargedCoil;
 import mekanism.nuclear.common.content.fission.FissionReactorComponent;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -26,6 +29,9 @@ public final class NuclearBlocks {
     public static final Block FissionReactorLogicAdapter = new BlockFissionReactorLogicAdapter();
     public static final Block FissionFuelAssembly = new BlockFissionReactorComponent(FissionReactorComponent.FUEL_ASSEMBLY);
     public static final Block ControlRodAssembly = new BlockFissionReactorComponent(FissionReactorComponent.CONTROL_ROD);
+    public static final Block SPSCasing = new BlockSPSCasing();
+    public static final Block SPSPort = new BlockSPSPort();
+    public static final Block SuperchargedCoil = new BlockSuperchargedCoil();
 
     private NuclearBlocks() {
     }
@@ -49,6 +55,12 @@ public final class NuclearBlocks {
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "fission_fuel_assembly")));
         registry.register(ControlRodAssembly.setTranslationKey("ControlRodAssembly")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "control_rod_assembly")));
+        registry.register(SPSCasing.setTranslationKey("SPSCasing")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "sps_casing")));
+        registry.register(SPSPort.setTranslationKey("SPSPort")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "sps_port")));
+        registry.register(SuperchargedCoil.setTranslationKey("SuperchargedCoil")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "supercharged_coil")));
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
@@ -65,6 +77,9 @@ public final class NuclearBlocks {
         registerItemBlock(registry, FissionReactorLogicAdapter);
         registerItemBlock(registry, FissionFuelAssembly);
         registerItemBlock(registry, ControlRodAssembly);
+        registerItemBlock(registry, SPSCasing);
+        registerItemBlock(registry, SPSPort);
+        registerItemBlock(registry, SuperchargedCoil);
         NuclearOreDictionary.registerOreBlocks(uraniumOre, fluoriteOre);
     }
 

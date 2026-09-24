@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": [" C ", "CUC", " C "],
+  "key": {
+    "C": { "item": "mekanismnuclear:sps_casing" },
+    "U": { "type": "forge:ore_dict", "ore": "circuitUltimate" }
+  },
+  "result": { "item": "mekanismnuclear:sps_port" }
+}

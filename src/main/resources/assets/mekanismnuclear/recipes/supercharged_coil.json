@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ccc", "ULU", "PPP"],
+  "key": {
+    "c": { "type": "forge:ore_dict", "ore": "ingotCopper" },
+    "U": { "type": "forge:ore_dict", "ore": "circuitUltimate" },
+    "L": { "item": "mekanism:machineblock2", "data": 13 },
+    "P": { "type": "forge:ore_dict", "ore": "pelletPolonium" }
+  },
+  "result": { "item": "mekanismnuclear:supercharged_coil" }
+}

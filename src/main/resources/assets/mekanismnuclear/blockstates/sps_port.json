@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "output=false": { "model": "mekanismnuclear:sps/port_input" },
+    "output=true": { "model": "mekanismnuclear:sps/port_output" },
+    "inventory": { "model": "mekanismnuclear:sps/port_input" }
+  }
+}

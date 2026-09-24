@@ -9,6 +9,7 @@ import mekanism.nuclear.common.config.NuclearFissionConfig;
 import mekanism.nuclear.common.config.NuclearWorldGenConfig;
 import mekanism.nuclear.common.config.NuclearRadiationConfig;
 import mekanism.nuclear.common.content.fission.FissionReactorFormationManager;
+import mekanism.nuclear.common.content.sps.SPSFormationManager;
 import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
 import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
 import mekanism.nuclear.common.radiation.RadiationCapabilities;
@@ -88,6 +89,7 @@ public final class MekanismNuclear implements IModule {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new NuclearGuiHandler());
         proxy.registerTileEntities();
         MinecraftForge.EVENT_BUS.register(FissionReactorFormationManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(SPSFormationManager.INSTANCE);
         GameRegistry.registerWorldGenerator(NuclearWorldGenerator.INSTANCE, 2);
         Mekanism.logger.info("Loaded Mekanism Nuclear module.");
     }

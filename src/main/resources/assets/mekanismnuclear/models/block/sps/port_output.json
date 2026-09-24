@@ -1,0 +1,7 @@
+{
+  "parent": "mekanismnuclear:block/template/cube_all_led",
+  "textures": {
+    "all": "mekanismnuclear:block/sps_port_output",
+    "led": "mekanismnuclear:block/sps_port_output_led"
+  }
+}

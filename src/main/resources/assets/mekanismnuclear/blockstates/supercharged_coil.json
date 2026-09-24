@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "facing=up": { "model": "mekanismnuclear:sps/supercharged_coil" },
+    "facing=down": { "model": "mekanismnuclear:sps/supercharged_coil", "x": 180 },
+    "facing=north": { "model": "mekanismnuclear:sps/supercharged_coil", "x": 270, "y": 180 },
+    "facing=south": { "model": "mekanismnuclear:sps/supercharged_coil", "x": 270 },
+    "facing=east": { "model": "mekanismnuclear:sps/supercharged_coil", "x": 270, "y": 270 },
+    "facing=west": { "model": "mekanismnuclear:sps/supercharged_coil", "x": 270, "y": 90 },
+    "inventory": { "model": "mekanismnuclear:sps/supercharged_coil" }
+  }
+}

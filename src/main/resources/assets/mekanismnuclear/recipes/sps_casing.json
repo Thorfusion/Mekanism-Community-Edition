@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["HPH", "PUP", "HPH"],
+  "key": {
+    "H": { "item": "mekanism:polyethene", "data": 2 },
+    "P": { "type": "forge:ore_dict", "ore": "pelletPolonium" },
+    "U": { "type": "forge:ore_dict", "ore": "pelletPlutonium" }
+  },
+  "result": { "item": "mekanismnuclear:sps_casing" }
+}

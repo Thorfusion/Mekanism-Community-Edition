@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:sps/casing" },
+    "inventory": { "model": "mekanismnuclear:sps/casing" }
+  }
+}
