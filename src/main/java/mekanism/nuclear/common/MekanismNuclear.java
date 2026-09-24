@@ -6,6 +6,7 @@ import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.nuclear.common.recipe.NuclearRecipeRegistry;
+import mekanism.nuclear.common.recipe.NuclearLegacyRecipeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -63,6 +64,7 @@ public final class MekanismNuclear implements IModule {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         Mekanism.modulesLoaded.add(this);
+        NuclearLegacyRecipeRegistry.register();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new NuclearGuiHandler());
         proxy.registerTileEntities();
         Mekanism.logger.info("Loaded Mekanism Nuclear module.");

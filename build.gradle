@@ -153,6 +153,11 @@ dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
 
+// Core machine enums reference optional API types during class initialization.
+// Keep them compile-only for shipped artifacts, but present while integration
+// tests exercise the real recipe registries.
+configurations.testRuntimeClasspath.extendsFrom(configurations.compileOnly)
+
 minecraft {
     mcVersion.set(minecraft_version)
     mcpMappingChannel.set(mappings_version.split('_')[0])

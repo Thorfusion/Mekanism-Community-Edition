@@ -40,6 +40,7 @@ import mekanism.ultimate.api.chemical.IChemicalTypeCE;
 import mekanism.ultimate.common.content.chemical.ChemicalStackCE;
 import mekanism.ultimate.common.content.machine.ChemicalToChemicalRecipeProcessorCE;
 import mekanism.ultimate.common.content.machine.RecipeProcessResultCE;
+import mekanism.ultimate.common.integration.mekanism.LongBackedMekGasTank;
 import mekanism.ultimate.common.integration.mekanism.MekGasChemicalType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,9 +65,9 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMachine implements I
     private final ChemicalToChemicalRecipeProcessorCE processor = new ChemicalToChemicalRecipeProcessorCE(
           NuclearRecipeRegistry.CENTRIFUGING, MAX_GAS, MAX_GAS);
 
-    /** Client-side views for the legacy gauge API. */
-    public final GasTank inputTank = new GasTank(MAX_GAS);
-    public final GasTank outputTank = new GasTank(MAX_GAS);
+    /** Bounded legacy views; the processor's long tanks remain authoritative. */
+    public final LongBackedMekGasTank inputTank = new LongBackedMekGasTank(processor.getInputTank(), TileEntityIsotopicCentrifuge::type);
+    public final LongBackedMekGasTank outputTank = new LongBackedMekGasTank(processor.getOutputTank(), TileEntityIsotopicCentrifuge::type);
 
     public final TileComponentConfig configComponent;
     public final TileComponentEjector ejectorComponent;
@@ -223,7 +224,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMachine implements I
     @Nonnull
     @Override
     public GasTankInfo[] getTankInfo() {
-        syncDisplayTanks();
         return new GasTankInfo[]{inputTank, outputTank};
     }
 
@@ -316,7 +316,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMachine implements I
             Gas gas = GasRegistry.getGas(name);
             return gas == null ? null : new MekGasChemicalType(gas, NuclearChemicals.isRadioactive(name));
         });
-        syncDisplayTanks();
     }
 
     @Nonnull
@@ -359,16 +358,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMachine implements I
         long amount = data.readLong();
         Gas gas = name.isEmpty() ? null : GasRegistry.getGas(name);
         tank.setGas(gas == null || amount <= 0 ? null : new GasStack(gas, (int) Math.min(Integer.MAX_VALUE, amount)));
-    }
-
-    private void syncDisplayTanks() {
-        setDisplayTank(inputTank, processor.getInput());
-        setDisplayTank(outputTank, processor.getOutput());
-    }
-
-    private static void setDisplayTank(GasTank tank, @Nullable IChemicalStackCE stack) {
-        Gas gas = toGas(stack);
-        tank.setGas(gas == null || stack == null ? null : new GasStack(gas, (int) Math.min(Integer.MAX_VALUE, stack.getAmount())));
     }
 
     @Nullable
@@ -429,10 +418,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMachine implements I
 
     @Override
     public Object[] getTanks() {
-        // Legacy gauge-droppers only understand mutable int-backed GasTanks.
-        // Returning null disables that unsafe path; containers and pipes use
-        // the authoritative long-backed handlers above.
-        return null;
+        return new Object[]{inputTank, outputTank};
     }
 
     @Override

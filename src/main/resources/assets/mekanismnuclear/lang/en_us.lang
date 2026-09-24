@@ -1,7 +1,14 @@
 tile.IsotopicCentrifuge.name=Isotopic Centrifuge
+gas.hydrofluoric_acid=Hydrofluoric Acid
+gas.uranium_oxide=Uranium Oxide
 gas.uranium_hexafluoride=Uranium Hexafluoride
 gas.fissile_fuel=Fissile Fuel
+gas.sodium=Sodium
+gas.superheated_sodium=Superheated Sodium
 gas.nuclear_waste=Nuclear Waste
+gas.spent_nuclear_waste=Spent Nuclear Waste
 gas.plutonium=Plutonium
+gas.polonium=Polonium
+gas.antimatter=Antimatter
 gui.jei.category.centrifuging=Centrifuging
 tooltip.IsotopicCentrifuge=Separates isotopes in chemical form.
