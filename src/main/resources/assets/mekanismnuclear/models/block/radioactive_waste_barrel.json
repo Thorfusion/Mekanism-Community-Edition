@@ -1,6 +1,35 @@
 {
+  "credit": "Model by CyanideX",
   "parent": "block/cube_all",
   "textures": {
-    "all": "mekanism:blocks/steelcasing"
-  }
+    "particle": "mekanismnuclear:blocks/models/radioactive_waste_barrel",
+    "barrel": "mekanismnuclear:blocks/models/radioactive_waste_barrel"
+  },
+  "elements": [
+    {
+      "name": "barrel_outside",
+      "from": [2, 0, 2],
+      "to": [14, 16, 14],
+      "faces": {
+        "north": {"uv": [1, 0, 7, 8], "texture": "#barrel"},
+        "east": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+        "south": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+        "west": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+        "up": {"uv": [9, 1, 15, 7], "texture": "#barrel", "cullface": "up"},
+        "down": {"uv": [1, 9, 7, 15], "texture": "#barrel", "cullface": "down"}
+      }
+    },
+    {
+      "name": "barrel_inside",
+      "from": [13.02, 16, 13.02],
+      "to": [2.98, 15, 2.98],
+      "faces": {
+        "north": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+        "east": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+        "south": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+        "west": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+        "up": {"uv": [6.5, 9.5, 1.5, 14.5], "texture": "#barrel", "cullface": "up"}
+      }
+    }
+  ]
 }

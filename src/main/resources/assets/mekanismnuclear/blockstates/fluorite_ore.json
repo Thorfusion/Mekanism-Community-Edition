@@ -1,6 +1,6 @@
 {
   "variants": {
-    "normal": { "model": "minecraft:diamond_ore" },
-    "inventory": { "model": "minecraft:diamond_ore" }
+    "normal": { "model": "mekanismnuclear:fluorite_ore" },
+    "inventory": { "model": "mekanismnuclear:fluorite_ore" }
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:item/standard_item",
   "textures": {
-    "layer0": "mekanism:items/sulfurdust"
+    "layer0": "mekanismnuclear:items/yellow_cake_uranium"
   }
 }

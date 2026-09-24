@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:item/standard_item",
   "textures": {
-    "layer0": "minecraft:items/diamond"
+    "layer0": "mekanismnuclear:items/fluorite_gem"
   }
 }

@@ -1,6 +1,6 @@
 {
   "variants": {
-    "normal": { "model": "minecraft:emerald_ore" },
-    "inventory": { "model": "minecraft:emerald_ore" }
+    "normal": { "model": "mekanismnuclear:uranium_ore" },
+    "inventory": { "model": "mekanismnuclear:uranium_ore" }
   }
 }

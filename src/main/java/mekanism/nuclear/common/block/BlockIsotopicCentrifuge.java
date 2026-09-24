@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +43,12 @@ public class BlockIsotopicCentrifuge extends BlockMekanismContainer {
         setDefaultState(blockState.getBaseState()
               .withProperty(BlockStateFacing.facingProperty, EnumFacing.NORTH)
               .withProperty(BlockStateMachine.activeProperty, false));
+    }
+
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Nonnull
