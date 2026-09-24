@@ -120,7 +120,7 @@ public class MekanismConfig
 		public static boolean opaqueUniversalCable = true;
 		public static boolean dynamicTransmitterDistanceCulling = true;
 		public static int dynamicTransmitterRenderDistance = 32;
-		public static int tesrGlobalRenderDistance = 64;
+		public static int tesrGlobalRenderDistance = 48;
 	}
 	
 	public static class machines

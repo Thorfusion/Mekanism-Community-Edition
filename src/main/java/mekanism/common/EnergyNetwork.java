@@ -30,12 +30,13 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 {
 	private static final int UNIVERSAL_CABLE_VISUAL_UPDATE_TICKS = 10;
 	private static final int SHARE_SAVE_INTERVAL_TICKS = 20;
+	private static final int ENERGY_DISTRIBUTION_PASSES = 2;
 	private static final Comparator<AcceptorTarget> ACCEPTOR_DEMAND_COMPARATOR = new Comparator<AcceptorTarget>()
 	{
 		@Override
 		public int compare(AcceptorTarget first, AcceptorTarget second)
 		{
-			return Double.compare(first.demand, second.demand);
+			return Double.compare(first.remainingDemand, second.remainingDemand);
 		}
 	};
 
@@ -215,19 +216,43 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 		Collections.sort(targets, ACCEPTOR_DEMAND_COMPARATOR);
 
 		double remaining = energyToSend;
-		int targetsRemaining = targets.size();
 
-		for(AcceptorTarget target : targets)
+		for(int pass = 0; pass < ENERGY_DISTRIBUTION_PASSES && remaining > 0; pass++)
 		{
-			double offer = Math.min(target.demand, remaining / targetsRemaining);
-			double accepted = target.acceptor.transferEnergyToAcceptor(target.side, offer);
+			int targetsRemaining = 0;
 
-			if(!Double.isNaN(accepted) && accepted > 0)
+			for(AcceptorTarget target : targets)
 			{
-				remaining -= Math.min(offer, accepted);
+				if(target.remainingDemand > 0)
+				{
+					targetsRemaining++;
+				}
 			}
 
-			targetsRemaining--;
+			if(targetsRemaining == 0)
+			{
+				break;
+			}
+
+			for(AcceptorTarget target : targets)
+			{
+				if(target.remainingDemand <= 0)
+				{
+					continue;
+				}
+
+				double offer = Math.min(target.remainingDemand, remaining / targetsRemaining);
+				double accepted = target.acceptor.transferEnergyToAcceptor(target.side, offer);
+
+				if(!Double.isNaN(accepted) && accepted > 0)
+				{
+					double transferred = Math.min(offer, accepted);
+					remaining -= transferred;
+					target.remainingDemand -= transferred;
+				}
+
+				targetsRemaining--;
+			}
 		}
 
 		return energyToSend - remaining;
@@ -294,12 +319,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	public void onUpdate()
 	{
 		super.onUpdate();
-
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			updateClientPower();
-			return;
-		}
 
 		clearJoulesTransmitted();
 
@@ -440,13 +459,13 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	{
 		private final EnergyAcceptorWrapper acceptor;
 		private final ForgeDirection side;
-		private final double demand;
+		private double remainingDemand;
 
 		private AcceptorTarget(EnergyAcceptorWrapper acceptor, ForgeDirection side, double demand)
 		{
 			this.acceptor = acceptor;
 			this.side = side;
-			this.demand = demand;
+			remainingDemand = demand;
 		}
 	}
 }

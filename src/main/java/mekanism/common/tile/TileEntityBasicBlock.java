@@ -194,10 +194,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			}
 		}
 
-		if(nbtTags.hasKey("redstone"))
-		{
-			redstone = nbtTags.getBoolean("redstone");
-		}
+		redstone = nbtTags.getBoolean("redstone");
 
 		for(ITileComponent component : components)
 		{

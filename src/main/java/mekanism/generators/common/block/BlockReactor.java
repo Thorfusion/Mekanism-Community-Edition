@@ -331,11 +331,14 @@ public class BlockReactor extends BlockContainer implements IBlockCTM, IBlockOcc
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		ForgeDirection offset = ForgeDirection.getOrientation(side).getOpposite();
+		int blockX = x + offset.offsetX;
+		int blockY = y + offset.offsetY;
+		int blockZ = z + offset.offsetZ;
 		
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
-			int metadata = obj.getMetadata(world);
+			int metadata = world.getBlockMetadata(blockX, blockY, blockZ);
 			
 			switch(metadata)
 			{
@@ -346,7 +349,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM, IBlockOcc
 					return super.shouldSideBeRendered(world, x, y, z, side);
 			}
 		}
-		else if(isFullOpaqueCube(world, obj.xCoord, obj.yCoord, obj.zCoord))
+		else if(isFullOpaqueCube(world, blockX, blockY, blockZ))
 		{
 			return !BlockOcclusionUtils.isFullOpaqueCube(world, x, y, z);
 		}

@@ -1015,8 +1015,8 @@ public class BlockBasic extends Block implements IBlockCTM, IBlockOcclusion, ICu
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		BasicType type = BasicType.get(this, obj.getMetadata(world));
+		ForgeDirection offset = ForgeDirection.getOrientation(side).getOpposite();
+		BasicType type = BasicType.get(this, world.getBlockMetadata(x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ));
 
 		if(type == BasicType.STRUCTURAL_GLASS)
 		{

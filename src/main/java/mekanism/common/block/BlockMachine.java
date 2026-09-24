@@ -766,8 +766,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		MachineType type = MachineType.get(this, obj.getMetadata(world));
+		ForgeDirection offset = ForgeDirection.getOrientation(side).getOpposite();
+		MachineType type = MachineType.get(this, world.getBlockMetadata(x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ));
 
 		if(type != null && !type.hasModel)
 		{

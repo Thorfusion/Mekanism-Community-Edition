@@ -654,9 +654,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        if (nbtTags.hasKey("isActive")) {
-            clientActive = isActive = nbtTags.getBoolean("isActive");
-        }
+        clientActive = isActive = nbtTags.getBoolean("isActive");
 
         RecipeType oldRecipe = recipeType;
         if (nbtTags.hasKey("recipeType")) {
@@ -672,38 +670,17 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
         }
         updateOutputSlots();
 
-        if (nbtTags.hasKey("recipeTicks")) {
-            recipeTicks = nbtTags.getInteger("recipeTicks");
-        }
-
-        if (nbtTags.hasKey("controlType")) {
-            int savedControl = nbtTags.getInteger("controlType");
-            if (savedControl >= 0 && savedControl < RedstoneControl.values().length) {
-                controlType = RedstoneControl.values()[savedControl];
-            }
-        }
-
-        if (nbtTags.hasKey("sorting")) {
-            sorting = nbtTags.getBoolean("sorting");
-        }
-
-        if (nbtTags.hasKey("infuseStored")) {
-            infuseStored.amount = nbtTags.getInteger("infuseStored");
-        }
-
-        if (nbtTags.hasKey("type")) {
-            infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
-        }
+        recipeTicks = nbtTags.getInteger("recipeTicks");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        sorting = nbtTags.getBoolean("sorting");
+        infuseStored.amount = nbtTags.getInteger("infuseStored");
+        infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 
         for (int i = 0; i < tier.processes; i++) {
-            if (nbtTags.hasKey("progress" + i)) {
-                progress[i] = nbtTags.getInteger("progress" + i);
-            }
+            progress[i] = nbtTags.getInteger("progress" + i);
         }
 
-        if (nbtTags.hasKey("gasTank")) {
-            gasTank.read(nbtTags.getCompoundTag("gasTank"));
-        }
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
     @Override

@@ -93,7 +93,7 @@ public class ClientProxy extends CommonProxy
 		mekce_client.opaqueUniversalCable = Mekanism.configurationce.get("mekce_client", "disableTransparentUniversalCableRender", true, "Universal Cable-only performance mode, enabled by default. Disables the cable energy overlay (LiquidEnergy) and client visual ENERGY network updates for Universal Cables only. Other transmitter types are unaffected unless global transmitter performance mode is enabled.").getBoolean();
 		mekce_client.dynamicTransmitterDistanceCulling = Mekanism.configurationce.get("mekce_client", "enableDynamicTransmitterDistanceCulling", true, "When true, dynamic transmitter contents are only rendered within the configured distance to reduce rendering cost.").getBoolean();
 		mekce_client.dynamicTransmitterRenderDistance = Mekanism.configurationce.get("mekce_client", "dynamicTransmitterRenderDistance", 32, "Maximum block distance for rendering dynamic transmitter contents when distance culling is enabled. Default is 32.", 1, 512).getInt();
-		mekce_client.tesrGlobalRenderDistance = Mekanism.configurationce.get("mekce_client", "tesrGlobalRenderDistance", 64, "Global maximum block distance for Mekanism TESR tile rendering. Lower values reduce render cost; higher values keep tile models visible farther away. Default is 64.", 1, 512).getInt();
+		mekce_client.tesrGlobalRenderDistance = Mekanism.configurationce.get("mekce_client", "tesrGlobalRenderDistance", 48, "Global maximum block distance for Mekanism TESR tile rendering. Lower values reduce render cost; set to 64 for the vanilla tile-render distance. Default is 48.", 1, 512).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{

@@ -55,28 +55,12 @@ public class MekanismRenderer
 	
 	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
 	
-	private static final ThreadLocal<Deque<LightmapState>> lightmapStates = new ThreadLocal<Deque<LightmapState>>()
+	private static final ThreadLocal<RenderStateStack> renderStateStacks = new ThreadLocal<RenderStateStack>()
 	{
 		@Override
-		protected Deque<LightmapState> initialValue()
+		protected RenderStateStack initialValue()
 		{
-			return new ArrayDeque<LightmapState>();
-		}
-	};
-	private static final ThreadLocal<Deque<Boolean>> blendStates = new ThreadLocal<Deque<Boolean>>()
-	{
-		@Override
-		protected Deque<Boolean> initialValue()
-		{
-			return new ArrayDeque<Boolean>();
-		}
-	};
-	private static final ThreadLocal<Deque<Boolean>> cullStates = new ThreadLocal<Deque<Boolean>>()
-	{
-		@Override
-		protected Deque<Boolean> initialValue()
-		{
-			return new ArrayDeque<Boolean>();
+			return new RenderStateStack();
 		}
 	};
 	private static boolean optifineBreak = false;
@@ -500,8 +484,8 @@ public class MekanismRenderer
 			}
 		}
 
-		Deque<LightmapState> states = lightmapStates.get();
-		states.push(new LightmapState(lightmapLastX, lightmapLastY, restoreLightmap));
+		RenderStateStack states = renderStateStacks.get();
+		states.pushLightmap(lightmapLastX, lightmapLastY, restoreLightmap);
 		GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 
 		try {
@@ -514,11 +498,11 @@ public class MekanismRenderer
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
 			}
 		} catch(RuntimeException e) {
-			states.pop();
+			states.popLightmap();
 			GL11.glPopAttrib();
 			throw e;
 		} catch(Error e) {
-			states.pop();
+			states.popLightmap();
 			GL11.glPopAttrib();
 			throw e;
 		}
@@ -526,30 +510,25 @@ public class MekanismRenderer
 
     public static void glowOff() 
     {
-		Deque<LightmapState> states = lightmapStates.get();
+		RenderStateStack states = renderStateStacks.get();
 
-		if(states.isEmpty())
+		if(!states.hasLightmap())
 		{
 			return;
 		}
 
-		LightmapState state = states.pop();
-		if(state.restoreLightmap)
+		int state = states.popLightmap();
+		if(states.restoreLightmap[state])
 		{
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, state.x, state.y);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, states.lightmapX[state], states.lightmapY[state]);
 		}
 
         GL11.glPopAttrib();
-
-		if(states.isEmpty())
-		{
-			lightmapStates.remove();
-		}
     }
     
     public static void blendOn()
     {
-		blendStates.get().push(Boolean.TRUE);
+		renderStateStacks.get().blendDepth++;
 		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -559,20 +538,15 @@ public class MekanismRenderer
     
     public static void blendOff()
     {
-		Deque<Boolean> states = blendStates.get();
+		RenderStateStack states = renderStateStacks.get();
 
-		if(states.isEmpty())
+		if(states.blendDepth == 0)
 		{
 			return;
 		}
 
-		states.pop();
+		states.blendDepth--;
 		GL11.glPopAttrib();
-
-		if(states.isEmpty())
-		{
-			blendStates.remove();
-		}
     }
 
 	/**
@@ -580,7 +554,7 @@ public class MekanismRenderer
 	 */
 	public static void cullFrontFace()
 	{
-		cullStates.get().push(Boolean.TRUE);
+		renderStateStacks.get().cullDepth++;
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_POLYGON_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_FRONT);
@@ -588,33 +562,50 @@ public class MekanismRenderer
 
 	public static void disableCullFace()
 	{
-		Deque<Boolean> states = cullStates.get();
+		RenderStateStack states = renderStateStacks.get();
 
-		if(states.isEmpty())
+		if(states.cullDepth == 0)
 		{
 			return;
 		}
 
-		states.pop();
+		states.cullDepth--;
 		GL11.glPopAttrib();
-
-		if(states.isEmpty())
-		{
-			cullStates.remove();
-		}
 	}
 
-	private static class LightmapState
+	private static class RenderStateStack
 	{
-		private final float x;
-		private final float y;
-		private final boolean restoreLightmap;
+		private float[] lightmapX = new float[4];
+		private float[] lightmapY = new float[4];
+		private boolean[] restoreLightmap = new boolean[4];
+		private int lightmapDepth;
+		private int blendDepth;
+		private int cullDepth;
 
-		private LightmapState(float x, float y, boolean restoreLightmap)
+		private void pushLightmap(float x, float y, boolean restore)
 		{
-			this.x = x;
-			this.y = y;
-			this.restoreLightmap = restoreLightmap;
+			if(lightmapDepth == lightmapX.length)
+			{
+				int newLength = lightmapDepth * 2;
+				lightmapX = Arrays.copyOf(lightmapX, newLength);
+				lightmapY = Arrays.copyOf(lightmapY, newLength);
+				restoreLightmap = Arrays.copyOf(restoreLightmap, newLength);
+			}
+
+			lightmapX[lightmapDepth] = x;
+			lightmapY[lightmapDepth] = y;
+			restoreLightmap[lightmapDepth] = restore;
+			lightmapDepth++;
+		}
+
+		private boolean hasLightmap()
+		{
+			return lightmapDepth > 0;
+		}
+
+		private int popLightmap()
+		{
+			return --lightmapDepth;
 		}
 	}
     
