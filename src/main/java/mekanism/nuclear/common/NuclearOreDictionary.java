@@ -13,6 +13,9 @@ public final class NuclearOreDictionary {
     public static final String GEM_FLUORITE = "gemFluorite";
     public static final String DUST_FLUORITE = "dustFluorite";
     public static final String ORE_FLUORITE = "oreFluorite";
+    public static final String PELLET_PLUTONIUM = "pelletPlutonium";
+    public static final String PELLET_POLONIUM = "pelletPolonium";
+    public static final String PELLET_ANTIMATTER = "pelletAntimatter";
 
     private NuclearOreDictionary() {
     }
@@ -22,6 +25,9 @@ public final class NuclearOreDictionary {
         registerIfAbsent(DUST_URANIUM, new ItemStack(NuclearItems.UraniumDust));
         registerIfAbsent(GEM_FLUORITE, new ItemStack(NuclearItems.FluoriteGem));
         registerIfAbsent(DUST_FLUORITE, new ItemStack(NuclearItems.FluoriteDust));
+        registerIfAbsent(PELLET_PLUTONIUM, new ItemStack(NuclearItems.PlutoniumPellet));
+        registerIfAbsent(PELLET_POLONIUM, new ItemStack(NuclearItems.PoloniumPellet));
+        registerIfAbsent(PELLET_ANTIMATTER, new ItemStack(NuclearItems.AntimatterPellet));
     }
 
     public static synchronized void registerOreBlocks(Item uraniumOre, Item fluoriteOre) {

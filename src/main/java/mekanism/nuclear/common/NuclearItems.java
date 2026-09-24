@@ -21,9 +21,18 @@ public final class NuclearItems {
           new ItemNuclearMaterial("dust_fluorite", "FluoriteDust", 0xE4DFF2);
     public static final ItemNuclearMaterial YellowCakeUranium =
           new ItemNuclearMaterial("yellow_cake_uranium", "YellowCakeUranium", 0xE1F573, EnumRarity.UNCOMMON);
+    public static final ItemNuclearMaterial PlutoniumPellet =
+          new ItemNuclearMaterial("pellet_plutonium", "PlutoniumPellet", 0xAAAAAA);
+    public static final ItemNuclearMaterial PoloniumPellet =
+          new ItemNuclearMaterial("pellet_polonium", "PoloniumPellet", 0x5555FF);
+    public static final ItemNuclearMaterial AntimatterPellet =
+          new ItemNuclearMaterial("pellet_antimatter", "AntimatterPellet", 0xAA00AA);
+    public static final ItemNuclearMaterial ReprocessedFissileFragment =
+          new ItemNuclearMaterial("reprocessed_fissile_fragment", "ReprocessedFissileFragment", 0x8AA34A, EnumRarity.RARE);
 
     private static final List<ItemNuclearMaterial> ITEMS = Collections.unmodifiableList(Arrays.asList(
-          UraniumIngot, UraniumDust, FluoriteGem, FluoriteDust, YellowCakeUranium));
+          UraniumIngot, UraniumDust, FluoriteGem, FluoriteDust, YellowCakeUranium,
+          PlutoniumPellet, PoloniumPellet, AntimatterPellet, ReprocessedFissileFragment));
 
     private NuclearItems() {
     }
