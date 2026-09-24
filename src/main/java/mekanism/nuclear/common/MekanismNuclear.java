@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.nuclear.common.config.NuclearFissionConfig;
 import mekanism.nuclear.common.config.NuclearWorldGenConfig;
 import mekanism.nuclear.common.config.NuclearRadiationConfig;
 import mekanism.nuclear.common.content.fission.FissionReactorFormationManager;
@@ -73,6 +74,7 @@ public final class MekanismNuclear implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         RadiationCapabilities.register();
         proxy.registerPackets();
+        NuclearFissionConfig.load(event.getSuggestedConfigurationFile());
         NuclearWorldGenConfig.load(event.getSuggestedConfigurationFile());
         NuclearRadiationConfig.load(event.getSuggestedConfigurationFile());
         NuclearChemicals.register();

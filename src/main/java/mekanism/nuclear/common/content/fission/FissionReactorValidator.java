@@ -126,9 +126,11 @@ public final class FissionReactorValidator {
         }
         List<BlockPos> sortedPorts = new ArrayList<>(ports);
         sortedPorts.sort(POSITION_ORDER);
+        int volume = width * height * length;
+        int interiorVolume = (width - 2) * (height - 2) * (length - 2);
         return Result.success(new BlockPos(bounds.minX, bounds.minY, bounds.minZ),
               new BlockPos(bounds.maxX, bounds.maxY, bounds.maxZ), width, height, length,
-              width * height * length, fuelPositions.size(), controlRods, surfaceArea, sortedPorts);
+              volume, volume - interiorVolume, fuelPositions.size(), controlRods, surfaceArea, sortedPorts);
     }
 
     private static boolean validDimension(int dimension) {
@@ -227,6 +229,7 @@ public final class FissionReactorValidator {
         private final int height;
         private final int length;
         private final int volume;
+        private final int exteriorBlocks;
         private final int fuelAssemblies;
         private final int controlRods;
         private final int surfaceArea;
@@ -234,7 +237,8 @@ public final class FissionReactorValidator {
 
         private Result(boolean formed, Failure failure, @Nullable BlockPos failurePos,
               @Nullable BlockPos min, @Nullable BlockPos max, int width, int height, int length,
-              int volume, int fuelAssemblies, int controlRods, int surfaceArea, List<BlockPos> ports) {
+              int volume, int exteriorBlocks, int fuelAssemblies, int controlRods, int surfaceArea,
+              List<BlockPos> ports) {
             this.formed = formed;
             this.failure = failure;
             this.failurePos = failurePos;
@@ -244,6 +248,7 @@ public final class FissionReactorValidator {
             this.height = height;
             this.length = length;
             this.volume = volume;
+            this.exteriorBlocks = exteriorBlocks;
             this.fuelAssemblies = fuelAssemblies;
             this.controlRods = controlRods;
             this.surfaceArea = surfaceArea;
@@ -251,14 +256,15 @@ public final class FissionReactorValidator {
         }
 
         private static Result failure(Failure failure, @Nullable BlockPos pos) {
-            return new Result(false, failure, pos, null, null, 0, 0, 0, 0, 0, 0, 0,
+            return new Result(false, failure, pos, null, null, 0, 0, 0, 0, 0, 0, 0, 0,
                   Collections.emptyList());
         }
 
         private static Result success(BlockPos min, BlockPos max, int width, int height, int length,
-              int volume, int fuelAssemblies, int controlRods, int surfaceArea, List<BlockPos> ports) {
+              int volume, int exteriorBlocks, int fuelAssemblies, int controlRods, int surfaceArea,
+              List<BlockPos> ports) {
             return new Result(true, Failure.NONE, null, min, max, width, height, length, volume,
-                  fuelAssemblies, controlRods, surfaceArea, Collections.unmodifiableList(ports));
+                  exteriorBlocks, fuelAssemblies, controlRods, surfaceArea, Collections.unmodifiableList(ports));
         }
 
         public boolean isFormed() {
@@ -298,6 +304,10 @@ public final class FissionReactorValidator {
 
         public int getVolume() {
             return volume;
+        }
+
+        public int getExteriorBlocks() {
+            return exteriorBlocks;
         }
 
         public int getFuelAssemblies() {

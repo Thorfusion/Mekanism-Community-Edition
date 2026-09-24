@@ -1,6 +1,8 @@
 {
   "variants": {
-    "normal": { "model": "mekanismnuclear:fission/port_input" },
+    "mode=input": { "model": "mekanismnuclear:fission/port_input" },
+    "mode=output_waste": { "model": "mekanismnuclear:fission/port_output_waste" },
+    "mode=output_coolant": { "model": "mekanismnuclear:fission/port_output_coolant" },
     "inventory": { "model": "mekanismnuclear:fission/port_input" }
   }
 }

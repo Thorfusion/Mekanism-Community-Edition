@@ -4,11 +4,15 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.nuclear.common.NuclearBlocks;
+import mekanism.nuclear.common.content.fission.FissionPortMode;
+import mekanism.nuclear.common.content.fission.FissionReactorState;
 import mekanism.nuclear.common.content.fission.FissionReactorValidator;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,8 +27,11 @@ import net.minecraft.world.World;
 /** Formation entry point and persisted controller node for a fission reactor. */
 public class BlockFissionReactorPort extends BlockMekanismContainer {
 
+    public static final PropertyEnum<FissionPortMode> MODE = PropertyEnum.create("mode", FissionPortMode.class);
+
     public BlockFissionReactorPort() {
         super(Material.IRON);
+        setDefaultState(blockState.getBaseState().withProperty(MODE, FissionPortMode.INPUT));
         setHardness(3.5F);
         setResistance(16F);
         setSoundType(SoundType.METAL);
@@ -42,7 +49,23 @@ public class BlockFissionReactorPort extends BlockMekanismContainer {
         if (!(tile instanceof TileEntityFissionReactorPort)) {
             return false;
         }
-        FissionReactorValidator.Result result = ((TileEntityFissionReactorPort) tile).validateStructure();
+        TileEntityFissionReactorPort port = (TileEntityFissionReactorPort) tile;
+        if (player.isSneaking()) {
+            FissionPortMode mode = port.cycleMode();
+            player.sendMessage(new TextComponentTranslation("fission.mekanismnuclear.port_mode",
+                  new TextComponentTranslation("fission.mekanismnuclear.port_mode." + mode.getName())));
+            return true;
+        }
+        TileEntityFissionReactorPort controller = port.getControllerTile();
+        if (controller != null && controller.getReactorState().isFormed()) {
+            FissionReactorState reactor = controller.getReactorState();
+            reactor.setActive(!reactor.isActive());
+            controller.stateChanged();
+            player.sendMessage(new TextComponentTranslation(reactor.isActive()
+                  ? "fission.mekanismnuclear.activated" : "fission.mekanismnuclear.deactivated"));
+            return true;
+        }
+        FissionReactorValidator.Result result = port.validateStructure();
         if (result.isFormed()) {
             player.sendMessage(new TextComponentTranslation("fission.mekanismnuclear.formed",
                   result.getWidth(), result.getHeight(), result.getLength(), result.getFuelAssemblies()));
@@ -54,6 +77,51 @@ public class BlockFissionReactorPort extends BlockMekanismContainer {
                   "(" + failure.getX() + ", " + failure.getY() + ", " + failure.getZ() + ")"));
         }
         return true;
+    }
+
+    @Override
+    @Deprecated
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        return tile instanceof TileEntityFissionReactorPort
+              ? state.withProperty(MODE, ((TileEntityFissionReactorPort) tile).getMode()) : state;
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, MODE);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntityFissionReactorPort) {
+            TileEntityFissionReactorPort controller = ((TileEntityFissionReactorPort) tile).getControllerTile();
+            if (controller != null) {
+                FissionReactorState reactor = controller.getReactorState();
+                long capacity = reactor.getFuelCapacity();
+                if (capacity > 0 && reactor.getFissileFuel() > 0) {
+                    return 1 + (int) Math.floor(14D * reactor.getFissileFuel() / capacity);
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
