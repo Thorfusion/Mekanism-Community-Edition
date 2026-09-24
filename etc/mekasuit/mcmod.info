@@ -1,0 +1,22 @@
+[
+  {
+    "modid": "mekanismmekasuit",
+    "name": "Mekanism Community Edition: MekaSuit (Beta)",
+    "description": "Beta modular equipment expansion for Mekanism Community Edition, including the Meka-Tool, MekaSuit, Modification Station, and installable units.",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "maggi373"
+    ],
+    "credits": "",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]",
+      "mekanismultimate@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]",
+      "mekanismultimate@[${version}]"
+    ]
+  }
+]

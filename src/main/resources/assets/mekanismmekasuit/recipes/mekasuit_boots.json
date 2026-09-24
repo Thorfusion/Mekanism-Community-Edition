@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": { "item": "mekanismmekasuit:mekasuit_boots" },
+  "pattern": ["HUH", "HDH", "AIA"],
+  "key": {
+    "U": { "item": "mekanism:controlcircuit", "data": 3 },
+    "H": { "item": "mekanism:polyethene", "data": 2 },
+    "D": { "item": "minecraft:diamond_boots" },
+    "A": { "item": "mekanism:atomicalloy" },
+    "I": { "type": "mekanism:item_nbt", "item": "mekanism:basicblock2", "data": 3, "nbt": { "tier": 0 } }
+  }
+}

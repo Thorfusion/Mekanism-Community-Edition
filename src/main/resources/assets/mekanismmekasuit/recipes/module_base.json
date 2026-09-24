@@ -1,0 +1,26 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_base",
+    "count": 2
+  },
+  "pattern": [
+    "NIN",
+    "IHI",
+    "NIN"
+  ],
+  "key": {
+    "N": {
+      "type": "forge:ore_dict",
+      "ore": "nuggetBronze"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotTin"
+    },
+    "H": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    }
+  }
+}

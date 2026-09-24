@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mekanismmekasuit:items/module_energy_unit"
+  }
+}

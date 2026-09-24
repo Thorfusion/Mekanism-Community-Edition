@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_energy_unit"
+  },
+  "pattern": [
+    "ACA",
+    "ABA",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:reinforcedalloy"
+    },
+    "C": {
+      "type": "mekanism:item_nbt",
+      "item": "mekanism:basicblock2",
+      "data": 3,
+      "nbt": {
+        "tier": 0
+      }
+    },
+    "B": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "H": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    }
+  }
+}
