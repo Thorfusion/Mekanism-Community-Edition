@@ -1,4 +1,5 @@
 tile.IsotopicCentrifuge.name=Isotopic Centrifuge
+tile.AntiprotonicNucleosynthesizer.name=Antiprotonic Nucleosynthesizer
 tile.RadioactiveWasteBarrel.name=Radioactive Waste Barrel
 tile.UraniumOre.name=Uranium Ore
 tile.FluoriteOre.name=Fluorite Ore
@@ -37,7 +38,10 @@ gas.plutonium=Plutonium
 gas.polonium=Polonium
 gas.antimatter=Antimatter
 gui.jei.category.centrifuging=Centrifuging
+gui.jei.category.nucleosynthesizing=Nucleosynthesizing
+gui.AntiprotonicNucleosynthesizer.short=Nucleosynthesizer
 tooltip.IsotopicCentrifuge=Separates isotopes in chemical form.
+tooltip.AntiprotonicNucleosynthesizer=Uses Antimatter and immense amounts of energy to atomically transmute resources.
 tooltip.RadioactiveWasteBarrel.stored=Stored %1$s: %2$s / %3$s mB
 death.attack.mekanismnuclear.radiation=%1$s succumbed to radiation poisoning
 tooltip.GeigerCounter=Measures the environmental radiation rate at your position.

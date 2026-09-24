@@ -1,6 +1,7 @@
 package mekanism.nuclear.client;
 
 import mekanism.nuclear.client.gui.GuiIsotopicCentrifuge;
+import mekanism.nuclear.client.gui.GuiAntiprotonicNucleosynthesizer;
 import mekanism.nuclear.client.gui.GuiFissionReactor;
 import mekanism.nuclear.client.gui.GuiSPS;
 import mekanism.nuclear.client.radiation.ClientRadiationData;
@@ -10,6 +11,7 @@ import mekanism.nuclear.common.NuclearBlocks;
 import mekanism.nuclear.common.NuclearCommonProxy;
 import mekanism.nuclear.common.NuclearItems;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
+import mekanism.nuclear.common.tile.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import mekanism.nuclear.common.tile.TileEntitySPSPort;
 import net.minecraft.client.gui.GuiScreen;
@@ -32,6 +34,7 @@ public class NuclearClientProxy extends NuclearCommonProxy {
     public void registerBlockRenders() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(NuclearBlocks.IsotopicCentrifuge), 0,
               new ModelResourceLocation(new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge"), "inventory"));
+        registerBlockItem(NuclearBlocks.AntiprotonicNucleosynthesizer);
         registerBlockItem(NuclearBlocks.RadioactiveWasteBarrel);
         registerBlockItem(NuclearBlocks.UraniumOre);
         registerBlockItem(NuclearBlocks.FluoriteOre);
@@ -81,6 +84,9 @@ public class NuclearClientProxy extends NuclearCommonProxy {
               : id == 1 && tile instanceof TileEntityFissionReactorPort
                     ? new GuiFissionReactor(player, (TileEntityFissionReactorPort) tile)
                     : id == 2 && tile instanceof TileEntitySPSPort
-                          ? new GuiSPS(player, (TileEntitySPSPort) tile) : null;
+                          ? new GuiSPS(player, (TileEntitySPSPort) tile)
+                          : id == 3 && tile instanceof TileEntityAntiprotonicNucleosynthesizer
+                                ? new GuiAntiprotonicNucleosynthesizer(player.inventory,
+                                      (TileEntityAntiprotonicNucleosynthesizer) tile) : null;
     }
 }

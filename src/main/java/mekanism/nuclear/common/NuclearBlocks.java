@@ -1,6 +1,7 @@
 package mekanism.nuclear.common;
 
 import mekanism.nuclear.common.block.BlockIsotopicCentrifuge;
+import mekanism.nuclear.common.block.BlockAntiprotonicNucleosynthesizer;
 import mekanism.nuclear.common.block.BlockFissionReactorComponent;
 import mekanism.nuclear.common.block.BlockFissionReactorLogicAdapter;
 import mekanism.nuclear.common.block.BlockFissionReactorPort;
@@ -21,6 +22,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public final class NuclearBlocks {
 
     public static final Block IsotopicCentrifuge = new BlockIsotopicCentrifuge();
+    public static final Block AntiprotonicNucleosynthesizer = new BlockAntiprotonicNucleosynthesizer();
     public static final Block RadioactiveWasteBarrel = new BlockRadioactiveWasteBarrel();
     public static final BlockNuclearOre UraniumOre = new BlockNuclearOre(NuclearOreType.URANIUM);
     public static final BlockNuclearOre FluoriteOre = new BlockNuclearOre(NuclearOreType.FLUORITE);
@@ -39,6 +41,8 @@ public final class NuclearBlocks {
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         registry.register(IsotopicCentrifuge.setTranslationKey("IsotopicCentrifuge")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge")));
+        registry.register(AntiprotonicNucleosynthesizer.setTranslationKey("AntiprotonicNucleosynthesizer")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "antiprotonic_nucleosynthesizer")));
         registry.register(RadioactiveWasteBarrel.setTranslationKey("RadioactiveWasteBarrel")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "radioactive_waste_barrel")));
         registry.register(UraniumOre.setTranslationKey("UraniumOre")
@@ -65,6 +69,8 @@ public final class NuclearBlocks {
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         registry.register(new ItemBlock(IsotopicCentrifuge).setRegistryName(IsotopicCentrifuge.getRegistryName()));
+        registry.register(new ItemBlock(AntiprotonicNucleosynthesizer)
+              .setRegistryName(AntiprotonicNucleosynthesizer.getRegistryName()));
         registry.register(new ItemBlock(RadioactiveWasteBarrel).setRegistryName(RadioactiveWasteBarrel.getRegistryName()));
         ItemBlock uraniumOre = new ItemBlock(UraniumOre);
         uraniumOre.setRegistryName(UraniumOre.getRegistryName());

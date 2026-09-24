@@ -1,0 +1,26 @@
+{
+  "credit": "Stable Mekanism textures adapted for the Forge 1.12 model format",
+  "parent": "block/block",
+  "textures": {
+    "front": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_front",
+    "back": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_back",
+    "side": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_side",
+    "top": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_top",
+    "bottom": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_bottom",
+    "particle": "mekanismnuclear:blocks/models/antiprotonic_nucleosynthesizer_front"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {"texture": "#bottom", "cullface": "down"},
+        "up": {"texture": "#top", "cullface": "up"},
+        "north": {"texture": "#front", "cullface": "north"},
+        "south": {"texture": "#back", "cullface": "south"},
+        "west": {"texture": "#side", "cullface": "west"},
+        "east": {"texture": "#side", "cullface": "east"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["#C#", "AXA", "#C#"],
+  "key": {
+    "#": {"type": "forge:ore_dict", "ore": "alloyUltimate"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitUltimate"},
+    "A": {"type": "forge:ore_dict", "ore": "pelletAntimatter"},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismnuclear:antiprotonic_nucleosynthesizer"}
+}

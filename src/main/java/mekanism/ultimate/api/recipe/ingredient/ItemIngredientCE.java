@@ -1,6 +1,7 @@
 package mekanism.ultimate.api.recipe.ingredient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -45,6 +46,22 @@ public abstract class ItemIngredientCE {
             throw new IllegalArgumentException("Ore Dictionary name cannot be blank");
         }
         return new Ore(oreName, amount, nbtSensitive);
+    }
+
+    /**
+     * Creates one ingredient that accepts any of the supplied item identities.
+     * This is the 1.12 equivalent of a modern item tag when no matching Ore
+     * Dictionary entry is guaranteed to exist.
+     */
+    public static ItemIngredientCE anyOf(ItemStack... templates) {
+        return anyOf(1, false, templates);
+    }
+
+    public static ItemIngredientCE anyOf(int amount, boolean nbtSensitive, ItemStack... templates) {
+        if (templates == null || templates.length == 0) {
+            throw new IllegalArgumentException("Item ingredient alternatives cannot be empty");
+        }
+        return new Alternatives(amount, nbtSensitive, Arrays.asList(templates));
     }
 
     public final int getAmount() {
@@ -152,6 +169,53 @@ public abstract class ItemIngredientCE {
                     copy.setCount(getAmount());
                     copies.add(copy);
                 }
+            }
+            return Collections.unmodifiableList(copies);
+        }
+    }
+
+    private static final class Alternatives extends ItemIngredientCE {
+
+        private final List<ItemStack> templates;
+        private final Collection<Item> indexedItems;
+
+        private Alternatives(int amount, boolean nbtSensitive, Collection<ItemStack> templates) {
+            super(amount, nbtSensitive);
+            List<ItemStack> copies = new ArrayList<>();
+            Set<Item> items = newIdentitySet();
+            for (ItemStack template : templates) {
+                if (template == null || template.isEmpty()) {
+                    throw new IllegalArgumentException("Item ingredient alternative cannot be empty");
+                }
+                ItemStack copy = template.copy();
+                copy.setCount(amount);
+                copies.add(copy);
+                items.add(copy.getItem());
+            }
+            this.templates = Collections.unmodifiableList(copies);
+            this.indexedItems = Collections.unmodifiableSet(items);
+        }
+
+        @Override
+        public boolean testType(ItemStack stack) {
+            for (ItemStack template : templates) {
+                if (matchesTemplate(template, stack)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public Collection<Item> getIndexedItems() {
+            return indexedItems;
+        }
+
+        @Override
+        public List<ItemStack> getRepresentations() {
+            List<ItemStack> copies = new ArrayList<>(templates.size());
+            for (ItemStack template : templates) {
+                copies.add(template.copy());
             }
             return Collections.unmodifiableList(copies);
         }

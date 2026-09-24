@@ -2,11 +2,13 @@ package mekanism.nuclear.common;
 
 import mekanism.common.base.IGuiProvider;
 import mekanism.nuclear.common.inventory.ContainerIsotopicCentrifuge;
+import mekanism.nuclear.common.inventory.ContainerAntiprotonicNucleosynthesizer;
 import mekanism.nuclear.common.inventory.ContainerFissionReactor;
 import mekanism.nuclear.common.inventory.ContainerSPS;
 import mekanism.nuclear.common.network.PacketFissionReactorControl;
 import mekanism.nuclear.common.network.PacketRadiationData;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
+import mekanism.nuclear.common.tile.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.nuclear.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import mekanism.nuclear.common.tile.TileEntityFissionReactorLogicAdapter;
@@ -41,6 +43,8 @@ public class NuclearCommonProxy implements IGuiProvider {
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileEntityIsotopicCentrifuge.class,
               new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge"));
+        GameRegistry.registerTileEntity(TileEntityAntiprotonicNucleosynthesizer.class,
+              new ResourceLocation(MekanismNuclear.MODID, "antiprotonic_nucleosynthesizer"));
         GameRegistry.registerTileEntity(TileEntityRadioactiveWasteBarrel.class,
               new ResourceLocation(MekanismNuclear.MODID, "radioactive_waste_barrel"));
         GameRegistry.registerTileEntity(TileEntityFissionReactorPort.class,
@@ -64,6 +68,9 @@ public class NuclearCommonProxy implements IGuiProvider {
               : id == 1 && tile instanceof TileEntityFissionReactorPort
                     ? new ContainerFissionReactor(player, (TileEntityFissionReactorPort) tile)
                     : id == 2 && tile instanceof TileEntitySPSPort
-                          ? new ContainerSPS(player, (TileEntitySPSPort) tile) : null;
+                          ? new ContainerSPS(player, (TileEntitySPSPort) tile)
+                          : id == 3 && tile instanceof TileEntityAntiprotonicNucleosynthesizer
+                                ? new ContainerAntiprotonicNucleosynthesizer(player.inventory,
+                                      (TileEntityAntiprotonicNucleosynthesizer) tile) : null;
     }
 }
