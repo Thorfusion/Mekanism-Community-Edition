@@ -6,5 +6,5 @@
     "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
     "G": { "type": "forge:ore_dict", "ore": "blockGlass" }
   },
-  "result": { "item": "mekanismnuclear:reactor_glass", "count": 4 }
+  "result": { "item": "mekanismgenerators:reactorglass", "data": 0, "count": 4 }
 }

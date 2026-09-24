@@ -1,6 +1,7 @@
 package mekanism.nuclear.client;
 
 import mekanism.nuclear.client.gui.GuiIsotopicCentrifuge;
+import mekanism.nuclear.client.gui.GuiFissionReactor;
 import mekanism.nuclear.client.radiation.ClientRadiationData;
 import mekanism.nuclear.client.radiation.RadiationHudOverlay;
 import mekanism.nuclear.common.MekanismNuclear;
@@ -8,6 +9,7 @@ import mekanism.nuclear.common.NuclearBlocks;
 import mekanism.nuclear.common.NuclearCommonProxy;
 import mekanism.nuclear.common.NuclearItems;
 import mekanism.nuclear.common.tile.TileEntityIsotopicCentrifuge;
+import mekanism.nuclear.common.tile.TileEntityFissionReactorPort;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +34,6 @@ public class NuclearClientProxy extends NuclearCommonProxy {
         registerBlockItem(NuclearBlocks.UraniumOre);
         registerBlockItem(NuclearBlocks.FluoriteOre);
         registerBlockItem(NuclearBlocks.FissionReactorCasing);
-        registerBlockItem(NuclearBlocks.ReactorGlass);
         registerBlockItem(NuclearBlocks.FissionReactorPort);
         registerBlockItem(NuclearBlocks.FissionReactorLogicAdapter);
         registerBlockItem(NuclearBlocks.FissionFuelAssembly);
@@ -71,6 +72,8 @@ public class NuclearClientProxy extends NuclearCommonProxy {
     public GuiScreen getClientGui(int id, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return id == 0 && tile instanceof TileEntityIsotopicCentrifuge
-              ? new GuiIsotopicCentrifuge(player.inventory, (TileEntityIsotopicCentrifuge) tile) : null;
+              ? new GuiIsotopicCentrifuge(player.inventory, (TileEntityIsotopicCentrifuge) tile)
+              : id == 1 && tile instanceof TileEntityFissionReactorPort
+                    ? new GuiFissionReactor(player, (TileEntityFissionReactorPort) tile) : null;
     }
 }

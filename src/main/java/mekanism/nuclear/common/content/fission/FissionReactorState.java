@@ -23,6 +23,7 @@ public final class FissionReactorState {
     private int controlRods;
     private int surfaceArea;
     private List<BlockPos> ports = Collections.emptyList();
+    private List<BlockPos> logicAdapters = Collections.emptyList();
 
     private long fissileFuel;
     private long coolant;
@@ -56,6 +57,7 @@ public final class FissionReactorState {
         controlRods = result.getControlRods();
         surfaceArea = result.getSurfaceArea();
         ports = Collections.unmodifiableList(new ArrayList<>(result.getPorts()));
+        logicAdapters = Collections.unmodifiableList(new ArrayList<>(result.getLogicAdapters()));
         clampContents();
         setBurnRate(burnRate <= 0 ? NuclearFissionConfig.getDefaultBurnRate() : burnRate);
         if (initializeHeat) {
@@ -165,6 +167,28 @@ public final class FissionReactorState {
 
     public List<BlockPos> getPorts() {
         return ports;
+    }
+
+    public List<BlockPos> getLogicAdapters() {
+        return logicAdapters;
+    }
+
+    public int getWidth() {
+        return hasBounds() ? max.getX() - min.getX() + 1 : 0;
+    }
+
+    public int getHeight() {
+        return hasBounds() ? max.getY() - min.getY() + 1 : 0;
+    }
+
+    public int getLength() {
+        return hasBounds() ? max.getZ() - min.getZ() + 1 : 0;
+    }
+
+    public boolean isPositionOutsideBounds(BlockPos position) {
+        return !hasBounds() || position.getX() < min.getX() || position.getX() > max.getX()
+              || position.getY() < min.getY() || position.getY() > max.getY()
+              || position.getZ() < min.getZ() || position.getZ() > max.getZ();
     }
 
     public long getFuelCapacity() {
@@ -456,6 +480,11 @@ public final class FissionReactorState {
             portList.appendTag(writePos(port));
         }
         tag.setTag("Ports", portList);
+        NBTTagList logicList = new NBTTagList();
+        for (BlockPos adapter : logicAdapters) {
+            logicList.appendTag(writePos(adapter));
+        }
+        tag.setTag("LogicAdapters", logicList);
         tag.setLong("FissileFuel", fissileFuel);
         tag.setLong("Coolant", coolant);
         tag.setLong("HeatedCoolant", heatedCoolant);
@@ -498,6 +527,12 @@ public final class FissionReactorState {
             loadedPorts.add(readPos(portList.getCompoundTagAt(i)));
         }
         ports = Collections.unmodifiableList(loadedPorts);
+        NBTTagList logicList = tag.getTagList("LogicAdapters", 10);
+        List<BlockPos> loadedLogicAdapters = new ArrayList<>(logicList.tagCount());
+        for (int i = 0; i < logicList.tagCount(); i++) {
+            loadedLogicAdapters.add(readPos(logicList.getCompoundTagAt(i)));
+        }
+        logicAdapters = Collections.unmodifiableList(loadedLogicAdapters);
         fissileFuel = nonNegative(tag.getLong("FissileFuel"));
         coolant = nonNegative(tag.getLong("Coolant"));
         heatedCoolant = nonNegative(tag.getLong("HeatedCoolant"));

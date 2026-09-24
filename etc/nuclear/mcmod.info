@@ -12,11 +12,13 @@
     "useDependencyInformation": true,
     "dependencies": [
       "mekanism@[${version}]",
-      "mekanismultimate@[${version}]"
+      "mekanismultimate@[${version}]",
+      "mekanismgenerators@[${version}]"
     ],
     "requiredMods": [
       "mekanism@[${version}]",
-      "mekanismultimate@[${version}]"
+      "mekanismultimate@[${version}]",
+      "mekanismgenerators@[${version}]"
     ]
   }
 ]

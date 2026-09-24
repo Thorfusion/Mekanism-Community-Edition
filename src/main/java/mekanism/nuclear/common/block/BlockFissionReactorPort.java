@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.nuclear.common.NuclearBlocks;
+import mekanism.nuclear.common.MekanismNuclear;
 import mekanism.nuclear.common.content.fission.FissionPortMode;
 import mekanism.nuclear.common.content.fission.FissionReactorState;
 import mekanism.nuclear.common.content.fission.FissionReactorValidator;
@@ -58,17 +59,14 @@ public class BlockFissionReactorPort extends BlockMekanismContainer {
         }
         TileEntityFissionReactorPort controller = port.getControllerTile();
         if (controller != null && controller.getReactorState().isFormed()) {
-            FissionReactorState reactor = controller.getReactorState();
-            reactor.setActive(!reactor.isActive());
-            controller.stateChanged();
-            player.sendMessage(new TextComponentTranslation(reactor.isActive()
-                  ? "fission.mekanismnuclear.activated" : "fission.mekanismnuclear.deactivated"));
+            player.openGui(MekanismNuclear.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
         FissionReactorValidator.Result result = port.validateStructure();
         if (result.isFormed()) {
             player.sendMessage(new TextComponentTranslation("fission.mekanismnuclear.formed",
                   result.getWidth(), result.getHeight(), result.getLength(), result.getFuelAssemblies()));
+            player.openGui(MekanismNuclear.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
         } else if (result.getFailurePos() == null) {
             player.sendMessage(new TextComponentTranslation(result.getFailure().getTranslationKey()));
         } else {

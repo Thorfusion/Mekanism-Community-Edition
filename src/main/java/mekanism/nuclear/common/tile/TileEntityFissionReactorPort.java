@@ -23,6 +23,7 @@ import mekanism.nuclear.common.content.fission.FissionPortMode;
 import mekanism.nuclear.common.content.fission.FissionReactorFormationManager;
 import mekanism.nuclear.common.content.fission.FissionReactorSimulation;
 import mekanism.nuclear.common.content.fission.FissionReactorState;
+import mekanism.nuclear.common.content.fission.FissionReactorStatus;
 import mekanism.nuclear.common.content.fission.FissionReactorValidator;
 import mekanism.nuclear.common.radiation.RadiationManager;
 import net.minecraft.block.state.IBlockState;
@@ -48,6 +49,7 @@ public class TileEntityFissionReactorPort extends TileEntityBasicBlock implement
     private final FissionReactorState reactorState = new FissionReactorState();
     private BlockPos controllerPos;
     private FissionPortMode mode = FissionPortMode.INPUT;
+    private FissionReactorStatus clientStatus = FissionReactorStatus.EMPTY;
     private boolean validationQueued;
 
     @Override
@@ -160,6 +162,12 @@ public class TileEntityFissionReactorPort extends TileEntityBasicBlock implement
                 port.stateChanged();
             }
         }
+        for (BlockPos adapterPos : result.getLogicAdapters()) {
+            TileEntity tile = world.getTileEntity(adapterPos);
+            if (tile instanceof TileEntityFissionReactorLogicAdapter) {
+                ((TileEntityFissionReactorLogicAdapter) tile).applyController(controller);
+            }
+        }
         return result;
     }
 
@@ -254,6 +262,13 @@ public class TileEntityFissionReactorPort extends TileEntityBasicBlock implement
 
     public FissionPortMode getMode() {
         return mode;
+    }
+
+    public FissionReactorStatus getStatus() {
+        if (world != null && world.isRemote) {
+            return clientStatus;
+        }
+        return FissionReactorStatus.from(getControllerState());
     }
 
     public FissionPortMode cycleMode() {
@@ -492,6 +507,7 @@ public class TileEntityFissionReactorPort extends TileEntityBasicBlock implement
             if (oldMode != mode) {
                 MekanismUtils.updateBlock(world, pos);
             }
+            clientStatus = FissionReactorStatus.read(data);
         }
     }
 
@@ -499,6 +515,7 @@ public class TileEntityFissionReactorPort extends TileEntityBasicBlock implement
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(mode.ordinal());
+        FissionReactorStatus.from(getControllerState()).write(data);
         return data;
     }
 

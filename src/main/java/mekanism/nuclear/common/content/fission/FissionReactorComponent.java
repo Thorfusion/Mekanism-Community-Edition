@@ -1,5 +1,7 @@
 package mekanism.nuclear.common.content.fission;
 
+import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.nuclear.common.NuclearBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -27,7 +29,8 @@ public enum FissionReactorComponent {
         Block block = state.getBlock();
         if (block == NuclearBlocks.FissionReactorCasing) {
             return CASING;
-        } else if (block == NuclearBlocks.ReactorGlass) {
+        } else if (block == GeneratorsBlocks.ReactorGlass
+              && ReactorBlockType.get(block, block.getMetaFromState(state)) == ReactorBlockType.REACTOR_GLASS) {
             return GLASS;
         } else if (block == NuclearBlocks.FissionReactorPort) {
             return PORT;

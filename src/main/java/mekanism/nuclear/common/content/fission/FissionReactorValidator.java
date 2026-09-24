@@ -52,6 +52,7 @@ public final class FissionReactorValidator {
         }
 
         Set<BlockPos> ports = new HashSet<>();
+        Set<BlockPos> logicAdapters = new HashSet<>();
         Set<BlockPos> fuelPositions = new HashSet<>();
         Map<ColumnPos, AssemblyColumn> columns = new HashMap<>();
         for (int x = bounds.minX; x <= bounds.maxX; x++) {
@@ -70,6 +71,8 @@ public final class FissionReactorValidator {
                         }
                         if (component == FissionReactorComponent.PORT) {
                             ports.add(pos);
+                        } else if (component == FissionReactorComponent.LOGIC_ADAPTER) {
+                            logicAdapters.add(pos);
                         }
                     } else if (component == FissionReactorComponent.FUEL_ASSEMBLY
                           || component == FissionReactorComponent.CONTROL_ROD) {
@@ -126,11 +129,14 @@ public final class FissionReactorValidator {
         }
         List<BlockPos> sortedPorts = new ArrayList<>(ports);
         sortedPorts.sort(POSITION_ORDER);
+        List<BlockPos> sortedLogicAdapters = new ArrayList<>(logicAdapters);
+        sortedLogicAdapters.sort(POSITION_ORDER);
         int volume = width * height * length;
         int interiorVolume = (width - 2) * (height - 2) * (length - 2);
         return Result.success(new BlockPos(bounds.minX, bounds.minY, bounds.minZ),
               new BlockPos(bounds.maxX, bounds.maxY, bounds.maxZ), width, height, length,
-              volume, volume - interiorVolume, fuelPositions.size(), controlRods, surfaceArea, sortedPorts);
+              volume, volume - interiorVolume, fuelPositions.size(), controlRods, surfaceArea,
+              sortedPorts, sortedLogicAdapters);
     }
 
     private static boolean validDimension(int dimension) {
@@ -234,11 +240,12 @@ public final class FissionReactorValidator {
         private final int controlRods;
         private final int surfaceArea;
         private final List<BlockPos> ports;
+        private final List<BlockPos> logicAdapters;
 
         private Result(boolean formed, Failure failure, @Nullable BlockPos failurePos,
               @Nullable BlockPos min, @Nullable BlockPos max, int width, int height, int length,
               int volume, int exteriorBlocks, int fuelAssemblies, int controlRods, int surfaceArea,
-              List<BlockPos> ports) {
+              List<BlockPos> ports, List<BlockPos> logicAdapters) {
             this.formed = formed;
             this.failure = failure;
             this.failurePos = failurePos;
@@ -253,18 +260,20 @@ public final class FissionReactorValidator {
             this.controlRods = controlRods;
             this.surfaceArea = surfaceArea;
             this.ports = ports;
+            this.logicAdapters = logicAdapters;
         }
 
         private static Result failure(Failure failure, @Nullable BlockPos pos) {
             return new Result(false, failure, pos, null, null, 0, 0, 0, 0, 0, 0, 0, 0,
-                  Collections.emptyList());
+                  Collections.emptyList(), Collections.emptyList());
         }
 
         private static Result success(BlockPos min, BlockPos max, int width, int height, int length,
               int volume, int exteriorBlocks, int fuelAssemblies, int controlRods, int surfaceArea,
-              List<BlockPos> ports) {
+              List<BlockPos> ports, List<BlockPos> logicAdapters) {
             return new Result(true, Failure.NONE, null, min, max, width, height, length, volume,
-                  exteriorBlocks, fuelAssemblies, controlRods, surfaceArea, Collections.unmodifiableList(ports));
+                  exteriorBlocks, fuelAssemblies, controlRods, surfaceArea, Collections.unmodifiableList(ports),
+                  Collections.unmodifiableList(logicAdapters));
         }
 
         public boolean isFormed() {
@@ -324,6 +333,10 @@ public final class FissionReactorValidator {
 
         public List<BlockPos> getPorts() {
             return ports;
+        }
+
+        public List<BlockPos> getLogicAdapters() {
+            return logicAdapters;
         }
     }
 

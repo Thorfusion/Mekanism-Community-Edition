@@ -22,6 +22,7 @@ public final class NuclearFissionConfig {
     private static long maxFuelPerAssembly;
     private static int cooledCoolantPerVolume;
     private static long heatedCoolantPerVolume;
+    private static double excessWasteRatio;
     private static boolean meltdownsEnabled;
     private static float meltdownRadius;
     private static double meltdownChance;
@@ -54,6 +55,8 @@ public final class NuclearFissionConfig {
               1, Integer.MAX_VALUE / (18 * 18 * 18), "Cooled coolant capacity per reactor block.");
         heatedCoolantPerVolume = positiveLong(config, "HeatedCoolantPerVolume", 1_000_000L,
               "Heated coolant capacity per reactor block.");
+        excessWasteRatio = config.get(CATEGORY, "ExcessWasteRatio", 0.9D,
+              "Waste fill ratio at which a Logic Adapter emits a critical-waste signal.", 0, 1).getDouble();
         meltdownsEnabled = config.getBoolean("MeltdownsEnabled", CATEGORY, true,
               "Whether critically damaged Fission Reactors can explode and release radiation.");
         meltdownRadius = (float) config.get(CATEGORY, "MeltdownRadius", 8D,
@@ -105,6 +108,10 @@ public final class NuclearFissionConfig {
         return heatedCoolantPerVolume;
     }
 
+    public static double getExcessWasteRatio() {
+        return excessWasteRatio;
+    }
+
     public static boolean isMeltdownsEnabled() {
         return meltdownsEnabled;
     }
@@ -134,6 +141,7 @@ public final class NuclearFissionConfig {
         maxFuelPerAssembly = 8_000L;
         cooledCoolantPerVolume = 100_000;
         heatedCoolantPerVolume = 1_000_000L;
+        excessWasteRatio = 0.9D;
         meltdownsEnabled = true;
         meltdownRadius = 8F;
         meltdownChance = 0.001D;
