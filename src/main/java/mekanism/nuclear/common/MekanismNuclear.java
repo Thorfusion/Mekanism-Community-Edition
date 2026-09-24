@@ -48,11 +48,16 @@ public final class MekanismNuclear implements IModule {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         NuclearBlocks.registerItemBlocks(event.getRegistry());
+        NuclearItems.registerItems(event.getRegistry());
+        // Register before the recipe registry event so legacy Mekanism and
+        // other mods can discover these material identities while adding recipes.
+        NuclearOreDictionary.register();
     }
 
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         proxy.registerBlockRenders();
+        proxy.registerItemRenders();
     }
 
     @EventHandler

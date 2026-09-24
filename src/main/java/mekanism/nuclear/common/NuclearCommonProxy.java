@@ -16,6 +16,9 @@ public class NuclearCommonProxy implements IGuiProvider {
     public void registerBlockRenders() {
     }
 
+    public void registerItemRenders() {
+    }
+
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileEntityIsotopicCentrifuge.class,
               new ResourceLocation(MekanismNuclear.MODID, "isotopic_centrifuge"));
