@@ -2,7 +2,6 @@ package mekanism.nuclear.common.config;
 
 import java.io.File;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 /** Server-authoritative stable fission reactor values. */
 public final class NuclearFissionConfig {
@@ -71,9 +70,7 @@ public final class NuclearFissionConfig {
     }
 
     private static long positiveLong(Configuration config, String key, long fallback, String comment) {
-        Property property = config.get(CATEGORY, key, fallback, comment);
-        property.setMinValue(1);
-        return Math.max(1, property.getLong());
+        return NuclearConfigValues.getLong(config, CATEGORY, key, fallback, 1, comment);
     }
 
     public static long getEnergyPerFissionFuel() {

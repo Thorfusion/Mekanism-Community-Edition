@@ -2,7 +2,6 @@ package mekanism.nuclear.common.config;
 
 import java.io.File;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 /** Server-authoritative radiation and Radioactive Waste Barrel settings. */
 public final class NuclearRadiationConfig {
@@ -39,16 +38,12 @@ public final class NuclearRadiationConfig {
         negativeEffectsMinSeverity = config.get(CATEGORY, "NegativeEffectsMinSeverity", 0.1D,
               "Minimum normalized radiation severity that can cause damage and exhaustion.", 0, 1).getDouble();
 
-        Property capacity = config.get(CATEGORY, "WasteBarrelCapacity", 512_000L,
+        wasteBarrelCapacity = NuclearConfigValues.getLong(config, CATEGORY, "WasteBarrelCapacity", 512_000L, 1,
               "Radioactive Waste Barrel capacity in mB.");
-        capacity.setMinValue(1);
-        wasteBarrelCapacity = Math.max(1, capacity.getLong());
         wasteBarrelProcessTicks = config.getInt("WasteBarrelProcessTicks", CATEGORY, 20, 1,
               Integer.MAX_VALUE, "Ticks required for a Radioactive Waste Barrel decay operation.");
-        Property decayAmount = config.get(CATEGORY, "WasteBarrelDecayAmount", 1L,
+        wasteBarrelDecayAmount = NuclearConfigValues.getLong(config, CATEGORY, "WasteBarrelDecayAmount", 1L, 0,
               "Amount in mB removed by each Radioactive Waste Barrel decay operation. Set to zero to disable decay.");
-        decayAmount.setMinValue(0);
-        wasteBarrelDecayAmount = Math.max(0, decayAmount.getLong());
         if (config.hasChanged()) {
             config.save();
         }
