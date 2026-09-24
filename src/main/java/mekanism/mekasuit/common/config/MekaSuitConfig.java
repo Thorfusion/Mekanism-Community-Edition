@@ -14,6 +14,8 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_CHARGE_RATE = 100_000L;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final float DEFAULT_TOOL_EFFICIENCY = 4F;
+    public static final long DEFAULT_MODIFICATION_STATION_CAPACITY = 40_000L;
+    public static final long DEFAULT_MODIFICATION_STATION_USAGE = 400L;
 
     public static long toolCapacity = DEFAULT_TOOL_CAPACITY;
     public static long toolChargeRate = DEFAULT_TOOL_CHARGE_RATE;
@@ -21,6 +23,8 @@ public final class MekaSuitConfig {
     public static long suitChargeRate = DEFAULT_SUIT_CHARGE_RATE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static float toolEfficiency = DEFAULT_TOOL_EFFICIENCY;
+    public static long modificationStationCapacity = DEFAULT_MODIFICATION_STATION_CAPACITY;
+    public static long modificationStationUsage = DEFAULT_MODIFICATION_STATION_USAGE;
 
     private MekaSuitConfig() {
     }
@@ -40,6 +44,11 @@ public final class MekaSuitConfig {
               "Base energy capacity of each MekaSuit piece. Each Energy Unit doubles this value.");
         suitChargeRate = getLong(config, "mekasuit", "chargeRate", DEFAULT_SUIT_CHARGE_RATE, 1,
               "Base charge rate of each MekaSuit piece. Each Energy Unit doubles this value.");
+        modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
+              DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
+        modificationStationUsage = getLong(config, "modification_station", "energyPerTick",
+              DEFAULT_MODIFICATION_STATION_USAGE, 1,
+              "Modification Station energy usage while installing modules.");
         if (config.hasChanged()) {
             config.save();
         }

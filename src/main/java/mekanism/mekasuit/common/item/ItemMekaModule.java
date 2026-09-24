@@ -1,6 +1,8 @@
 package mekanism.mekasuit.common.item;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
@@ -10,12 +12,15 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** Physical install item associated with one module definition. */
 public final class ItemMekaModule extends Item {
+
+    private static final Map<ResourceLocation, ItemMekaModule> MODULE_ITEMS = new LinkedHashMap<>();
 
     private final ModuleType moduleType;
     private final EnumRarity rarity;
@@ -26,11 +31,21 @@ public final class ItemMekaModule extends Item {
         }
         this.moduleType = moduleType;
         this.rarity = rarity == null ? EnumRarity.COMMON : rarity;
+        ItemMekaModule previous = MODULE_ITEMS.get(moduleType.getId());
+        if (previous != null && previous != this) {
+            throw new IllegalArgumentException("Duplicate physical module item for " + moduleType.getId());
+        }
+        MODULE_ITEMS.put(moduleType.getId(), this);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
     public ModuleType getModuleType() {
         return moduleType;
+    }
+
+    /** Allows optional Nuclear and Generators integrations to supply removable module items. */
+    public static ItemMekaModule getFor(ModuleType type) {
+        return type == null ? null : MODULE_ITEMS.get(type.getId());
     }
 
     @Override

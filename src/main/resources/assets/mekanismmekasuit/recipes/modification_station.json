@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": [
+    "PWP",
+    "CXC",
+    "PAP"
+  ],
+  "key": {
+    "P": {"item": "mekanism:polyethene", "data": 2},
+    "W": {"type": "forge:ore_dict", "ore": "chestWood"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitUltimate"},
+    "X": {"item": "mekanism:basicblock", "data": 8},
+    "A": {"type": "forge:ore_dict", "ore": "alloyUltimate"}
+  },
+  "result": {"item": "mekanismmekasuit:modification_station"}
+}

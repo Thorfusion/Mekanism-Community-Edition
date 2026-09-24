@@ -10,13 +10,19 @@ import mekanism.nuclear.common.NuclearBlocks;
 import mekanism.nuclear.common.tile.TileEntityRadioactiveWasteBarrel;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -26,8 +32,12 @@ import net.minecraft.world.World;
 
 public class BlockRadioactiveWasteBarrel extends BlockMekanismContainer {
 
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    private static final AxisAlignedBB BARREL_BOUNDS = new AxisAlignedBB(0.125D, 0, 0.125D, 0.875D, 1, 0.875D);
+
     public BlockRadioactiveWasteBarrel() {
         super(Material.IRON);
+        setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         setHardness(3.5F);
         setResistance(8F);
         setSoundType(SoundType.METAL);
@@ -38,6 +48,58 @@ public class BlockRadioactiveWasteBarrel extends BlockMekanismContainer {
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing,
+          float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+        return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(FACING).getHorizontalIndex();
+    }
+
+    @Override
+    public IBlockState withRotation(IBlockState state, Rotation rotation) {
+        return state.withProperty(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public IBlockState withMirror(IBlockState state, Mirror mirror) {
+        return state.withRotation(mirror.toRotation(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return BARREL_BOUNDS;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isFullCube(IBlockState state) {
+        return false;
     }
 
     @Override

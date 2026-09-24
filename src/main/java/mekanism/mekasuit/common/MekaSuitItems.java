@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.common.item.ItemMekanism;
+import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.item.ItemMekaModule;
 import mekanism.mekasuit.common.item.ItemMekaSuitArmor;
@@ -45,6 +46,10 @@ public final class MekaSuitItems {
 
     public static List<Item> allRegistered() {
         return ITEMS;
+    }
+
+    public static ItemMekaModule getModuleItem(ModuleType type) {
+        return ItemMekaModule.getFor(type);
     }
 
     private static <ITEM extends Item> ITEM init(ITEM item, String registryName, String translationKey) {

@@ -17,6 +17,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -37,6 +38,12 @@ public class BlockSPSPort extends BlockMekanismContainer {
         setSoundType(SoundType.METAL);
         setHarvestLevel("pickaxe", 2);
         setCreativeTab(Mekanism.tabMekanism);
+    }
+
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

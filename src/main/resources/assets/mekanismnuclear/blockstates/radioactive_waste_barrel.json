@@ -1,6 +1,9 @@
 {
   "variants": {
-    "normal": { "model": "mekanismnuclear:radioactive_waste_barrel" },
+    "facing=north": { "model": "mekanismnuclear:radioactive_waste_barrel" },
+    "facing=south": { "model": "mekanismnuclear:radioactive_waste_barrel", "y": 180 },
+    "facing=east": { "model": "mekanismnuclear:radioactive_waste_barrel", "y": 90 },
+    "facing=west": { "model": "mekanismnuclear:radioactive_waste_barrel", "y": -90 },
     "inventory": { "model": "mekanismnuclear:radioactive_waste_barrel" }
   }
 }

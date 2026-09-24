@@ -7,6 +7,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,6 +18,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 /** Entry point for the separately packaged beta MekaSuit module. */
 @Mod(modid = MekanismMekaSuit.MODID, useMetadata = true,
@@ -34,14 +37,22 @@ public final class MekanismMekaSuit implements IModule {
     public static MekaSuitCommonProxy proxy;
 
     public static Version versionNumber = new Version(999, 999, 999);
+    public static final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        MekaSuitBlocks.registerBlocks(event.getRegistry());
+    }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        MekaSuitBlocks.registerItemBlocks(event.getRegistry());
         MekaSuitItems.registerItems(event.getRegistry());
     }
 
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
+        proxy.registerBlockRenders();
         proxy.registerItemRenders();
     }
 
@@ -49,11 +60,14 @@ public final class MekanismMekaSuit implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         MekaSuitModules.bootstrap();
         MekaSuitConfig.load(event.getSuggestedConfigurationFile());
+        proxy.registerPackets();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         Mekanism.modulesLoaded.add(this);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new MekaSuitGuiHandler());
+        proxy.registerTileEntities();
         Mekanism.logger.info("Loaded Mekanism MekaSuit beta module.");
     }
 

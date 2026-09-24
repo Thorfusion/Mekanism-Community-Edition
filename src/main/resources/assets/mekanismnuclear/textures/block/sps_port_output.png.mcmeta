@@ -2,7 +2,7 @@
     "ctm": {
         "ctm_version": 1,
         "type": "CTM",
-        "layer": "SOLID",
+        "layer": "CUTOUT",
         "textures": [
             "mekanismnuclear:ctm/sps_port_output"
         ],
