@@ -15,6 +15,9 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
+    public static final long DEFAULT_TOOL_HOE_USAGE = 10L;
+    public static final long DEFAULT_TOOL_SHOVEL_USAGE = 10L;
+    public static final long DEFAULT_TOOL_SHEAR_ENTITY_USAGE = 10L;
     public static final float DEFAULT_TOOL_EFFICIENCY = 4F;
     public static final int DEFAULT_TOOL_BASE_DAMAGE = 4;
     public static final double DEFAULT_TOOL_ATTACK_SPEED = -2.4D;
@@ -28,6 +31,9 @@ public final class MekaSuitConfig {
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
+    public static long toolHoeUsage = DEFAULT_TOOL_HOE_USAGE;
+    public static long toolShovelUsage = DEFAULT_TOOL_SHOVEL_USAGE;
+    public static long toolShearEntityUsage = DEFAULT_TOOL_SHEAR_ENTITY_USAGE;
     public static float toolEfficiency = DEFAULT_TOOL_EFFICIENCY;
     public static int toolBaseDamage = DEFAULT_TOOL_BASE_DAMAGE;
     public static double toolAttackSpeed = DEFAULT_TOOL_ATTACK_SPEED;
@@ -52,6 +58,12 @@ public final class MekaSuitConfig {
         toolWeaponUsage = getLong(config, "meka_tool", "weaponEnergyUsage",
               DEFAULT_TOOL_WEAPON_USAGE, 1,
               "Weapon energy cost at four points of Attack Amplification damage.");
+        toolHoeUsage = getLong(config, "meka_tool", "hoeEnergyUsage", DEFAULT_TOOL_HOE_USAGE, 1,
+              "Energy cost for each block tilled by the Farming Unit.");
+        toolShovelUsage = getLong(config, "meka_tool", "shovelEnergyUsage", DEFAULT_TOOL_SHOVEL_USAGE, 1,
+              "Energy cost for each grass block flattened by the Farming Unit.");
+        toolShearEntityUsage = getLong(config, "meka_tool", "shearEntityEnergyUsage",
+              DEFAULT_TOOL_SHEAR_ENTITY_USAGE, 1, "Energy cost for shearing an entity with the Shearing Unit.");
         toolEfficiency = config.getFloat("baseEfficiency", "meka_tool", DEFAULT_TOOL_EFFICIENCY, 0.1F, 100F,
               "Mining speed while the Meka-Tool has enough energy.");
         toolBaseDamage = config.getInt("baseDamage", "meka_tool", DEFAULT_TOOL_BASE_DAMAGE, 0, 100_000,

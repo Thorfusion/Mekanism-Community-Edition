@@ -25,7 +25,8 @@ public final class MekaSuitModules {
     public static final ModuleType ATTACK_AMPLIFICATION_UNIT = type("attack_amplification_unit", ModuleTarget.MEKA_TOOL)
           .maxInstallCount(4).modes(2, "med", "off", "low", "med", "high", "extreme", "max").build();
     public static final ModuleType FARMING_UNIT = type("farming_unit", ModuleTarget.MEKA_TOOL)
-          .maxInstallCount(4).exclusive(ModuleExclusive.INTERACT_BLOCK).build();
+          .maxInstallCount(4).modes(1, "low", "off", "low", "med", "high", "ultra")
+          .exclusive(ModuleExclusive.INTERACT_BLOCK).build();
     public static final ModuleType SHEARING_UNIT = type("shearing_unit", ModuleTarget.MEKA_TOOL)
           .exclusive(ModuleExclusive.INTERACT_BLOCK, ModuleExclusive.INTERACT_ENTITY).build();
     public static final ModuleType SILK_TOUCH_UNIT = type("silk_touch_unit", ModuleTarget.MEKA_TOOL)

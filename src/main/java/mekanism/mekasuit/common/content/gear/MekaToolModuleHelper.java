@@ -54,6 +54,15 @@ public final class MekaToolModuleHelper {
         return data == null ? 0 : data.getInstalledCount();
     }
 
+    public static int getFarmingDiameter(ItemStack stack) {
+        ModuleData data = enabled(stack, MekaSuitModules.FARMING_UNIT);
+        return data == null ? 0 : FarmingRadius.byName(data.getMode()).diameter;
+    }
+
+    public static boolean hasShearing(ItemStack stack) {
+        return enabled(stack, MekaSuitModules.SHEARING_UNIT) != null;
+    }
+
     public static long getMiningEnergyCost(ItemStack stack, float hardness) {
         float efficiency = getEfficiency(stack);
         long base = hasSilkTouch(stack) ? MekaSuitConfig.toolSilkMiningUsage : MekaSuitConfig.toolMiningUsage;
@@ -179,6 +188,31 @@ public final class MekaToolModuleHelper {
                 }
             }
             return MED;
+        }
+    }
+
+    public enum FarmingRadius {
+        OFF("off", 0),
+        LOW("low", 1),
+        MED("med", 3),
+        HIGH("high", 5),
+        ULTRA("ultra", 7);
+
+        private final String name;
+        private final int diameter;
+
+        FarmingRadius(String name, int diameter) {
+            this.name = name;
+            this.diameter = diameter;
+        }
+
+        private static FarmingRadius byName(String name) {
+            for (FarmingRadius radius : values()) {
+                if (radius.name.equals(name)) {
+                    return radius;
+                }
+            }
+            return LOW;
         }
     }
 }

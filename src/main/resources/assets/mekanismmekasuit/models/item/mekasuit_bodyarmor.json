@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanismmekasuit:items/mekasuit_bodyarmor"
+    "layer0": "mekanismmekasuit:items/mekasuit_bodyarmor",
+    "layer1": "mekanismmekasuit:items/mekasuit_bodyarmor_tint_layer"
   }
 }

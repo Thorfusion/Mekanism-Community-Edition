@@ -12,6 +12,7 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
+import mekanism.mekasuit.common.content.gear.MekaToolInteractionHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolModuleHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.block.state.IBlockState;
@@ -25,6 +26,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -99,7 +103,19 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
         MekaToolModuleHelper.synchronizeHarvestEnchantments(stack);
-        return false;
+        return MekaToolInteractionHelper.shearBlock(this, stack, pos, player);
+    }
+
+    @Nonnull
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
+          EnumFacing side, float hitX, float hitY, float hitZ) {
+        return MekaToolInteractionHelper.useFarming(this, player.getHeldItem(hand), player, world, pos, side);
+    }
+
+    @Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
+        return MekaToolInteractionHelper.shearEntity(this, stack, player, target);
     }
 
     @Override
