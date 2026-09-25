@@ -63,11 +63,35 @@ public final class MekaToolModuleHelper {
         return enabled(stack, MekaSuitModules.SHEARING_UNIT) != null;
     }
 
+    public static int getBlastingRadius(ItemStack stack) {
+        ModuleData data = enabled(stack, MekaSuitModules.BLASTING_UNIT);
+        return data == null ? 0 : BlastingRadius.byName(data.getMode()).radius;
+    }
+
+    public static int getVeinMiningRange(ItemStack stack) {
+        ModuleData data = enabled(stack, MekaSuitModules.VEIN_MINING_UNIT);
+        return data == null ? -1 : VeinMiningRange.byName(data.getMode()).range;
+    }
+
+    public static boolean isExtendedVeinMining(ItemStack stack) {
+        ModuleData data = enabled(stack, MekaSuitModules.VEIN_MINING_UNIT);
+        return data != null && MekaSuitConfig.toolExtendedMining && data.getBooleanConfig("extended");
+    }
+
     public static long getMiningEnergyCost(ItemStack stack, float hardness) {
         float efficiency = getEfficiency(stack);
-        long base = hasSilkTouch(stack) ? MekaSuitConfig.toolSilkMiningUsage : MekaSuitConfig.toolMiningUsage;
-        long cost = scaledEnergy(base, efficiency);
+        long cost = scaledEnergy(getBaseMiningUsage(stack), efficiency);
         return hardness == 0 ? Math.max(1L, cost / 2) : cost;
+    }
+
+    public static long getVeinMiningEnergyCost(ItemStack stack, float hardness, int distance, boolean ore) {
+        long baseCost = hardness == 0 ? Math.max(1L, getBaseMiningUsage(stack) / 2) : getBaseMiningUsage(stack);
+        double multiplier = 0.5D * Math.pow(Math.max(0, distance), ore ? 1.5D : 2D);
+        return scaledEnergy(baseCost, multiplier);
+    }
+
+    private static long getBaseMiningUsage(ItemStack stack) {
+        return hasSilkTouch(stack) ? MekaSuitConfig.toolSilkMiningUsage : MekaSuitConfig.toolMiningUsage;
     }
 
     /**
@@ -210,6 +234,56 @@ public final class MekaToolModuleHelper {
             for (FarmingRadius radius : values()) {
                 if (radius.name.equals(name)) {
                     return radius;
+                }
+            }
+            return LOW;
+        }
+    }
+
+    public enum BlastingRadius {
+        OFF("off", 0),
+        LOW("low", 1),
+        MED("med", 2),
+        HIGH("high", 3),
+        EXTREME("extreme", 4);
+
+        private final String name;
+        private final int radius;
+
+        BlastingRadius(String name, int radius) {
+            this.name = name;
+            this.radius = radius;
+        }
+
+        private static BlastingRadius byName(String name) {
+            for (BlastingRadius radius : values()) {
+                if (radius.name.equals(name)) {
+                    return radius;
+                }
+            }
+            return LOW;
+        }
+    }
+
+    public enum VeinMiningRange {
+        OFF("off", 0),
+        LOW("low", 2),
+        MED("med", 4),
+        HIGH("high", 6),
+        EXTREME("extreme", 8);
+
+        private final String name;
+        private final int range;
+
+        VeinMiningRange(String name, int range) {
+            this.name = name;
+            this.range = range;
+        }
+
+        private static VeinMiningRange byName(String name) {
+            for (VeinMiningRange range : values()) {
+                if (range.name.equals(name)) {
+                    return range;
                 }
             }
             return LOW;

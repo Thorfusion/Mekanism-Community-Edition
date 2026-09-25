@@ -9,7 +9,6 @@ import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.MekaSuitItems;
 import mekanism.mekasuit.common.item.ItemMekaModule;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 /** Server-authoritative, inventory-independent Modification Station transactions. */
@@ -93,12 +92,8 @@ public final class ModificationStationOperations {
         ModuleContainer container = getContainerForKnownType(host, moduleId);
         ModuleType type = ModuleRegistry.getInstance().get(moduleId);
         ModuleData data = container == null || type == null ? null : container.get(type);
-        if (data == null || !isSafeConfigKey(key)) {
-            return false;
-        }
-        NBTTagCompound config = data.getConfig();
-        config.setBoolean(key, value);
-        if (!container.setConfig(type, config)) {
+        if (data == null || !type.supportsBooleanConfig(key)
+              || !container.setBooleanConfig(type, key, value)) {
             return false;
         }
         container.save(host);
@@ -133,17 +128,4 @@ public final class ModificationStationOperations {
         }
     }
 
-    private static boolean isSafeConfigKey(String key) {
-        if (key == null || key.isEmpty() || key.length() > 64) {
-            return false;
-        }
-        for (int i = 0; i < key.length(); i++) {
-            char c = key.charAt(i);
-            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')
-                  && !(c >= '0' && c <= '9') && c != '_' && c != '.' && c != '-') {
-                return false;
-            }
-        }
-        return true;
-    }
 }

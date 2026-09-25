@@ -34,9 +34,10 @@ public final class MekaSuitModules {
     public static final ModuleType FORTUNE_UNIT = type("fortune_unit", ModuleTarget.MEKA_TOOL)
           .maxInstallCount(3).exclusive(ModuleExclusive.OVERRIDE_DROPS).build();
     public static final ModuleType BLASTING_UNIT = type("blasting_unit", ModuleTarget.MEKA_TOOL)
-          .maxInstallCount(4).handlesModeChange().build();
+          .maxInstallCount(4).modes(1, "low", "off", "low", "med", "high", "extreme").build();
     public static final ModuleType VEIN_MINING_UNIT = type("vein_mining_unit", ModuleTarget.MEKA_TOOL)
-          .maxInstallCount(4).handlesModeChange().build();
+          .maxInstallCount(4).modes(1, "low", "off", "low", "med", "high", "extreme")
+          .booleanConfig("extended", false).build();
     public static final ModuleType TELEPORTATION_UNIT = type("teleportation_unit", ModuleTarget.MEKA_TOOL)
           .exclusive(ModuleExclusive.INTERACT_BLOCK, ModuleExclusive.INTERACT_ENTITY).build();
 

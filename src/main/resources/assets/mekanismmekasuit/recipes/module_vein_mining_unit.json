@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_vein_mining_unit"
+  },
+  "pattern": [
+    "A#A",
+    "xPs",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "alloyElite"
+    },
+    "#": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "x": {
+      "item": "minecraft:diamond_axe"
+    },
+    "P": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "s": {
+      "item": "minecraft:diamond_shovel"
+    },
+    "H": {
+      "item": "mekanism:atomicalloy"
+    }
+  }
+}

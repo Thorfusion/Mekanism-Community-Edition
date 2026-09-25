@@ -37,6 +37,7 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
     private static final int REMOVE = 2;
     private static final int TOGGLE = 3;
     private static final int MODE = 4;
+    private static final int BOOLEAN_CONFIG = 5;
 
     private int selectedIndex;
     private GuiButton previousButton;
@@ -44,6 +45,7 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
     private GuiButton removeButton;
     private GuiButton toggleButton;
     private GuiButton modeButton;
+    private GuiButton booleanConfigButton;
 
     public GuiModificationStation(InventoryPlayer inventory, TileEntityModificationStation tile) {
         super(tile, new ContainerModificationStation(inventory, tile));
@@ -69,12 +71,13 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
     @Override
     public void initGui() {
         super.initGui();
-        buttonList.add(previousButton = new GuiButton(PREVIOUS, guiLeft + 8, guiTop + 62, 18, 18, "<"));
-        buttonList.add(nextButton = new GuiButton(NEXT, guiLeft + 28, guiTop + 62, 18, 18, ">"));
-        buttonList.add(removeButton = new GuiButton(REMOVE, guiLeft + 48, guiTop + 62, 42, 18,
+        buttonList.add(previousButton = new GuiButton(PREVIOUS, guiLeft + 2, guiTop + 62, 18, 18, "<"));
+        buttonList.add(nextButton = new GuiButton(NEXT, guiLeft + 21, guiTop + 62, 18, 18, ">"));
+        buttonList.add(removeButton = new GuiButton(REMOVE, guiLeft + 40, guiTop + 62, 42, 18,
               LangUtils.localize("gui.mekasuit.remove")));
-        buttonList.add(toggleButton = new GuiButton(TOGGLE, guiLeft + 92, guiTop + 62, 32, 18, ""));
-        buttonList.add(modeButton = new GuiButton(MODE, guiLeft + 126, guiTop + 62, 42, 18, ""));
+        buttonList.add(toggleButton = new GuiButton(TOGGLE, guiLeft + 83, guiTop + 62, 32, 18, ""));
+        buttonList.add(modeButton = new GuiButton(MODE, guiLeft + 116, guiTop + 62, 28, 18, ""));
+        buttonList.add(booleanConfigButton = new GuiButton(BOOLEAN_CONFIG, guiLeft + 145, guiTop + 62, 29, 18, ""));
         updateButtons();
     }
 
@@ -108,6 +111,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
                       isShiftKeyDown() ? -1 : 1);
                 MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
                       Action.SET_MODE, selected.getType().getId(), mode, false));
+            } else if (button.id == BOOLEAN_CONFIG && selected.getType().hasBooleanConfigs()) {
+                String key = firstBooleanConfig(selected);
+                MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
+                      Action.SET_BOOLEAN_CONFIG, selected.getType().getId(), key,
+                      !selected.getBooleanConfig(key)));
             }
         }
         updateButtons();
@@ -122,6 +130,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
               : LangUtils.localize(selected.getType().getTranslationKey()) + " x" + selected.getInstalledCount();
         if (selected != null && selected.getType().hasModes()) {
             label += " [" + LangUtils.localize("module.mode." + selected.getMode()) + "]";
+        }
+        if (selected != null && selected.getType().hasBooleanConfigs()) {
+            String key = firstBooleanConfig(selected);
+            label += " {" + LangUtils.localize("module.config." + key) + ": "
+                  + LangUtils.localize(selected.getBooleanConfig(key) ? "gui.mekasuit.on" : "gui.mekasuit.off") + "}";
         }
         renderScaledText(label, 8, 52, 0x404040, 154);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -145,6 +158,10 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         modeButton.visible = selected != null && selected.getType().hasModes();
         modeButton.enabled = modeButton.visible;
         modeButton.displayString = LangUtils.localize("gui.mekasuit.mode");
+        booleanConfigButton.visible = selected != null && selected.getType().hasBooleanConfigs();
+        booleanConfigButton.enabled = booleanConfigButton.visible;
+        booleanConfigButton.displayString = selected != null && selected.getBooleanConfig(firstBooleanConfig(selected))
+              ? LangUtils.localize("gui.mekasuit.extendedOn") : LangUtils.localize("gui.mekasuit.extendedOff");
     }
 
     private List<ModuleData> installedModules() {
@@ -158,6 +175,10 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
 
     private ModuleData selected(List<ModuleData> modules) {
         return modules.isEmpty() ? null : modules.get(Math.min(selectedIndex, modules.size() - 1));
+    }
+
+    private String firstBooleanConfig(ModuleData module) {
+        return module.getType().getBooleanConfigKeys().iterator().next();
     }
 
     @Override

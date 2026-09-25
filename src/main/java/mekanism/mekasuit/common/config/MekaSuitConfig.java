@@ -21,6 +21,8 @@ public final class MekaSuitConfig {
     public static final float DEFAULT_TOOL_EFFICIENCY = 4F;
     public static final int DEFAULT_TOOL_BASE_DAMAGE = 4;
     public static final double DEFAULT_TOOL_ATTACK_SPEED = -2.4D;
+    public static final int DEFAULT_TOOL_VEIN_MINING_MAX_BLOCKS = 128;
+    public static final boolean DEFAULT_TOOL_EXTENDED_MINING = true;
     public static final long DEFAULT_MODIFICATION_STATION_CAPACITY = 40_000L;
     public static final long DEFAULT_MODIFICATION_STATION_USAGE = 400L;
 
@@ -37,6 +39,8 @@ public final class MekaSuitConfig {
     public static float toolEfficiency = DEFAULT_TOOL_EFFICIENCY;
     public static int toolBaseDamage = DEFAULT_TOOL_BASE_DAMAGE;
     public static double toolAttackSpeed = DEFAULT_TOOL_ATTACK_SPEED;
+    public static int toolVeinMiningMaxBlocks = DEFAULT_TOOL_VEIN_MINING_MAX_BLOCKS;
+    public static boolean toolExtendedMining = DEFAULT_TOOL_EXTENDED_MINING;
     public static long modificationStationCapacity = DEFAULT_MODIFICATION_STATION_CAPACITY;
     public static long modificationStationUsage = DEFAULT_MODIFICATION_STATION_USAGE;
 
@@ -71,6 +75,11 @@ public final class MekaSuitConfig {
         toolAttackSpeed = Math.max(-4D, Math.min(100D,
               config.get("meka_tool", "attackSpeed", DEFAULT_TOOL_ATTACK_SPEED,
                     "Meka-Tool main-hand attack speed modifier.").getDouble(DEFAULT_TOOL_ATTACK_SPEED)));
+        toolVeinMiningMaxBlocks = config.getInt("veinMiningMaxBlocks", "meka_tool",
+              DEFAULT_TOOL_VEIN_MINING_MAX_BLOCKS, 2, 1_000_000,
+              "Maximum connected blocks added for each block type found by the Vein Mining Unit.");
+        toolExtendedMining = config.getBoolean("extendedMining", "meka_tool", DEFAULT_TOOL_EXTENDED_MINING,
+              "Allows the Vein Mining Unit's Extended mode to include matching non-ore blocks.");
         suitCapacity = getLong(config, "mekasuit", "baseEnergyCapacity", DEFAULT_SUIT_CAPACITY, 1,
               "Base energy capacity of each MekaSuit piece. Each Energy Unit doubles this value.");
         suitChargeRate = getLong(config, "mekasuit", "chargeRate", DEFAULT_SUIT_CHARGE_RATE, 1,

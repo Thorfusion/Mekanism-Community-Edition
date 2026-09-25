@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,6 +24,7 @@ public final class ModuleType {
     private final List<String> modes;
     private final String defaultMode;
     private final int modeInstallOffset;
+    private final Map<String, Boolean> booleanConfigs;
 
     private ModuleType(Builder builder) {
         id = builder.id;
@@ -36,6 +39,7 @@ public final class ModuleType {
         modes = Collections.unmodifiableList(new ArrayList<>(builder.modes));
         defaultMode = builder.defaultMode;
         modeInstallOffset = builder.modeInstallOffset;
+        booleanConfigs = Collections.unmodifiableMap(new LinkedHashMap<>(builder.booleanConfigs));
     }
 
     public static Builder builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
@@ -85,6 +89,26 @@ public final class ModuleType {
         // Older/custom module definitions may opt into free-form mode storage
         // without declaring an installed-count-bounded schema.
         return modes.isEmpty() ? handlesModeChange : getAvailableModes(installedCount).contains(mode);
+    }
+
+    public boolean hasBooleanConfigs() {
+        return !booleanConfigs.isEmpty();
+    }
+
+    public Set<String> getBooleanConfigKeys() {
+        return booleanConfigs.keySet();
+    }
+
+    public boolean supportsBooleanConfig(String key) {
+        return booleanConfigs.containsKey(key);
+    }
+
+    public boolean getDefaultBooleanConfig(String key) {
+        Boolean value = booleanConfigs.get(key);
+        if (value == null) {
+            throw new IllegalArgumentException("Unknown boolean module config: " + key);
+        }
+        return value;
     }
 
     public String normalizeMode(String mode, int installedCount) {
@@ -154,6 +178,7 @@ public final class ModuleType {
         private List<String> modes = Collections.emptyList();
         private String defaultMode = "normal";
         private int modeInstallOffset;
+        private final Map<String, Boolean> booleanConfigs = new LinkedHashMap<>();
 
         private Builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
             if (id == null || firstTarget == null) {
@@ -219,6 +244,16 @@ public final class ModuleType {
             return this;
         }
 
+        public Builder booleanConfig(String key, boolean defaultValue) {
+            if (!isSafeConfigKey(key)) {
+                throw new IllegalArgumentException("Module config keys may only contain letters, numbers, '_', '.', or '-'");
+            }
+            if (booleanConfigs.put(key, defaultValue) != null) {
+                throw new IllegalArgumentException("Duplicate module config key: " + key);
+            }
+            return this;
+        }
+
         public Builder exclusive(ModuleExclusive... flags) {
             if (flags != null) {
                 Collections.addAll(exclusiveFlags, flags);
@@ -228,6 +263,20 @@ public final class ModuleType {
 
         public ModuleType build() {
             return new ModuleType(this);
+        }
+
+        private static boolean isSafeConfigKey(String key) {
+            if (key == null || key.isEmpty() || key.length() > 64) {
+                return false;
+            }
+            for (int i = 0; i < key.length(); i++) {
+                char c = key.charAt(i);
+                if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')
+                      && !(c >= '0' && c <= '9') && c != '_' && c != '.' && c != '-') {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

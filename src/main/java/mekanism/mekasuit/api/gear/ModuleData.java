@@ -20,6 +20,11 @@ public final class ModuleData {
         this.enabled = type.canDisable() ? enabled : true;
         this.mode = type.normalizeMode(sanitizeMode(mode), installedCount);
         this.config = config == null ? new NBTTagCompound() : config.copy();
+        for (String key : type.getBooleanConfigKeys()) {
+            if (!this.config.hasKey(key)) {
+                this.config.setBoolean(key, type.getDefaultBooleanConfig(key));
+            }
+        }
     }
 
     public ModuleType getType() {
@@ -71,6 +76,24 @@ public final class ModuleData {
 
     public void setConfig(NBTTagCompound config) {
         this.config = config == null ? new NBTTagCompound() : config.copy();
+        for (String key : type.getBooleanConfigKeys()) {
+            if (!this.config.hasKey(key)) {
+                this.config.setBoolean(key, type.getDefaultBooleanConfig(key));
+            }
+        }
+    }
+
+    public boolean getBooleanConfig(String key) {
+        return type.supportsBooleanConfig(key)
+              && (config.hasKey(key) ? config.getBoolean(key) : type.getDefaultBooleanConfig(key));
+    }
+
+    public boolean setBooleanConfig(String key, boolean value) {
+        if (!type.supportsBooleanConfig(key)) {
+            return false;
+        }
+        config.setBoolean(key, value);
+        return true;
     }
 
     private static String sanitizeMode(String mode) {

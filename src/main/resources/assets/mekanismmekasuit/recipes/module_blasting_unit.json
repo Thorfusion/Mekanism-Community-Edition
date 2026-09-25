@@ -1,0 +1,30 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_blasting_unit"
+  },
+  "pattern": [
+    "A#A",
+    "CPC",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "alloyUltimate"
+    },
+    "#": {
+      "item": "minecraft:tnt"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitUltimate"
+    },
+    "P": {
+      "item": "mekanismmekasuit:module_base"
+    },
+    "H": {
+      "item": "mekanism:atomicalloy"
+    }
+  }
+}

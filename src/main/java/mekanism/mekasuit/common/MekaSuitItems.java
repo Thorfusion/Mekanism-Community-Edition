@@ -48,10 +48,17 @@ public final class MekaSuitItems {
     public static final ItemMekaModule FortuneUnit = init(
           new ItemMekaModule(MekaSuitModules.FORTUNE_UNIT, EnumRarity.RARE),
           "module_fortune_unit", "ModuleFortuneUnit");
+    public static final ItemMekaModule BlastingUnit = init(
+          new ItemMekaModule(MekaSuitModules.BLASTING_UNIT, EnumRarity.RARE),
+          "module_blasting_unit", "ModuleBlastingUnit");
+    public static final ItemMekaModule VeinMiningUnit = init(
+          new ItemMekaModule(MekaSuitModules.VEIN_MINING_UNIT, EnumRarity.RARE),
+          "module_vein_mining_unit", "ModuleVeinMiningUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
-          ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit));
+          ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
+          BlastingUnit, VeinMiningUnit));
 
     private MekaSuitItems() {
     }

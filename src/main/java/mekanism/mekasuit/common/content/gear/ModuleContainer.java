@@ -131,6 +131,11 @@ public final class ModuleContainer {
         return true;
     }
 
+    public boolean setBooleanConfig(ModuleType type, String key, boolean value) {
+        ModuleData data = get(type);
+        return data != null && data.setBooleanConfig(key, value);
+    }
+
     public ModuleData get(ModuleType type) {
         return type == null ? null : modules.get(type.getId());
     }

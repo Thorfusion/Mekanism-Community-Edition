@@ -13,6 +13,7 @@ import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolInteractionHelper;
+import mekanism.mekasuit.common.content.gear.MekaToolMiningHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolModuleHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.block.state.IBlockState;
@@ -103,7 +104,11 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
         MekaToolModuleHelper.synchronizeHarvestEnchantments(stack);
-        return MekaToolInteractionHelper.shearBlock(this, stack, pos, player);
+        boolean sheared = MekaToolInteractionHelper.shearBlock(this, stack, pos, player);
+        if (!sheared) {
+            MekaToolMiningHelper.mineArea(this, stack, pos, player);
+        }
+        return sheared;
     }
 
     @Nonnull
