@@ -4,6 +4,7 @@ import mekanism.mekasuit.client.gui.GuiModificationStation;
 import mekanism.mekasuit.common.MekaSuitBlocks;
 import mekanism.mekasuit.common.MekaSuitCommonProxy;
 import mekanism.mekasuit.common.MekaSuitItems;
+import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.tile.TileEntityModificationStation;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,6 +29,7 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
 
     @Override
     public void registerItemRenders() {
+        OBJLoader.INSTANCE.addDomain(MekanismMekaSuit.MODID);
         for (Item item : MekaSuitItems.allRegistered()) {
             ModelLoader.setCustomModelResourceLocation(item, 0,
                   new ModelResourceLocation(item.getRegistryName(), "inventory"));
