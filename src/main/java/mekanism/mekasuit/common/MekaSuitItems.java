@@ -54,11 +54,14 @@ public final class MekaSuitItems {
     public static final ItemMekaModule VeinMiningUnit = init(
           new ItemMekaModule(MekaSuitModules.VEIN_MINING_UNIT, EnumRarity.RARE),
           "module_vein_mining_unit", "ModuleVeinMiningUnit");
+    public static final ItemMekaModule TeleportationUnit = init(
+          new ItemMekaModule(MekaSuitModules.TELEPORTATION_UNIT, EnumRarity.EPIC),
+          "module_teleportation_unit", "ModuleTeleportationUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
-          BlastingUnit, VeinMiningUnit));
+          BlastingUnit, VeinMiningUnit, TeleportationUnit));
 
     private MekaSuitItems() {
     }

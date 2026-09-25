@@ -78,6 +78,19 @@ public final class MekaToolModuleHelper {
         return data != null && MekaSuitConfig.toolExtendedMining && data.getBooleanConfig("extended");
     }
 
+    public static boolean hasTeleportation(ItemStack stack) {
+        return enabled(stack, MekaSuitModules.TELEPORTATION_UNIT) != null;
+    }
+
+    public static boolean requiresTeleportationTarget(ItemStack stack) {
+        ModuleData data = enabled(stack, MekaSuitModules.TELEPORTATION_UNIT);
+        return data == null || data.getBooleanConfig("teleportation_requires_block");
+    }
+
+    public static long getTeleportationEnergyCost(double distanceSquared) {
+        return scaledEnergy(MekaSuitConfig.toolTeleportUsage, Math.max(0D, distanceSquared) / 10D);
+    }
+
     public static long getMiningEnergyCost(ItemStack stack, float hardness) {
         float efficiency = getEfficiency(stack);
         long cost = scaledEnergy(getBaseMiningUsage(stack), efficiency);

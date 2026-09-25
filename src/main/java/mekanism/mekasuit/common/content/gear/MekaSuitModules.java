@@ -39,6 +39,7 @@ public final class MekaSuitModules {
           .maxInstallCount(4).modes(1, "low", "off", "low", "med", "high", "extreme")
           .booleanConfig("extended", false).build();
     public static final ModuleType TELEPORTATION_UNIT = type("teleportation_unit", ModuleTarget.MEKA_TOOL)
+          .booleanConfig("teleportation_requires_block", true)
           .exclusive(ModuleExclusive.INTERACT_BLOCK, ModuleExclusive.INTERACT_ENTITY).build();
 
     public static final ModuleType ELECTROLYTIC_BREATHING_UNIT = type("electrolytic_breathing_unit", ModuleTarget.HELMET)

@@ -15,6 +15,7 @@ import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolInteractionHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolMiningHelper;
 import mekanism.mekasuit.common.content.gear.MekaToolModuleHelper;
+import mekanism.mekasuit.common.content.gear.MekaToolTeleportationHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,6 +28,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -116,6 +118,13 @@ public final class ItemMekaTool extends ItemEnergized implements IModuleContaine
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
           EnumFacing side, float hitX, float hitY, float hitZ) {
         return MekaToolInteractionHelper.useFarming(this, player.getHeldItem(hand), player, world, pos, side);
+    }
+
+    @Nonnull
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        return new ActionResult<>(MekaToolTeleportationHelper.use(this, stack, player, world), stack);
     }
 
     @Override

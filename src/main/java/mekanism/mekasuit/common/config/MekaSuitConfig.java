@@ -18,6 +18,8 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_TOOL_HOE_USAGE = 10L;
     public static final long DEFAULT_TOOL_SHOVEL_USAGE = 10L;
     public static final long DEFAULT_TOOL_SHEAR_ENTITY_USAGE = 10L;
+    public static final long DEFAULT_TOOL_TELEPORT_USAGE = 1_000L;
+    public static final int DEFAULT_TOOL_MAX_TELEPORT_REACH = 100;
     public static final float DEFAULT_TOOL_EFFICIENCY = 4F;
     public static final int DEFAULT_TOOL_BASE_DAMAGE = 4;
     public static final double DEFAULT_TOOL_ATTACK_SPEED = -2.4D;
@@ -36,6 +38,8 @@ public final class MekaSuitConfig {
     public static long toolHoeUsage = DEFAULT_TOOL_HOE_USAGE;
     public static long toolShovelUsage = DEFAULT_TOOL_SHOVEL_USAGE;
     public static long toolShearEntityUsage = DEFAULT_TOOL_SHEAR_ENTITY_USAGE;
+    public static long toolTeleportUsage = DEFAULT_TOOL_TELEPORT_USAGE;
+    public static int toolMaxTeleportReach = DEFAULT_TOOL_MAX_TELEPORT_REACH;
     public static float toolEfficiency = DEFAULT_TOOL_EFFICIENCY;
     public static int toolBaseDamage = DEFAULT_TOOL_BASE_DAMAGE;
     public static double toolAttackSpeed = DEFAULT_TOOL_ATTACK_SPEED;
@@ -68,6 +72,12 @@ public final class MekaSuitConfig {
               "Energy cost for each grass block flattened by the Farming Unit.");
         toolShearEntityUsage = getLong(config, "meka_tool", "shearEntityEnergyUsage",
               DEFAULT_TOOL_SHEAR_ENTITY_USAGE, 1, "Energy cost for shearing an entity with the Shearing Unit.");
+        toolTeleportUsage = getLong(config, "meka_tool", "teleportEnergyUsage",
+              DEFAULT_TOOL_TELEPORT_USAGE, 1,
+              "Base Teleportation Unit energy cost, multiplied by squared distance divided by ten.");
+        toolMaxTeleportReach = config.getInt("maxTeleportReach", "meka_tool",
+              DEFAULT_TOOL_MAX_TELEPORT_REACH, 3, 1_024,
+              "Maximum Teleportation Unit ray-trace distance in blocks.");
         toolEfficiency = config.getFloat("baseEfficiency", "meka_tool", DEFAULT_TOOL_EFFICIENCY, 0.1F, 100F,
               "Mining speed while the Meka-Tool has enough energy.");
         toolBaseDamage = config.getInt("baseDamage", "meka_tool", DEFAULT_TOOL_BASE_DAMAGE, 0, 100_000,

@@ -160,8 +160,13 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         modeButton.displayString = LangUtils.localize("gui.mekasuit.mode");
         booleanConfigButton.visible = selected != null && selected.getType().hasBooleanConfigs();
         booleanConfigButton.enabled = booleanConfigButton.visible;
-        booleanConfigButton.displayString = selected != null && selected.getBooleanConfig(firstBooleanConfig(selected))
-              ? LangUtils.localize("gui.mekasuit.extendedOn") : LangUtils.localize("gui.mekasuit.extendedOff");
+        if (selected != null && selected.getType().hasBooleanConfigs()) {
+            String key = firstBooleanConfig(selected);
+            booleanConfigButton.displayString = LangUtils.localize("module.config.short." + key)
+                  + (selected.getBooleanConfig(key) ? "+" : "-");
+        } else {
+            booleanConfigButton.displayString = "";
+        }
     }
 
     private List<ModuleData> installedModules() {
