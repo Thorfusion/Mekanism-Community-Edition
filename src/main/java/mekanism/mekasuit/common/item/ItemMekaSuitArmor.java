@@ -22,11 +22,13 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
+import mekanism.mekasuit.common.content.gear.MekaSuitBreathingHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
@@ -204,6 +206,13 @@ public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
         int layer = slot == EntityEquipmentSlot.LEGS ? 2 : 1;
         return MekanismMekaSuit.MODID + ":textures/models/armor/mekasuit_layer_" + layer + ".png";
+    }
+
+    @Override
+    public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
+        if (!world.isRemote && moduleTarget == ModuleTarget.HELMET) {
+            MekaSuitBreathingHelper.tick(stack, player);
+        }
     }
 
     private static int renderIndex(EntityEquipmentSlot slot) {

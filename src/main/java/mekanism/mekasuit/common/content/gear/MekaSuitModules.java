@@ -43,7 +43,7 @@ public final class MekaSuitModules {
           .exclusive(ModuleExclusive.INTERACT_BLOCK, ModuleExclusive.INTERACT_ENTITY).build();
 
     public static final ModuleType ELECTROLYTIC_BREATHING_UNIT = type("electrolytic_breathing_unit", ModuleTarget.HELMET)
-          .maxInstallCount(4).build();
+          .maxInstallCount(4).booleanConfig("fill_held", true).build();
     public static final ModuleType INHALATION_PURIFICATION_UNIT = type("inhalation_purification_unit", ModuleTarget.HELMET).build();
     public static final ModuleType VISION_ENHANCEMENT_UNIT = type("vision_enhancement_unit", ModuleTarget.HELMET)
           .maxInstallCount(4).handlesModeChange().disabledByDefault().build();
