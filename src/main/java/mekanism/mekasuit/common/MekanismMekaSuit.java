@@ -63,6 +63,7 @@ public final class MekanismMekaSuit implements IModule {
         MekaSuitModules.bootstrap();
         MekaSuitConfig.load(event.getSuggestedConfigurationFile());
         proxy.registerPackets();
+        proxy.registerClientHandlers();
     }
 
     @EventHandler

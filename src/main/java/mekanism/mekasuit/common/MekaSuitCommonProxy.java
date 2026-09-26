@@ -26,6 +26,9 @@ public class MekaSuitCommonProxy implements IGuiProvider {
               PacketModificationStationAction.class, 0, Side.SERVER);
     }
 
+    public void registerClientHandlers() {
+    }
+
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileEntityModificationStation.class,
               new ResourceLocation(MekanismMekaSuit.MODID, "modification_station"));

@@ -15,11 +15,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
+
+    @Override
+    public void registerClientHandlers() {
+        MinecraftForge.EVENT_BUS.register(MekaSuitVisionHandler.INSTANCE);
+    }
 
     @Override
     public void registerBlockRenders() {

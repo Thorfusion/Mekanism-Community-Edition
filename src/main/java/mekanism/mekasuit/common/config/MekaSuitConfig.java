@@ -15,6 +15,7 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_POTION_TICK_USAGE = 40_000L;
     public static final long DEFAULT_SUIT_MAGIC_REDUCE_USAGE = 1_000L;
     public static final float DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO = 1F;
+    public static final long DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE = 500L;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -38,6 +39,7 @@ public final class MekaSuitConfig {
     public static long suitPotionTickUsage = DEFAULT_SUIT_POTION_TICK_USAGE;
     public static long suitMagicReduceUsage = DEFAULT_SUIT_MAGIC_REDUCE_USAGE;
     public static float suitMagicDamageReductionRatio = DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO;
+    public static long suitVisionEnhancementUsage = DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -109,6 +111,9 @@ public final class MekaSuitConfig {
         suitMagicDamageReductionRatio = config.getFloat("magicDamageReductionRatio", "mekasuit",
               DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO, 0F, 1F,
               "Maximum fraction of preventable magic damage absorbed by the Inhalation Purification Unit.");
+        suitVisionEnhancementUsage = getLong(config, "mekasuit", "visionEnhancement",
+              DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE, 0,
+              "Energy used per tick while the Vision Enhancement Unit is active.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",
