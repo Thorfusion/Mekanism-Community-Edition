@@ -63,7 +63,9 @@ public final class MekaSuitModules {
     public static final ModuleType CHARGE_DISTRIBUTION_UNIT = type("charge_distribution_unit", ModuleTarget.BODYARMOR)
           .booleanConfig("charge_suit", true).booleanConfig("charge_inventory", false).build();
     public static final ModuleType GRAVITATIONAL_MODULATING_UNIT = type("gravitational_modulating_unit", ModuleTarget.BODYARMOR)
-          .handlesModeChange().exclusive(ModuleExclusive.OVERRIDE_JUMP).build();
+          .handlesModeChange()
+          .enumConfig("speed_boost", 4, "low", "off", "low", "med", "high", "ultra")
+          .exclusive(ModuleExclusive.OVERRIDE_JUMP).build();
     public static final ModuleType ELYTRA_UNIT = type("elytra_unit", ModuleTarget.BODYARMOR)
           .handlesModeChange().disabledByDefault().build();
 

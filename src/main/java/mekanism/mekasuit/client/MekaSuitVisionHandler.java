@@ -5,6 +5,7 @@ import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitVisionHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitNutritionalHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitGravitationalHelper;
 import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,8 @@ public final class MekaSuitVisionHandler {
           MekanismMekaSuit.MODID, "gui/hud/vision_enhancement_unit.png");
     private static final ResourceLocation NUTRITION_ICON = new ResourceLocation(
           MekanismMekaSuit.MODID, "gui/hud/nutritional_injection_unit.png");
+    private static final ResourceLocation GRAVITATIONAL_ICON = new ResourceLocation(
+          MekanismMekaSuit.MODID, "gui/hud/gravitational_modulation_unit.png");
 
     private boolean visionApplied;
 
@@ -139,8 +142,9 @@ public final class MekaSuitVisionHandler {
         ModuleData nutrition = MekaSuitNutritionalHelper.getModule(helmet);
         ItemStack bodyarmor = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         ModuleData jetpack = MekaSuitJetpackHelper.getModule(bodyarmor);
+        ModuleData gravitational = MekaSuitGravitationalHelper.getModule(bodyarmor);
         if (module == null && (nutrition == null || !nutrition.isEnabled())
-              && (jetpack == null || !jetpack.isEnabled())) {
+              && (jetpack == null || !jetpack.isEnabled()) && gravitational == null) {
             return;
         }
         ScaledResolution resolution = new ScaledResolution(minecraft);
@@ -156,6 +160,13 @@ public final class MekaSuitVisionHandler {
         if (nutrition != null && nutrition.isEnabled()) {
             String percent = Math.round(100 * MekaSuitNutritionalHelper.getRatio(helmet)) + "%";
             drawHudElement(minecraft, NUTRITION_ICON, iconX, y, percent, 0xEB6CA3, 1F);
+            y -= 20;
+        }
+        if (gravitational != null) {
+            boolean enabled = gravitational.isEnabled();
+            String status = I18n.format(enabled ? "gui.mekasuit.on" : "gui.mekasuit.off");
+            drawHudElement(minecraft, GRAVITATIONAL_ICON, iconX, y, status,
+                  enabled ? 0x86E7FF : 0x777777, enabled ? 1F : 0.5F);
             y -= 20;
         }
         if (jetpack != null && jetpack.isEnabled() && bodyarmor.getItem() instanceof ItemMekaSuitBodyarmor) {

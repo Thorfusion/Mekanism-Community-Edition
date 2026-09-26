@@ -76,13 +76,16 @@ public final class MekaSuitItems {
     public static final ItemMekaModule ChargeDistributionUnit = init(
           new ItemMekaModule(MekaSuitModules.CHARGE_DISTRIBUTION_UNIT, EnumRarity.RARE),
           "module_charge_distribution_unit", "ModuleChargeDistributionUnit");
+    public static final ItemMekaModule GravitationalModulatingUnit = init(
+          new ItemMekaModule(MekaSuitModules.GRAVITATIONAL_MODULATING_UNIT, EnumRarity.EPIC),
+          "module_gravitational_modulating_unit", "ModuleGravitationalModulatingUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
           BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
           InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit, JetpackUnit,
-          ChargeDistributionUnit));
+          ChargeDistributionUnit, GravitationalModulatingUnit));
 
     private MekaSuitItems() {
     }

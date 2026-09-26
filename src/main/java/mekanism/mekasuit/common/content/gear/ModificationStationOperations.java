@@ -72,7 +72,13 @@ public final class ModificationStationOperations {
         ModuleContainer container = getContainerForKnownType(host, moduleId);
         ModuleType type = ModuleRegistry.getInstance().get(moduleId);
         ModuleData data = container == null || type == null ? null : container.get(type);
-        if (data == null || !container.setEnabled(type, !data.isEnabled())) {
+        return data != null && setEnabled(host, moduleId, !data.isEnabled());
+    }
+
+    public static boolean setEnabled(ItemStack host, ResourceLocation moduleId, boolean enabled) {
+        ModuleContainer container = getContainerForKnownType(host, moduleId);
+        ModuleType type = ModuleRegistry.getInstance().get(moduleId);
+        if (container == null || type == null || !container.setEnabled(type, enabled)) {
             return false;
         }
         container.save(host);

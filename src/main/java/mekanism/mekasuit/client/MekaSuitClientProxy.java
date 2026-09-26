@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,6 +25,7 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
 
     @Override
     public void registerClientHandlers() {
+        ClientRegistry.registerKeyBinding(MekaSuitJetpackClientHandler.boostKey);
         MinecraftForge.EVENT_BUS.register(MekaSuitVisionHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitJetpackClientHandler.INSTANCE);
     }

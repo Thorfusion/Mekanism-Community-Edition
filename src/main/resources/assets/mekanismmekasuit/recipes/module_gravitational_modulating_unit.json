@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {
+    "item": "mekanismmekasuit:module_gravitational_modulating_unit"
+  },
+  "pattern": [
+    "A#A",
+    "EPE",
+    "HHH"
+  ],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyUltimate"},
+    "#": {"item": "minecraft:nether_star"},
+    "E": {
+      "type": "mekanism:item_nbt",
+      "item": "mekanism:basicblock2",
+      "data": 4,
+      "nbt": {"tier": 3}
+    },
+    "P": {"item": "mekanismmekasuit:module_base"},
+    "H": {"type": "forge:ore_dict", "ore": "pelletAntimatter"}
+  }
+}
