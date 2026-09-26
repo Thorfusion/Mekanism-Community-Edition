@@ -12,6 +12,9 @@ import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHandler;
 import mekanism.mekasuit.common.content.gear.MekaSuitChargeDistributionHandler;
 import mekanism.mekasuit.common.content.gear.MekaSuitGravitationalHandler;
 import mekanism.mekasuit.common.content.gear.MekaSuitElytraTickHandler;
+import mekanism.mekasuit.common.content.gear.MekaSuitMobilityHandler;
+import mekanism.mekasuit.common.content.gear.MekaSuitModuleDropHandler;
+import mekanism.mekasuit.common.content.gear.MekaSuitDamageHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -74,12 +77,16 @@ public final class MekanismMekaSuit implements IModule {
     public void init(FMLInitializationEvent event) {
         Mekanism.modulesLoaded.add(this);
         MinecraftForge.EVENT_BUS.register(MekaSuitInhalationHelper.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitDamageHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitJetpackHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitChargeDistributionHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitGravitationalHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitElytraTickHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitMobilityHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitModuleDropHandler.INSTANCE);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new MekaSuitGuiHandler());
         proxy.registerTileEntities();
+        proxy.registerItemColors();
         Mekanism.logger.info("Loaded Mekanism MekaSuit beta module.");
     }
 

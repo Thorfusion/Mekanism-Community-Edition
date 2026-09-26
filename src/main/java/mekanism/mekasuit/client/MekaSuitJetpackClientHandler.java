@@ -9,6 +9,7 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitGravitationalHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitGravitationalHandler;
 import mekanism.mekasuit.common.content.gear.MekaSuitElytraHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
@@ -69,6 +70,8 @@ public final class MekaSuitJetpackClientHandler {
         modeKeyDown = currentModeKey;
 
         boolean currentBoostKey = minecraft.currentScreen == null && boostKey.isKeyDown();
+        // Keep the local state in step with the server so jump movement can be predicted client-side.
+        MekaSuitGravitationalHandler.INSTANCE.setBoosting(player, currentBoostKey);
         if (currentBoostKey != boostKeyDown) {
             boostKeyDown = currentBoostKey;
             MekanismMekaSuit.network.sendToServer(new PacketMekaSuitBoostState(currentBoostKey));

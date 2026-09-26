@@ -1,0 +1,11 @@
+{
+  "type":"mekanism:ore_shaped",
+  "result":{"item":"mekanismmekasuit:module_frost_walker_unit"},
+  "pattern":["A#A","APA","H#H"],
+  "key":{
+    "A":{"type":"forge:ore_dict","ore":"alloyElite"},
+    "#":{"item":"mekanism:electrolyticcore"},
+    "P":{"item":"mekanismmekasuit:module_base"},
+    "H":{"item":"mekanism:atomicalloy"}
+  }
+}

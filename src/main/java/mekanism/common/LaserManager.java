@@ -4,12 +4,14 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.api.lasers.ILaserDissipation;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -50,11 +52,15 @@ public class LaserManager {
         boolean foundEntity = false;
         for (Entity e : world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to))) {
             foundEntity = true;
-            if (!e.isImmuneToFire()) {
-                e.setFire((int) (energy / 1000));
+            double receivedEnergy = getReceivedEnergy(e, energy);
+            if (receivedEnergy <= 0) {
+                continue;
             }
-            if (energy > 256) {
-                e.attackEntityFrom(DamageSource.GENERIC, (float) energy / 1000F);
+            if (!e.isImmuneToFire()) {
+                e.setFire((int) (receivedEnergy / 1000));
+            }
+            if (receivedEnergy > 256) {
+                e.attackEntityFrom(DamageSource.GENERIC, (float) receivedEnergy / 1000F);
             }
         }
         return new LaserInfo(mop, foundEntity);
@@ -103,6 +109,30 @@ public class LaserManager {
 
     public static boolean isReceptor(TileEntity tile, EnumFacing side) {
         return CapabilityUtils.hasCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
+    }
+
+    static double getReceivedEnergy(Entity entity, double energy) {
+        if (!(entity instanceof EntityLivingBase) || energy <= 0) {
+            return Math.max(0, energy);
+        }
+        double dissipation = 0;
+        double refraction = 0;
+        for (ItemStack armor : ((EntityLivingBase) entity).getArmorInventoryList()) {
+            if (!armor.isEmpty() && armor.getItem() instanceof ILaserDissipation) {
+                ILaserDissipation protection = (ILaserDissipation) armor.getItem();
+                dissipation += Math.max(0, protection.getDissipationPercent(armor));
+                refraction += Math.max(0, protection.getRefractionPercent(armor));
+            }
+        }
+        return calculateReceivedEnergy(energy, dissipation, refraction);
+    }
+
+    static double calculateReceivedEnergy(double energy, double dissipation, double refraction) {
+        if (energy <= 0) {
+            return 0;
+        }
+        double afterDissipation = energy * (1D - Math.min(1D, Math.max(0D, dissipation)));
+        return afterDissipation * (1D - Math.min(1D, Math.max(0D, refraction)));
     }
 
     public static ILaserReceptor getReceptor(TileEntity tile, EnumFacing side) {

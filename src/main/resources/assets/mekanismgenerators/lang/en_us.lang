@@ -1,0 +1,6 @@
+item.module_solar_recharging_unit.name=Solar Recharging Unit
+item.module_geothermal_generator_unit.name=Geothermal Generator Unit
+module.mekanismgenerators.solar_recharging_unit=Solar Recharging Unit
+module.mekanismgenerators.solar_recharging_unit.description=Generates energy for the MekaSuit Helmet from direct sunlight.
+module.mekanismgenerators.geothermal_generator_unit=Geothermal Generator Unit
+module.mekanismgenerators.geothermal_generator_unit.description=Generates energy from lava and fire, and reduces heat damage.

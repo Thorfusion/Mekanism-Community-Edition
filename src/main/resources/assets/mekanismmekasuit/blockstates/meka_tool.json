@@ -31,6 +31,22 @@
           "translation": [-0.375, -0.25, -0.0625]
         }
       }
+    },
+    "left": {
+      "model": "mekanismmekasuit:mekatool_left.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "transform": {
+        "firstperson_lefthand": {
+          "rotation": [90, 0, 10],
+          "translation": [0, -0.1875, 0]
+        },
+        "thirdperson_lefthand": {
+          "rotation": [90, 0, 0],
+          "translation": [-0.0625, -0.625, -0.25]
+        }
+      }
     }
   }
 }

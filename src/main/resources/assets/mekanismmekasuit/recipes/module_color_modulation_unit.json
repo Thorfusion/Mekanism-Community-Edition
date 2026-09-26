@@ -1,0 +1,12 @@
+{
+  "type":"mekanism:ore_shaped",
+  "result":{"item":"mekanismmekasuit:module_color_modulation_unit"},
+  "pattern":["M#M","OPO","HHH"],
+  "key":{
+    "M":{"item":"minecraft:dye","data":32767},
+    "#":{"item":"mekanism:machineblock2","data":13},
+    "O":{"item":"minecraft:dye","data":32767},
+    "P":{"item":"mekanismmekasuit:module_base"},
+    "H":{"item":"mekanism:polyethene","data":2}
+  }
+}

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.lasers.ILaserDissipation;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.MekanismHooks;
@@ -20,6 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.mekasuit.api.gear.IModuleContainerItem;
 import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
+import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitBreathingHelper;
@@ -29,8 +31,10 @@ import mekanism.mekasuit.common.content.gear.MekaSuitVisionHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitNutritionalHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -55,7 +59,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 })
 public class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpecialElectricItem,
-      IEnergyContainerItem, IModuleContainerItem {
+      IEnergyContainerItem, IModuleContainerItem, ILaserDissipation {
 
     private static final ArmorMaterial MEKASUIT_MATERIAL = EnumHelper.addArmorMaterial(
           "MEKANISM_MEKASUIT", MekanismMekaSuit.MODID + ":mekasuit", 0,
@@ -73,6 +77,48 @@ public class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpe
     @Override
     public ModuleTarget getModuleTarget() {
         return moduleTarget;
+    }
+
+    @Override
+    public double getDissipationPercent(ItemStack stack) {
+        if (!hasEnabledModule(stack, mekanism.mekasuit.common.content.gear.MekaSuitModules.LASER_DISSIPATION_UNIT)) {
+            return 0;
+        }
+        switch (moduleTarget) {
+            case HELMET: return 0.15D;
+            case BODYARMOR: return 0.30D;
+            case PANTS: return 0.1875D;
+            case BOOTS: return 0.1125D;
+            default: return 0;
+        }
+    }
+
+    @Override
+    public double getRefractionPercent(ItemStack stack) {
+        if (!hasEnabledModule(stack, mekanism.mekasuit.common.content.gear.MekaSuitModules.LASER_DISSIPATION_UNIT)) {
+            return 0;
+        }
+        switch (moduleTarget) {
+            case HELMET: return 0.20D;
+            case BODYARMOR: return 0.40D;
+            case PANTS: return 0.25D;
+            case BOOTS: return 0.15D;
+            default: return 0;
+        }
+    }
+
+    public boolean hasEnabledModule(ItemStack stack, ModuleType type) {
+        return ModuleContainer.fromStack(stack, moduleTarget).hasEnabled(type);
+    }
+
+    public float getDamageAbsorptionRatio() {
+        switch (moduleTarget) {
+            case HELMET: return 0.15F;
+            case BODYARMOR: return 0.40F;
+            case PANTS: return 0.30F;
+            case BOOTS: return 0.15F;
+            default: return 0F;
+        }
     }
 
     @Override
@@ -207,6 +253,15 @@ public class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpe
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack stack) {
+        // Frost Walker and Depth Strider are compatibility adapters for vanilla
+        // movement logic; installed units should not turn the custom armor pass
+        // into an enchantment-glint pass.
+        return false;
+    }
+
+    @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
         return false;
     }
@@ -215,6 +270,13 @@ public class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpe
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
         int layer = slot == EntityEquipmentSlot.LEGS ? 2 : 1;
         return MekanismMekaSuit.MODID + ":textures/models/armor/mekasuit_layer_" + layer + ".png";
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack,
+          EntityEquipmentSlot armorSlot, ModelBiped defaultModel) {
+        return mekanism.mekasuit.client.ModelMekaSuitArmor.get(armorSlot, itemStack, entityLiving);
     }
 
     @Override

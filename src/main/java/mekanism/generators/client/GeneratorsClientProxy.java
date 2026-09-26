@@ -28,6 +28,8 @@ import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItems;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.integration.GeneratorsMekaSuitIntegration;
+import mekanism.generators.client.integration.GeneratorsMekaSuitClientIntegration;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockStateMapper;
@@ -43,6 +45,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
+import net.minecraftforge.fml.common.Loader;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -90,6 +93,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         registerItemRender(GeneratorsItems.SolarPanel);
         registerItemRender(GeneratorsItems.Hohlraum);
         registerItemRender(GeneratorsItems.TurbineBlade);
+        if (Loader.isModLoaded(GeneratorsMekaSuitIntegration.MEKASUIT_MODID)) {
+            GeneratorsMekaSuitClientIntegration.registerItemRenders();
+        }
 
         Item.getItemFromBlock(GeneratorsBlocks.Generator).setTileEntityItemStackRenderer(new RenderGeneratorItem());
     }

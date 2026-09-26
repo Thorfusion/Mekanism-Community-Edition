@@ -8,6 +8,7 @@ import mekanism.mekasuit.common.network.PacketMekaSuitBoostState;
 import mekanism.mekasuit.common.network.PacketMekaSuitGravitationalMode;
 import mekanism.mekasuit.common.network.PacketMekaSuitElytraMode;
 import mekanism.mekasuit.common.network.PacketMekaSuitStartElytra;
+import mekanism.mekasuit.common.network.PacketMekaSuitArmorMode;
 import mekanism.mekasuit.common.tile.TileEntityModificationStation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -39,9 +40,14 @@ public class MekaSuitCommonProxy implements IGuiProvider {
               PacketMekaSuitElytraMode.class, 4, Side.SERVER);
         MekanismMekaSuit.network.registerMessage(PacketMekaSuitStartElytra.Handler.class,
               PacketMekaSuitStartElytra.class, 5, Side.SERVER);
+        MekanismMekaSuit.network.registerMessage(PacketMekaSuitArmorMode.Handler.class,
+              PacketMekaSuitArmorMode.class, 6, Side.SERVER);
     }
 
     public void registerClientHandlers() {
+    }
+
+    public void registerItemColors() {
     }
 
     public void registerTileEntities() {

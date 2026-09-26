@@ -22,6 +22,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.StackUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.fixers.GeneratorTEFixer;
+import mekanism.generators.common.integration.GeneratorsMekaSuitIntegration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,6 +36,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -77,6 +79,9 @@ public class MekanismGenerators implements IModule {
         // Register items and itemBlocks
         GeneratorsItems.registerItems(event.getRegistry());
         GeneratorsBlocks.registerItemBlocks(event.getRegistry());
+        if (Loader.isModLoaded(GeneratorsMekaSuitIntegration.MEKASUIT_MODID)) {
+            GeneratorsMekaSuitIntegration.registerItems(event.getRegistry());
+        }
     }
 
     @SubscribeEvent
@@ -103,6 +108,9 @@ public class MekanismGenerators implements IModule {
         //Set up the GUI handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
         MinecraftForge.EVENT_BUS.register(this);
+        if (Loader.isModLoaded(GeneratorsMekaSuitIntegration.MEKASUIT_MODID)) {
+            GeneratorsMekaSuitIntegration.registerHandlers();
+        }
 
         //Load the proxy
         proxy.registerTileEntities();

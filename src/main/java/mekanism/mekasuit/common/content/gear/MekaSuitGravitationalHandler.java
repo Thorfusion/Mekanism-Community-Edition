@@ -78,6 +78,10 @@ public final class MekaSuitGravitationalHandler {
         }
     }
 
+    public boolean isBoosting(EntityPlayer player) {
+        return player != null && boostingPlayers.contains(player.getUniqueID());
+    }
+
     private void updateFlightCapability(EntityPlayer player, boolean shouldAllow) {
         UUID playerId = player.getUniqueID();
         boolean changed = false;

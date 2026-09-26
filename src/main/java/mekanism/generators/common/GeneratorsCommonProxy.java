@@ -13,6 +13,7 @@ import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
+import mekanism.generators.common.integration.GeneratorsMekaSuitConfig;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -39,6 +40,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.Loader;
 
 /**
  * Common proxy for the Mekanism Generators module.
@@ -102,6 +104,9 @@ public class GeneratorsCommonProxy implements IGuiProvider {
      */
     public void loadConfiguration() {
         MekanismConfig.local().generators.load(Mekanism.configurationgenerators);
+        if (Loader.isModLoaded("mekanismmekasuit")) {
+            GeneratorsMekaSuitConfig.load(Mekanism.configurationgenerators);
+        }
         setGasGeneratorMaxEnergy();
         if (Mekanism.configurationgenerators.hasChanged()) {
             Mekanism.configurationgenerators.save();

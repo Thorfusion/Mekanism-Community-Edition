@@ -14,6 +14,7 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_CHARGE_RATE = 100_000L;
     public static final long DEFAULT_SUIT_POTION_TICK_USAGE = 40_000L;
     public static final long DEFAULT_SUIT_MAGIC_REDUCE_USAGE = 1_000L;
+    public static final long DEFAULT_SUIT_DAMAGE_USAGE = 100_000L;
     public static final float DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO = 1F;
     public static final long DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE = 500L;
     public static final long DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE = 20_000L;
@@ -24,6 +25,13 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_INVENTORY_CHARGE_RATE = 10_000L;
     public static final long DEFAULT_SUIT_GRAVITATIONAL_MODULATION_USAGE = 1_000L;
     public static final long DEFAULT_SUIT_ELYTRA_ENERGY_USAGE = 32_000L;
+    public static final long DEFAULT_SUIT_SPRINT_BOOST_USAGE = 100L;
+    public static final long DEFAULT_SUIT_BASE_JUMP_USAGE = 1_000L;
+    public static final long DEFAULT_SUIT_HYDROSTATIC_REPULSION_USAGE = 500L;
+    public static final long DEFAULT_SUIT_ITEM_ATTRACTION_USAGE = 250L;
+    public static final int DEFAULT_ARMORED_FREE_RUNNER_ARMOR = 3;
+    public static final float DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS = 2F;
+    public static final float DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE = 0F;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -46,6 +54,7 @@ public final class MekaSuitConfig {
     public static long suitChargeRate = DEFAULT_SUIT_CHARGE_RATE;
     public static long suitPotionTickUsage = DEFAULT_SUIT_POTION_TICK_USAGE;
     public static long suitMagicReduceUsage = DEFAULT_SUIT_MAGIC_REDUCE_USAGE;
+    public static long suitDamageUsage = DEFAULT_SUIT_DAMAGE_USAGE;
     public static float suitMagicDamageReductionRatio = DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO;
     public static long suitVisionEnhancementUsage = DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE;
     public static long suitNutritionalInjectionUsage = DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE;
@@ -56,6 +65,13 @@ public final class MekaSuitConfig {
     public static long suitInventoryChargeRate = DEFAULT_SUIT_INVENTORY_CHARGE_RATE;
     public static long suitGravitationalModulationUsage = DEFAULT_SUIT_GRAVITATIONAL_MODULATION_USAGE;
     public static long suitElytraEnergyUsage = DEFAULT_SUIT_ELYTRA_ENERGY_USAGE;
+    public static long suitSprintBoostUsage = DEFAULT_SUIT_SPRINT_BOOST_USAGE;
+    public static long suitBaseJumpUsage = DEFAULT_SUIT_BASE_JUMP_USAGE;
+    public static long suitHydrostaticRepulsionUsage = DEFAULT_SUIT_HYDROSTATIC_REPULSION_USAGE;
+    public static long suitItemAttractionUsage = DEFAULT_SUIT_ITEM_ATTRACTION_USAGE;
+    public static int armoredFreeRunnerArmor = DEFAULT_ARMORED_FREE_RUNNER_ARMOR;
+    public static float armoredFreeRunnerToughness = DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS;
+    public static float armoredFreeRunnerKnockbackResistance = DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -124,6 +140,9 @@ public final class MekaSuitConfig {
         suitMagicReduceUsage = getLong(config, "mekasuit", "magicReduce",
               DEFAULT_SUIT_MAGIC_REDUCE_USAGE, 0,
               "Energy cost per half-heart of magic damage reduced by the Inhalation Purification Unit.");
+        suitDamageUsage = getLong(config, "mekasuit", "damage",
+              DEFAULT_SUIT_DAMAGE_USAGE, 0,
+              "Energy used per point of damage absorbed by the base MekaSuit armor.");
         suitMagicDamageReductionRatio = config.getFloat("magicDamageReductionRatio", "mekasuit",
               DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO, 0F, 1F,
               "Maximum fraction of preventable magic damage absorbed by the Inhalation Purification Unit.");
@@ -154,6 +173,27 @@ public final class MekaSuitConfig {
         suitElytraEnergyUsage = getLong(config, "mekasuit", "elytra",
               DEFAULT_SUIT_ELYTRA_ENERGY_USAGE, 0,
               "Energy used per second while gliding with the MekaSuit Elytra Unit.");
+        suitSprintBoostUsage = getLong(config, "mekasuit", "sprintBoost",
+              DEFAULT_SUIT_SPRINT_BOOST_USAGE, 0,
+              "Energy used per tick at the Medium Locomotive Boosting setting; other modes scale from it.");
+        suitBaseJumpUsage = getLong(config, "mekasuit", "jump",
+              DEFAULT_SUIT_BASE_JUMP_USAGE, 0,
+              "Base Hydraulic Propulsion jump energy usage. Higher jump settings scale from Low.");
+        suitHydrostaticRepulsionUsage = getLong(config, "mekasuit", "hydrostaticRepulsion",
+              DEFAULT_SUIT_HYDROSTATIC_REPULSION_USAGE, 0,
+              "Energy used per tick by the four-unit Hydrostatic Repulsor swim boost.");
+        suitItemAttractionUsage = getLong(config, "mekasuit", "itemAttraction",
+              DEFAULT_SUIT_ITEM_ATTRACTION_USAGE, 0,
+              "Energy used per attracted item and range block by the Magnetic Attraction Unit.");
+        armoredFreeRunnerArmor = config.getInt("armor", "armored_free_runners",
+              DEFAULT_ARMORED_FREE_RUNNER_ARMOR, 0, 100,
+              "Armor points provided by Armored Free Runners.");
+        armoredFreeRunnerToughness = config.getFloat("toughness", "armored_free_runners",
+              DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS, 0F, 100F,
+              "Armor toughness provided by Armored Free Runners.");
+        armoredFreeRunnerKnockbackResistance = config.getFloat("knockbackResistance", "armored_free_runners",
+              DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE, 0F, 1F,
+              "Knockback resistance provided by Armored Free Runners.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",

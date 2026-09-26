@@ -1,0 +1,12 @@
+{
+  "type":"mekanism:ore_shaped",
+  "result":{"item":"mekanismmekasuit:module_locomotive_boosting_unit"},
+  "pattern":["A#A","EPE","HHH"],
+  "key":{
+    "A":{"type":"forge:ore_dict","ore":"alloyElite"},
+    "#":{"item":"minecraft:diamond_leggings"},
+    "E":{"item":"mekanism:energytablet"},
+    "P":{"item":"mekanismmekasuit:module_base"},
+    "H":{"item":"mekanism:atomicalloy"}
+  }
+}

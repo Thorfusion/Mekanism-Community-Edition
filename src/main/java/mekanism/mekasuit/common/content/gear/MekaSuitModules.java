@@ -16,7 +16,10 @@ public final class MekaSuitModules {
     };
 
     public static final ModuleType ENERGY_UNIT = type("energy_unit", ALL_GEAR).maxInstallCount(8).noDisable().build();
-    public static final ModuleType COLOR_MODULATION_UNIT = type("color_modulation_unit", ALL_ARMOR).noDisable().build();
+    public static final ModuleType COLOR_MODULATION_UNIT = type("color_modulation_unit", ALL_ARMOR)
+          .noDisable().enumConfig("color", 16, "white", "white", "orange", "magenta", "light_blue",
+                "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown",
+                "green", "red", "black").build();
     public static final ModuleType LASER_DISSIPATION_UNIT = type("laser_dissipation_unit", ALL_ARMOR).build();
     public static final ModuleType RADIATION_SHIELDING_UNIT = type("radiation_shielding_unit", ALL_ARMOR).build();
 
@@ -70,17 +73,20 @@ public final class MekaSuitModules {
           .handlesModeChange().disabledByDefault().build();
 
     public static final ModuleType LOCOMOTIVE_BOOSTING_UNIT = type("locomotive_boosting_unit", ModuleTarget.PANTS)
-          .maxInstallCount(4).handlesModeChange().build();
+          .maxInstallCount(4).modes(1, "low", "off", "low", "med", "high", "ultra").build();
     public static final ModuleType GYROSCOPIC_STABILIZATION_UNIT = type("gyroscopic_stabilization_unit", ModuleTarget.PANTS).build();
     public static final ModuleType HYDROSTATIC_REPULSOR_UNIT = type("hydrostatic_repulsor_unit", ModuleTarget.PANTS)
-          .maxInstallCount(4).build();
+          .maxInstallCount(4).booleanConfig("swim_boost", true).build();
     public static final ModuleType MOTORIZED_SERVO_UNIT = type("motorized_servo_unit", ModuleTarget.PANTS)
           .maxInstallCount(5).build();
 
     public static final ModuleType HYDRAULIC_PROPULSION_UNIT = type("hydraulic_propulsion_unit", ModuleTarget.BOOTS)
-          .maxInstallCount(4).build();
+          .maxInstallCount(4)
+          .enumConfig("jump_boost", 1, "low", "off", "low", "med", "high", "ultra")
+          .enumConfig("step_assist", 1, "low", "off", "low", "med", "high", "ultra").build();
     public static final ModuleType MAGNETIC_ATTRACTION_UNIT = type("magnetic_attraction_unit", ModuleTarget.BOOTS)
-          .maxInstallCount(4).handlesModeChange().build();
+          .maxInstallCount(4).handlesModeChange()
+          .enumConfig("range", 1, "low", "off", "low", "med", "high", "ultra").build();
     public static final ModuleType FROST_WALKER_UNIT = type("frost_walker_unit", ModuleTarget.BOOTS)
           .maxInstallCount(2).build();
     public static final ModuleType SOUL_SURFER_UNIT = type("soul_surfer_unit", ModuleTarget.BOOTS)

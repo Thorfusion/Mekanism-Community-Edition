@@ -1,0 +1,12 @@
+{
+  "type":"mekanism:ore_shaped",
+  "conditions":[{"type":"forge:mod_loaded","modid":"mekanismnuclear"}],
+  "result":{"item":"mekanismmekasuit:module_geiger_unit"},
+  "pattern":["A#A","APA","HHH"],
+  "key":{
+    "A":{"type":"forge:ore_dict","ore":"alloyAdvanced"},
+    "#":{"item":"mekanismnuclear:geiger_counter"},
+    "P":{"item":"mekanismmekasuit:module_base"},
+    "H":{"item":"mekanism:polyethene","data":2}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type":"mekanism:ore_shaped",
+  "result":{"item":"mekanismmekasuit:module_motorized_servo_unit"},
+  "pattern":["ACA","#P#","HHH"],
+  "key":{
+    "A":{"type":"forge:ore_dict","ore":"alloyElite"},
+    "C":{"type":"forge:ore_dict","ore":"circuitElite"},
+    "#":{"item":"minecraft:packed_ice"},
+    "P":{"item":"mekanismmekasuit:module_base"},
+    "H":{"item":"mekanism:atomicalloy"}
+  }
+}

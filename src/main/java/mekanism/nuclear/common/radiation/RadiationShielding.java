@@ -22,9 +22,11 @@ public final class RadiationShielding {
             ItemStack stack = entity.getItemStackFromSlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemHazmatSuitArmor) {
                 resistance += ((ItemHazmatSuitArmor) stack.getItem()).getRadiationShielding();
-                if (resistance >= 1) {
-                    return 1;
-                }
+            } else if (!stack.isEmpty()) {
+                resistance += MekaSuitRadiationBridge.getShielding(stack);
+            }
+            if (resistance >= 1) {
+                return 1;
             }
         }
         return Math.max(0, resistance);

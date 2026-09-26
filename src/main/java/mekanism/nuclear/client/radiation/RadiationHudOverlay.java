@@ -2,8 +2,11 @@ package mekanism.nuclear.client.radiation;
 
 import mekanism.nuclear.common.radiation.RadiationDisplay;
 import mekanism.nuclear.common.radiation.RadiationManager;
+import mekanism.nuclear.common.radiation.MekaSuitRadiationBridge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,17 +32,29 @@ public final class RadiationHudOverlay {
         }
         double environmental = ClientRadiationData.getEnvironmental();
         double dose = ClientRadiationData.getDose();
-        if (environmental < RadiationManager.MIN_MAGNITUDE && dose < RadiationManager.MIN_MAGNITUDE) {
+        ItemStack bodyarmor = minecraft.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        boolean geiger = MekaSuitRadiationBridge.hasGeiger(bodyarmor);
+        boolean dosimeter = MekaSuitRadiationBridge.hasDosimeter(bodyarmor);
+        boolean hazardous = environmental >= RadiationManager.MIN_MAGNITUDE || dose >= RadiationManager.MIN_MAGNITUDE;
+        if (!geiger && !dosimeter && !hazardous) {
             return;
         }
         String rateText = "Radiation: " + RadiationDisplay.formatDoseRate(environmental);
         String doseText = "Dose: " + RadiationDisplay.formatDose(dose);
         ScaledResolution resolution = new ScaledResolution(minecraft);
-        int width = Math.max(minecraft.fontRenderer.getStringWidth(rateText),
-              minecraft.fontRenderer.getStringWidth(doseText));
+        boolean showRate = geiger || !geiger && !dosimeter && hazardous;
+        boolean showDose = dosimeter || !geiger && !dosimeter && hazardous;
+        int width = Math.max(showRate ? minecraft.fontRenderer.getStringWidth(rateText) : 0,
+              showDose ? minecraft.fontRenderer.getStringWidth(doseText) : 0);
         int x = resolution.getScaledWidth() - width - 6;
-        minecraft.fontRenderer.drawStringWithShadow(rateText, x, 6, color(environmental));
-        minecraft.fontRenderer.drawStringWithShadow(doseText, x, 17, color(dose));
+        int y = 6;
+        if (showRate) {
+            minecraft.fontRenderer.drawStringWithShadow(rateText, x, y, color(environmental));
+            y += 11;
+        }
+        if (showDose) {
+            minecraft.fontRenderer.drawStringWithShadow(doseText, x, y, color(dose));
+        }
     }
 
     private static int color(double magnitude) {
