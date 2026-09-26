@@ -9,12 +9,15 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitGravitationalHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitElytraHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import mekanism.mekasuit.common.network.PacketMekaSuitBoostState;
 import mekanism.mekasuit.common.network.PacketMekaSuitGravitationalMode;
+import mekanism.mekasuit.common.network.PacketMekaSuitElytraMode;
+import mekanism.mekasuit.common.network.PacketMekaSuitStartElytra;
 import mekanism.mekasuit.common.network.PacketMekaSuitModeChange;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -39,6 +42,7 @@ public final class MekaSuitJetpackClientHandler {
 
     private boolean modeKeyDown;
     private boolean boostKeyDown;
+    private boolean elytraStartRequested;
 
     private MekaSuitJetpackClientHandler() {
     }
@@ -53,6 +57,7 @@ public final class MekaSuitJetpackClientHandler {
         if (player == null) {
             modeKeyDown = false;
             boostKeyDown = false;
+            elytraStartRequested = false;
             return;
         }
         ItemStack bodyarmor = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
@@ -77,6 +82,16 @@ public final class MekaSuitJetpackClientHandler {
             MekaSuitGravitationalHelper.applyBoost(player,
                   MekaSuitGravitationalHelper.getSpeedBoost(gravitational));
         }
+
+        boolean requestElytra = minecraft.currentScreen == null
+              && minecraft.gameSettings.keyBindJump.isKeyDown() && !player.onGround
+              && player.motionY < 0D && !player.isElytraFlying() && !player.isInWater()
+              && !player.capabilities.isFlying && MekaSuitElytraHelper.canUse(bodyarmor, player);
+        if (requestElytra && !elytraStartRequested) {
+            MekanismMekaSuit.network.sendToServer(new PacketMekaSuitStartElytra());
+        }
+        elytraStartRequested = requestElytra;
+
         if (!wearingBodyarmor || !MekaSuitJetpackHelper.hasModule(bodyarmor)) {
             return;
         }
@@ -94,7 +109,18 @@ public final class MekaSuitJetpackClientHandler {
 
     private static void changeMode(EntityPlayer player, ItemStack bodyarmor) {
         ModuleContainer container = ModuleContainer.fromStack(bodyarmor, ModuleTarget.BODYARMOR);
-        ModuleData module = container.get(MekaSuitModules.JETPACK_UNIT);
+        ModuleData jetpack = container.get(MekaSuitModules.JETPACK_UNIT);
+        ModuleData gravitational = container.get(MekaSuitModules.GRAVITATIONAL_MODULATING_UNIT);
+        ModuleData elytra = container.get(MekaSuitModules.ELYTRA_UNIT);
+
+        // The stable module tweaker selects which co-installed module owns the armor key. In 1.12,
+        // sneak + G addresses Elytra while plain G retains the existing Jetpack/Gravitational behavior.
+        if (elytra != null && (player.isSneaking() || jetpack == null && gravitational == null)) {
+            toggleElytra(player, bodyarmor, container, elytra);
+            return;
+        }
+
+        ModuleData module = jetpack;
         if (module != null) {
             String mode = player.isSneaking() ? MekaSuitJetpackHelper.DISABLED
                   : module.getType().cycleMode(module.getMode(), module.getInstalledCount(), 1);
@@ -108,7 +134,7 @@ public final class MekaSuitJetpackClientHandler {
             return;
         }
 
-        module = container.get(MekaSuitModules.GRAVITATIONAL_MODULATING_UNIT);
+        module = gravitational;
         if (module != null) {
             boolean enabled = !module.isEnabled();
             if (!container.setEnabled(MekaSuitModules.GRAVITATIONAL_MODULATING_UNIT, enabled)) {
@@ -119,6 +145,24 @@ public final class MekaSuitJetpackClientHandler {
             player.sendMessage(new TextComponentTranslation("tooltip.mekasuit.gravitational.modeChanged",
                   new TextComponentTranslation(enabled ? "gui.mekasuit.on" : "gui.mekasuit.off")));
             SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+            return;
         }
+
+        if (elytra != null) {
+            toggleElytra(player, bodyarmor, container, elytra);
+        }
+    }
+
+    private static void toggleElytra(EntityPlayer player, ItemStack bodyarmor,
+          ModuleContainer container, ModuleData module) {
+        boolean enabled = !module.isEnabled();
+        if (!container.setEnabled(MekaSuitModules.ELYTRA_UNIT, enabled)) {
+            return;
+        }
+        container.save(bodyarmor);
+        MekanismMekaSuit.network.sendToServer(new PacketMekaSuitElytraMode(enabled));
+        player.sendMessage(new TextComponentTranslation("tooltip.mekasuit.elytra.modeChanged",
+              new TextComponentTranslation(enabled ? "gui.mekasuit.on" : "gui.mekasuit.off")));
+        SoundHandler.playSound(MekanismSounds.HYDRAULIC);
     }
 }

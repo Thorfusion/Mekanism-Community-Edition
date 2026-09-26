@@ -7,6 +7,7 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.item.ItemMekaModule;
+import mekanism.mekasuit.common.item.ItemHDPEElytra;
 import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import mekanism.mekasuit.common.item.ItemMekaSuitArmor;
 import mekanism.mekasuit.common.item.ItemMekaTool;
@@ -29,6 +30,8 @@ public final class MekaSuitItems {
     public static final ItemMekaSuitArmor MekaSuitBoots = init(
           new ItemMekaSuitArmor(EntityEquipmentSlot.FEET), "mekasuit_boots", "MekaSuitBoots");
     public static final Item ModuleBase = init(new ItemMekanism(), "module_base", "ModuleBase");
+    public static final ItemHDPEElytra HDPEElytra = init(
+          new ItemHDPEElytra(), "hdpe_elytra", "HDPEElytra");
     public static final ItemMekaModule EnergyUnit = init(
           new ItemMekaModule(MekaSuitModules.ENERGY_UNIT, EnumRarity.UNCOMMON), "module_energy_unit", "ModuleEnergyUnit");
     public static final ItemMekaModule ExcavationEscalationUnit = init(
@@ -79,13 +82,16 @@ public final class MekaSuitItems {
     public static final ItemMekaModule GravitationalModulatingUnit = init(
           new ItemMekaModule(MekaSuitModules.GRAVITATIONAL_MODULATING_UNIT, EnumRarity.EPIC),
           "module_gravitational_modulating_unit", "ModuleGravitationalModulatingUnit");
+    public static final ItemMekaModule ElytraUnit = init(
+          new ItemMekaModule(MekaSuitModules.ELYTRA_UNIT, EnumRarity.EPIC),
+          "module_elytra_unit", "ModuleElytraUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
-          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
+          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, HDPEElytra, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
           BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
           InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit, JetpackUnit,
-          ChargeDistributionUnit, GravitationalModulatingUnit));
+          ChargeDistributionUnit, GravitationalModulatingUnit, ElytraUnit));
 
     private MekaSuitItems() {
     }

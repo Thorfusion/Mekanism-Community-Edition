@@ -28,6 +28,7 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
         ClientRegistry.registerKeyBinding(MekaSuitJetpackClientHandler.boostKey);
         MinecraftForge.EVENT_BUS.register(MekaSuitVisionHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitJetpackClientHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitElytraRenderHandler.INSTANCE);
     }
 
     @Override

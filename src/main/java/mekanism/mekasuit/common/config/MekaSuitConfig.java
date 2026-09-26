@@ -23,6 +23,7 @@ public final class MekaSuitConfig {
     public static final int DEFAULT_SUIT_JETPACK_TRANSFER_RATE = 256;
     public static final long DEFAULT_SUIT_INVENTORY_CHARGE_RATE = 10_000L;
     public static final long DEFAULT_SUIT_GRAVITATIONAL_MODULATION_USAGE = 1_000L;
+    public static final long DEFAULT_SUIT_ELYTRA_ENERGY_USAGE = 32_000L;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -54,6 +55,7 @@ public final class MekaSuitConfig {
     public static int suitJetpackTransferRate = DEFAULT_SUIT_JETPACK_TRANSFER_RATE;
     public static long suitInventoryChargeRate = DEFAULT_SUIT_INVENTORY_CHARGE_RATE;
     public static long suitGravitationalModulationUsage = DEFAULT_SUIT_GRAVITATIONAL_MODULATION_USAGE;
+    public static long suitElytraEnergyUsage = DEFAULT_SUIT_ELYTRA_ENERGY_USAGE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -149,6 +151,9 @@ public final class MekaSuitConfig {
         suitGravitationalModulationUsage = getLong(config, "mekasuit", "gravitationalModulation",
               DEFAULT_SUIT_GRAVITATIONAL_MODULATION_USAGE, 0,
               "Energy used per tick while flying with the Gravitational Modulating Unit. Boosting uses four times this amount.");
+        suitElytraEnergyUsage = getLong(config, "mekasuit", "elytra",
+              DEFAULT_SUIT_ELYTRA_ENERGY_USAGE, 0,
+              "Energy used per second while gliding with the MekaSuit Elytra Unit.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",

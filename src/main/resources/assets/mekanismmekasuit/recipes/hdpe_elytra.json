@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {"item": "mekanismmekasuit:hdpe_elytra"},
+  "pattern": [
+    "AHA",
+    "HPH",
+    "H H"
+  ],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyUltimate"},
+    "H": {"item": "mekanism:polyethene", "data": 2},
+    "P": {"item": "minecraft:elytra"}
+  }
+}
