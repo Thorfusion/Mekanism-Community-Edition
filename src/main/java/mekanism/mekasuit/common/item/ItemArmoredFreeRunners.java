@@ -3,13 +3,18 @@ package mekanism.mekasuit.common.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.UUID;
+import mekanism.mekasuit.client.model.ModelArmoredFreeRunnersArmor;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** Stable Armored Free Runners behavior layered over the existing 1.12 Free Runner controller. */
 public final class ItemArmoredFreeRunners extends ItemFreeRunners {
@@ -21,6 +26,13 @@ public final class ItemArmoredFreeRunners extends ItemFreeRunners {
     @Override
     public EnumRarity getRarity(ItemStack stack) {
         return EnumRarity.RARE;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack,
+          EntityEquipmentSlot armorSlot, ModelBiped defaultModel) {
+        return ModelArmoredFreeRunnersArmor.INSTANCE;
     }
 
     @Override

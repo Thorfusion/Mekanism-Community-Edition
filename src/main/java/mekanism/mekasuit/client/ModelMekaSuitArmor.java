@@ -43,6 +43,18 @@ public final class ModelMekaSuitArmor extends ModelBiped {
           MekanismMekaSuit.MODID, "models/entity/mekasuit.obj");
     private static final Map<EntityEquipmentSlot, ModelMekaSuitArmor> MODELS =
           new EnumMap<>(EntityEquipmentSlot.class);
+    /*
+     * Stable rotates the OBJ 180 degrees around the block-model centre and then
+     * translates it by (-1, 0.5, 0). Forge 1.12's TRSR rotation is around the
+     * origin, so the equivalent single transform is rotate around the origin
+     * and translate by (0, 1.5, 0). Using stable's final translation directly
+     * displaced every part one block left and one block vertically from its
+     * biped pivot, which also made opposite limbs appear to drive each mesh.
+     */
+    private static final TRSRTransformation BASE_TRANSFORM = new TRSRTransformation(
+          new Vector3f(0F, 1.5F, 0F),
+          TRSRTransformation.quatFromXYZDegrees(new Vector3f(0F, 0F, 180F)),
+          new Vector3f(1F, 1F, 1F), null);
     private static OBJModel sourceModel;
 
     private final EntityEquipmentSlot slot;
@@ -113,6 +125,10 @@ public final class ModelMekaSuitArmor extends ModelBiped {
             }
         }
         return sourceModel;
+    }
+
+    static TRSRTransformation baseTransform() {
+        return BASE_TRANSFORM;
     }
 
     private static EntityEquipmentSlot adjacentSlot(EntityEquipmentSlot slot) {
@@ -217,14 +233,11 @@ public final class ModelMekaSuitArmor extends ModelBiped {
             if (groups.isEmpty()) {
                 return null;
             }
-            TRSRTransformation base = new TRSRTransformation(new Vector3f(-1F, 0.5F, 0F),
-                  TRSRTransformation.quatFromXYZDegrees(new Vector3f(0F, 0F, 180F)),
-                  new Vector3f(1F, 1F, 1F), null);
             TRSRTransformation offset = new TRSRTransformation(new Vector3f(part.x, part.y, part.z),
                   null, null, null);
             Function<ResourceLocation, TextureAtlasSprite> textures = location ->
                   Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-            return model.bake(new OBJState(groups, true, offset.compose(base)),
+            return model.bake(new OBJState(groups, true, offset.compose(BASE_TRANSFORM)),
                   DefaultVertexFormats.ITEM, textures);
         }
 

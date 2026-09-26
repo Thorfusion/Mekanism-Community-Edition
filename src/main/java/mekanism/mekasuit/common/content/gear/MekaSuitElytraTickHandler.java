@@ -63,7 +63,7 @@ public final class MekaSuitElytraTickHandler {
         ItemStack cached = event.side == Side.SERVER ? armorCache(event.player).get(chestIndex()).copy() : ItemStack.EMPTY;
         SwapData data = new SwapData(chest, proxy, cached);
         swaps.put(event.player.getUniqueID(), data);
-        event.player.setItemStackToSlot(EntityEquipmentSlot.CHEST, proxy);
+        setChestSilently(event.player, proxy);
         if (event.side == Side.SERVER) {
             // Prevent vanilla's equipment tracker from publishing the temporary proxy or removing armor attributes.
             armorCache(event.player).set(chestIndex(), proxy.copy());
@@ -94,7 +94,7 @@ public final class MekaSuitElytraTickHandler {
     private static void restore(EntityPlayer player, SwapData data) {
         ItemStack current = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         if (current == data.proxy) {
-            player.setItemStackToSlot(EntityEquipmentSlot.CHEST, data.original);
+            setChestSilently(player, data.original);
             if (!player.world.isRemote) {
                 applyUse(player, data);
                 armorCache(player).set(chestIndex(), data.cachedOriginal);
@@ -140,6 +140,15 @@ public final class MekaSuitElytraTickHandler {
 
     private static int chestIndex() {
         return EntityEquipmentSlot.CHEST.getIndex();
+    }
+
+    /**
+     * The vanilla player slot setter plays an armor-equip sound unconditionally.
+     * This compatibility swap is not a real equipment change, so update the
+     * same backing armor slot directly and leave actual equip sounds untouched.
+     */
+    private static void setChestSilently(EntityPlayer player, ItemStack stack) {
+        player.inventory.armorInventory.set(chestIndex(), stack);
     }
 
     private static final class SwapData {
