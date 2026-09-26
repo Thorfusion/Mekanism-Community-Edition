@@ -52,7 +52,7 @@
 },
 {
   "modid": "MekanismUltimate",
-  "name": "Mekanism Community Edition: Ultimate",
+  "name": "Mekanism Community Edition: Ultimate (Beta)",
   "description": "Mekanism Ultimate module of Mekanism CE.",
   "version": "${version}",
   "mcversion": "${mc_version}",

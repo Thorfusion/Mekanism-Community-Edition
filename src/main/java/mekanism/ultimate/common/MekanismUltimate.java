@@ -30,7 +30,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = MekanismUltimate.MODID, name = "Mekanism Community Edition: Ultimate", version = "GRADLE_MODVERSION", dependencies = "required-after:Mekanism", guiFactory = "mekanism.ultimate.client.gui.UltimateGuiFactory")
+@Mod(modid = MekanismUltimate.MODID, name = "Mekanism Community Edition: Ultimate (Beta)", version = "GRADLE_MODVERSION", dependencies = "required-after:Mekanism", guiFactory = "mekanism.ultimate.client.gui.UltimateGuiFactory")
 public class MekanismUltimate implements IModule
 {
     public static final String MODID = "MekanismUltimate";

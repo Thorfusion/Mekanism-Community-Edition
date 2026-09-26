@@ -17,7 +17,7 @@ public class GuiUltimateConfig extends GuiConfig
 {
     public GuiUltimateConfig(GuiScreen parent)
     {
-        super(parent, getConfigElements(), MekanismUltimate.MODID, false, true, "Mekanism Community Edition: Ultimate");
+        super(parent, getConfigElements(), MekanismUltimate.MODID, false, true, "Mekanism Community Edition: Ultimate (Beta)");
     }
 
     private static List<IConfigElement> getConfigElements()

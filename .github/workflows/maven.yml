@@ -25,6 +25,8 @@ jobs:
       minecraft_version: ${{ steps.artifacts.outputs.minecraft_version }}
       release_files: ${{ steps.artifacts.outputs.release_files }}
       main_files: ${{ steps.artifacts.outputs.main_files }}
+      has_nuclear: ${{ steps.artifacts.outputs.has_nuclear }}
+      has_mekasuit: ${{ steps.artifacts.outputs.has_mekasuit }}
 
     steps:
       - name: Check out release tag
@@ -92,8 +94,21 @@ jobs:
               ;;
           esac
 
+          has_nuclear=false
+          if grep -Fq "tasks.register('nuclearJar'" build.gradle; then
+            release_specs+=(Nuclear.jar)
+            has_nuclear=true
+          fi
+          has_mekasuit=false
+          if grep -Fq "tasks.register('mekasuitJar'" build.gradle; then
+            release_specs+=(MekaSuit.jar)
+            has_mekasuit=true
+          fi
+
           echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
           echo "minecraft_version=$minecraft_version" >> "$GITHUB_OUTPUT"
+          echo "has_nuclear=$has_nuclear" >> "$GITHUB_OUTPUT"
+          echo "has_mekasuit=$has_mekasuit" >> "$GITHUB_OUTPUT"
           {
             echo 'release_files<<RELEASE_FILES'
             for spec in "${release_specs[@]}"; do
@@ -207,34 +222,61 @@ jobs:
           - name: DefenseTech
             project-id: qBExn86I
             classifier: DefenseTech
+            dependencies: toGHjw6t(required)
             beta-only: false
             only_version: '1.7.10'
           - name: Generators
             project-id: ksSEAhTL
             classifier: Generators
+            dependencies: toGHjw6t(required)
             beta-only: false
             only_version: ''
           - name: Tools
             project-id: CD05L8Jr
             classifier: Tools
+            dependencies: toGHjw6t(required)
             beta-only: false
             only_version: ''
           - name: Ultimate
             project-id: Q6fY4JVC
             classifier: Ultimate
+            dependencies: toGHjw6t(required)
+            beta-only: true
+            only_version: ''
+          - name: Nuclear
+            project-id: O7q551F0
+            classifier: Nuclear
+            dependencies: |
+              toGHjw6t(required)
+              Q6fY4JVC(required)
+              ksSEAhTL(required)
+            beta-only: true
+            only_version: ''
+          - name: MekaSuit
+            project-id: cR1xSvIr
+            classifier: MekaSuit
+            dependencies: |
+              toGHjw6t(required)
+              Q6fY4JVC(required)
             beta-only: true
             only_version: ''
 
     steps:
       - name: Download release artifacts
-        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
+        if: >-
+          ${{ (matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version) &&
+          (matrix.classifier != 'Nuclear' || needs.build.outputs.has_nuclear == 'true') &&
+          (matrix.classifier != 'MekaSuit' || needs.build.outputs.has_mekasuit == 'true') }}
         uses: actions/download-artifact@v8
         with:
           name: release-${{ github.event.release.tag_name }}
           path: output
 
       - name: Publish ${{ matrix.name }} to Modrinth
-        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
+        if: >-
+          ${{ (matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version) &&
+          (matrix.classifier != 'Nuclear' || needs.build.outputs.has_nuclear == 'true') &&
+          (matrix.classifier != 'MekaSuit' || needs.build.outputs.has_mekasuit == 'true') }}
         uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
         with:
           modrinth-id: ${{ matrix.project-id }}
@@ -249,7 +291,7 @@ jobs:
           game-version-filter: none
           java: '8'
           environment: client | server
-          modrinth-dependencies: toGHjw6t(required)
+          modrinth-dependencies: ${{ matrix.dependencies }}
           retry-attempts: 2
 
   publish-curseforge:
@@ -292,17 +334,40 @@ jobs:
             dependencies: mekanism-ce(required)
             beta-only: true
             only_version: ''
+          - name: Nuclear
+            project-id: '1709256'
+            classifier: Nuclear
+            dependencies: |
+              399904(required)
+              872280(required)
+              813408(required)
+            beta-only: true
+            only_version: ''
+          - name: MekaSuit
+            project-id: '1709257'
+            classifier: MekaSuit
+            dependencies: |
+              399904(required)
+              872280(required)
+            beta-only: true
+            only_version: ''
 
     steps:
       - name: Download release artifacts
-        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
+        if: >-
+          ${{ (matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version) &&
+          (matrix.classifier != 'Nuclear' || needs.build.outputs.has_nuclear == 'true') &&
+          (matrix.classifier != 'MekaSuit' || needs.build.outputs.has_mekasuit == 'true') }}
         uses: actions/download-artifact@v8
         with:
           name: release-${{ github.event.release.tag_name }}
           path: output
 
       - name: Publish ${{ matrix.name }} to CurseForge
-        if: matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version
+        if: >-
+          ${{ (matrix.only_version == '' || needs.build.outputs.minecraft_version == matrix.only_version) &&
+          (matrix.classifier != 'Nuclear' || needs.build.outputs.has_nuclear == 'true') &&
+          (matrix.classifier != 'MekaSuit' || needs.build.outputs.has_mekasuit == 'true') }}
         uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
         with:
           curseforge-id: ${{ matrix.project-id }}
