@@ -1,133 +1,274 @@
+## Master language file
 
-itemGroup.ICBM=ICBM
+itemGroup.DefenseTech=防御科技
 
-children=zh_TW,
+potion.toxin=毒素
+potion.virus=病毒
+potion.frostBite=冻伤
+potion.radiation=辐射
 
 ## Items
-item.sulfur.name=\u786B\u78FA
-item.poisonPowder.name=\u6BD2\u7C89
-item.antidote.name=\u85E5\u5291
-item.radarGun.name=\u96F7\u9054\u69CD
-item.remoteDetonator.name=\u9059\u63A7\u5F15\u7206\u5668
-item.defuser.name=\u7184\u6EC5\u7CFB\u7D71
-item.laserDesignator.name=\u9433\u5C04\u6307\u793A\u7B26
-item.tracker.name=\u8FFD\u8E64\u5668
-item.signalDisrupter.name=\u4FE1\u865F\u5E72\u64FE\u7CFB\u7D71
 
-item.bullet.0.name=\u666E\u7528\u6027\u5B50\u5F48
-item.bullet.1.name=\u53CD\u7269\u8CEA\u5B50\u5F48
-item.launcher.name=\u706B\u7BAD\u7B52
+item.sulfur.name=硫磺
+item.saltpeter.name=硝石
+item.poisonPowder.name=毒粉
+item.antidote.name=解毒剂
+item.radarGun.name=雷达枪
+item.remoteDetonator.name=遥控引爆器
+item.defuser.name=排爆器
+item.laserDesignator.name=激光指示器
+item.tracker.name=追踪器
+item.signalDisrupter.name=信号干扰器
+item.rocketLauncher.name=火箭发射器
 
-## ICBM Machines
-icbm.machine.0.name=\u767C\u5C04\u53F0T1
-icbm.machine.1.name=\u767C\u5C04\u53F0T2
-icbm.machine.2.name=\u767C\u5C04\u53F0T3
-icbm.machine.3.name=\u63A7\u5236\u7CFB\u7D71T1
-icbm.machine.4.name=\u63A7\u5236\u7CFB\u7D71T2
-icbm.machine.5.name=\u63A7\u5236\u7CFB\u7D71T3
-icbm.machine.6.name=\u652F\u63F4\u6846T1
-icbm.machine.7.name=\u652F\u63F4\u6846T2
-icbm.machine.8.name=\u652F\u63F4\u6846T3
-icbm.machine.9.name=\u96F7\u9054\u53F0
-icbm.machine.10.name=\u78C1\u66B4\u5854
-icbm.machine.12.name=\u5DE1\u822A\u767C\u5C04\u5668
+## Machines
 
-## ICBM Explosives
+machine.LauncherBase.0.name=发射平台 T1
+machine.LauncherBase.1.name=发射平台 T2
+machine.LauncherBase.2.name=发射平台 T3
+machine.LauncherScreen.0.name=控制面板 T1
+machine.LauncherScreen.1.name=控制面板 T2
+machine.LauncherScreen.2.name=控制面板 T3
+machine.LauncherFrame.0.name=发射器支撑架 T1
+machine.LauncherFrame.1.name=发射器支撑架 T2
+machine.LauncherFrame.2.name=发射器支撑架 T3
+machine.RadarStation.name=雷达站
+machine.EmpTower.name=电磁脉冲塔
+machine.CruiseLauncher.name=巡航导弹发射器
+machine.MissileCoordinator.name=导弹协调器
+
+## Blocks
+
+tile.sulfurOre.name=硫磺矿
+
+## Explosives
 
 ## Block Form
-icbm.explosive.condensed.name=\u58D3\u7E2E\u6027\u70B8\u85E5
-icbm.explosive.shrapnel.name=\u6563\u5F48\u6027\u70B8\u85E5
-icbm.explosive.incendiary.name=\u71C3\u71D2\u6027\u70B8\u85E5
-icbm.explosive.chemical.name=\u5316\u5B78\u6B66\u5668
-icbm.explosive.anvil.name=\u7827\u70B8\u85E5
-icbm.explosive.repulsive.name=\u6297\u62D2\u6027\u70B8\u85E5
-icbm.explosive.attractive.name=\u5438\u5F15\u6027\u70B8\u85E5
 
-icbm.explosive.fragmentation.name=\u788E\u7247\u6027\u70B8\u85E5
-icbm.explosive.contagious.name=\u50B3\u67D3\u6027\u70B8\u85E5
-icbm.explosive.sonic.name=\u97F3\u6CE2\u70B8\u5F48
-icbm.explosive.breaching.name=\u9055\u53CD\u6027\u70B8\u85E5
-icbm.explosive.rejuvenation.name=\u6CBB\u7642\u6027\u70B8\u85E5
-icbm.explosive.thermobaric.name=\u6EAB\u58D3\u6027\u70B8\u85E5
+explosive.condensed.name=浓缩炸弹
+explosive.shrapnel.name=榴霰炸弹
+explosive.incendiary.name=燃烧炸弹
+explosive.debilitation.name=虚弱炸弹
+explosive.chemical.name=化学炸弹
+explosive.anvil.name=铁砧炸弹
+explosive.repulsive.name=排斥炸弹
+explosive.attractive.name=吸引炸弹
 
-icbm.explosive.nuclear.name=\u6838\u5F48
-icbm.explosive.emp.name=\u78C1\u66B4\u5F48
-icbm.explosive.conflagration.name=\u71F9\u70B8\u85E5
-icbm.explosive.endothermic.name=\u5438\u71B1\u6027\u70B8\u85E5
-icbm.explosive.antiGravitational.name=\u53CD\u5730\u5FC3\u5438\u529B\u70B8\u5F48
-icbm.explosive.ender.name=\u77AC\u79FB\u5F48
-icbm.explosive.hypersonic.name=\u8D85\u97F3\u6CE2\u5F48
+explosive.fragmentation.name=碎片炸弹
+explosive.contagious.name=传染性炸弹
+explosive.sonic.name=声波炸弹
+explosive.breaching.name=破坏炸弹
+explosive.rejuvenation.name=复活炸弹
+explosive.thermobaric.name=温压炸弹
 
-icbm.explosive.antimatter.name=\u53CD\u7269\u8CEA\u70B8\u5F48
-icbm.explosive.redMatter.name=\u7D05\u7269\u8CEA\u70B8\u5F48
+explosive.nuclear.name=核弹
+explosive.emp.name=电磁脉冲炸弹
+explosive.exothermic.name=放热炸弹
+explosive.endothermic.name=吸热炸弹
+explosive.antiGravitational.name=反重力炸弹
+explosive.ender.name=末影炸弹
+explosive.hypersonic.name=超声波炸弹
 
-icbm.explosive.sMine.name=S\u578B\u5730\u96F7
+explosive.antimatter.name=反物质炸弹
+explosive.redMatter.name=红物质炸弹
+
+explosive.sMine.name=地雷
 
 ## Missile Form
-icbm.missile.condensed.name=\u666E\u7528\u5F0F\u5C0E\u5F48
-icbm.missile.shrapnel.name=\u6563\u5F48\u5C0E\u5F48
-icbm.missile.incendiary.name=\u71C3\u71D2\u5C0E\u5F48
-icbm.missile.chemical.name=\u5316\u5B78\u5C0E\u5F48
-icbm.missile.anvil.name=\u7827\u5C0E\u5F48
-icbm.missile.repulsive.name=\u62D2\u6297\u6027\u5C0E\u5F48
-icbm.missile.attractive.name=\u5438\u5F15\u6027\u5C0E\u5F48
 
-icbm.missile.fragmentation.name=\u788E\u7247\u5C0E\u5F48
-icbm.missile.contagious.name=\u50B3\u67D3\u6027\u5C0E\u5F48
-icbm.missile.sonic.name=\u97F3\u6CE2\u5C0E\u5F48
-icbm.missile.breaching.name=\u9055\u53CD\u6027\u5C0E\u5F48
-icbm.missile.rejuvenation.name=\u6CBB\u7642\u6027\u5C0E\u5F48
-icbm.missile.thermobaric.name=\u6EAB\u58D3\u6027\u5C0E\u5F48
+missile.condensed.name=浓缩导弹
+missile.shrapnel.name=榴霰导弹
+missile.incendiary.name=燃烧导弹
+missile.debilitation.name=虚弱导弹
+missile.chemical.name=化学导弹
+missile.anvil.name=铁砧导弹
+missile.repulsive.name=排斥导弹
+missile.attractive.name=吸引导弹
 
-icbm.missile.nuclear.name=\u6838\u5C0E\u5F48
-icbm.missile.emp.name=\u78C1\u66B4\u5C0E\u5F48
-icbm.missile.conflagration.name=\u71F9\u5C0E\u5F48
-icbm.missile.endothermic.name=\u5438\u71B1\u5C0E\u5F48
-icbm.missile.antiGravitational.name=\u53CD\u5730\u5FC3\u5438\u529B\u5C0E\u5F48
-icbm.missile.ender.name=\u77AC\u79FB\u5C0E\u5F48
-icbm.missile.hypersonic.name=\u8D85\u97F3\u6CE2\u5C0E\u5F48
+missile.fragmentation.name=碎片导弹
+missile.contagious.name=传染性导弹
+missile.sonic.name=声波导弹
+missile.breaching.name=破坏导弹
+missile.rejuvenation.name=复活导弹
+missile.thermobaric.name=温压导弹
 
-icbm.missile.antimatter.name=\u53CD\u7269\u8CEA\u5C0E\u5F48
-icbm.missile.redMatter.name=\u7D05\u7269\u8CEA\u5C0E\u5F48
+missile.nuclear.name=核弹
+missile.emp.name=电磁脉冲导弹
+missile.exothermic.name=放热导弹
+missile.endothermic.name=吸热导弹
+missile.antiGravitational.name=反重力导弹
+missile.ender.name=末影导弹
+missile.hypersonic.name=超声波导弹
+
+missile.antimatter.name=反物质导弹
+missile.redMatter.name=红物质导弹
 
 ## Special Missiles
-icbm.missile.missileModule.name=\u5C0E\u5F48\u6A21
-icbm.missile.antiBallistic.name=\u53CD\u5F48\u9053\u5C0E\u5F48
-icbm.missile.cluster.name=\u98A8\u66B4\u5C0E\u5F48
-icbm.missile.nuclearCluster.name=\u6838\u98A8\u66B4\u5C0E\u5F48
-icbm.missile.homing.name=\u8FFD\u8E64\u6027\u5C0E\u5F48
+
+missile.missileModule.name=导弹模块
+missile.antiBallistic.name=反弹道导弹
+missile.cluster.name=集束导弹
+missile.nuclearCluster.name=核集束导弹
+missile.homing.name=跟踪导弹
 
 ## Grenades
-icbm.grenade.condensed.name=\u666E\u7528\u6027\u624B\u69B4\u5F48
-icbm.grenade.shrapnel.name=\u6563\u5F48\u624B\u69B4\u5F48
-icbm.grenade.incendiary.name=\u71C3\u71D2\u6027\u624B\u69B4\u5F48
-icbm.grenade.chemical.name=\u5316\u5B78\u6027\u624B\u69B4\u5F48
-icbm.grenade.anvil.name=\u7827\u624B\u69B4\u5F48
-icbm.grenade.repulsive.name=\u62D2\u6297\u6027\u624B\u69B4\u5F48
-icbm.grenade.attractive.name=\u5438\u5F15\u6027\u624B\u69B4\u5F48
+
+grenade.condensed.name=浓缩手雷
+grenade.shrapnel.name=榴霰手雷
+grenade.incendiary.name=燃烧手雷
+grenade.debilitation.name=虚弱手雷
+grenade.chemical.name=化学手雷
+grenade.anvil.name=铁砧手雷
+grenade.repulsive.name=排斥手雷
+grenade.attractive.name=吸引手雷
 
 ## Explosive Minecarts
-icbm.minecart.condensed.name=\u7206\u70B8\u5927\u8ECA
-icbm.minecart.shrapnel.name=\u6563\u5F48\u5927\u8ECA
-icbm.minecart.incendiary.name=\u71C3\u71D2\u5927\u8ECA
-icbm.minecart.chemical.name=\u5316\u5B78\u5927\u8ECA
-icbm.minecart.anvil.name=\u7827\u5927\u8ECA
-icbm.minecart.repulsive.name=\u62D2\u6297\u6027\u5927\u8ECA
-icbm.minecart.attractive.name=\u5438\u5F15\u6027\u5927\u8ECA
 
-icbm.minecart.fragmentation.name=\u788E\u7247\u5927\u8ECA
-icbm.minecart.contagious.name=\u50B3\u67D3\u6027\u5927\u8ECA
-icbm.minecart.sonic.name=\u97F3\u6CE2\u5927\u8ECA
-icbm.minecart.breaching.name=\u9055\u53CD\u6027\u5927\u8ECA
-icbm.minecart.rejuvenation.name=\u6CBB\u7642\u6027\u5927\u8ECA
-icbm.minecart.thermobaric.name=\u6EAB\u58D3\u6027\u5927\u8ECA
+minecart.condensed.name=炸药矿车
+minecart.shrapnel.name=榴霰炸弹矿车
+minecart.incendiary.name=燃烧炸弹矿车
+minecart.debilitation.name=虚弱炸弹矿车
+minecart.chemical.name=化学炸弹矿车
+minecart.anvil.name=铁砧炸弹矿车
+minecart.repulsive.name=排斥炸弹矿车
+minecart.attractive.name=吸引炸弹矿车
 
-## ICBM Misc Blocks
-tile.sulfurOre.name=\u786B\u7926\u77F3
-tile.glassPressurePlate.name=\u73BB\u7483\u611F\u61C9\u677F
-tile.glassButton.name=\u73BB\u7483\u6309\u9215
-tile.camouflage.name=\u507D\u88DD
-tile.proximityDetector.name=\u63A5\u8FD1\u7387\u8A08\u7B97\u5668
-tile.spike.0.name=\u5C16\u523A
-tile.spike.1.name=\u6709\u6BD2\u5C16\u523A
-tile.spike.2.name=\u71C3\u71D2\u5C16\u523A
+minecart.fragmentation.name=碎片炸弹矿车
+minecart.contagious.name=传染性炸弹矿车
+minecart.sonic.name=声波炸弹矿车
+minecart.breaching.name=破坏炸弹矿车
+minecart.rejuvenation.name=复活炸弹矿车
+minecart.thermobaric.name=温压炸弹矿车
+
+## Chat messages
+
+message.tracker.nowtrack=正在追踪：
+message.tracker.nopower=追踪器电量不足！
+message.tracker.banned=该区域禁止使用追踪器！
+
+message.defuser.nopower=排爆器电量不足！
+
+message.designator.callTime=空袭将在以下时间后呼叫：
+message.designator.blast=空袭来袭！
+message.designator.setFreq=激光指示器频率已设置为：
+message.designator.failFreq=频率必须大于零。
+message.designator.callBlast=正在向指定位置呼叫空袭！
+message.designator.nopower=激光指示器电量不足！
+message.designator.noFreq=激光指示器尚未设置频率！
+
+message.radarGun.scanned=扫描坐标：X:%x，Y:%y，Z:%z - 距离：%d
+message.radarGun.nopower=雷达枪电量不足！
+message.radarGun.transfer=坐标信息已传输！
+message.radarGun.noCoords=你必须先扫描一个坐标！
+message.launcher.protected=该区域受到保护。
+message.detonator.locked=遥控器已锁定至：X:%x，Y:%y，Z:%z
+message.detonator.nopower=遥控器电量不足！
+message.radar.redstone=雷达红石信号全侧输出：
+
+## GUI stuff
+
+gui.misc.nopower=电力不足！
+gui.misc.idle=空闲
+gui.misc.freq=频率：
+gui.misc.XCoord=X 坐标：
+gui.misc.YCoord=Y 坐标：
+gui.misc.ZCoord=Z 坐标：
+gui.misc.x=X：
+gui.misc.y=Y：
+gui.misc.z=Z：
+gui.misc.dimension=维度：
+gui.misc.status=状态：
+gui.misc.voltage=电压：
+
+gui.tracker.freq=频率
+gui.detector.name=接近探测器
+gui.detector.all=全部
+gui.detector.players=玩家
+gui.detector.mobs=生物
+gui.detector.range=探测范围
+gui.detector.min=最小值
+gui.detector.max=最大值
+gui.detector.exclude=排除
+gui.detector.include=包含
+gui.detector.target=目标：
+gui.detector.on=开启
+gui.detector.status=状态：
+
+gui.empTower.name=电磁脉冲塔
+gui.empTower.missiles=导弹
+gui.empTower.elec=电力
+gui.empTower.both=两者
+gui.empTower.radius=电磁脉冲半径：%p 格
+gui.empTower.effect=电磁脉冲效果：
+gui.empTower.effectDebilitate=使电子设备失效
+gui.empTower.effectDisrupt=干扰导弹
+gui.empTower.effectDeplete=耗尽电力
+gui.empTower.mode=模式：
+gui.empTower.ready=准备发射！
+
+gui.launcherBase.name=发射平台
+gui.launcherBase.place=放置导弹
+gui.launcherScreen.name=控制面板
+gui.launcherScreen.detHeight=引爆高度：
+gui.launcherScreen.lockHeight=锁定高度：
+gui.launcherScreen.target=导弹目标
+gui.launcherScreen.inaccuracy=误差：%p 格
+gui.launcherScreen.statusMissing=未连接！
+gui.launcherScreen.statusNoPower=电力不足！
+gui.launcherScreen.statusEmpty=导弹发射井为空！
+gui.launcherScreen.statusInvalid=目标无效！
+gui.launcherScreen.statusClose=目标距离过近！
+gui.launcherScreen.statusFar=目标距离过远！
+gui.launcherScreen.statusReady=准备发射！
+gui.launcherCruise.name=巡航导弹发射器
+gui.launcherCruise.statusNoPower=无电力！
+gui.launcherCruise.statusEmpty=发射井为空！
+gui.launcherCruise.statusInvalid=目标无效！
+gui.launcherCruise.statusReady=准备就绪！
+
+gui.coordinator.name=导弹协调器
+gui.coordinator.sim=路径模拟器
+gui.coordinator.from=起点：
+gui.coordinator.to=终点：
+gui.coordinator.displace=位移：%p 米
+gui.coordinator.arc=弧度：%p 米
+gui.coordinator.time=时间：%p 秒
+gui.coordinator.direction=方向：
+gui.coordinator.wip=更多功能即将推出！
+
+gui.assembler.name=导弹工作台
+gui.radar.coords=坐标：
+gui.radar.zoneSafe=安全区：
+gui.radar.zoneAlarm=警戒区：
+gui.radar.on=雷达已开启！
+gui.radar.nopower=无电力！
+
+gui.terminal.name=终端
+gui.platform.ammo=弹药
+gui.platform.upgrades=升级
+gui.platform.joules=共 %j
+gui.platform.access=用户权限
+
+## Tooltips
+
+info.misc.freq=频率：
+info.tracker.tracking=追踪目标：
+info.designator.noFreq=频率：未设置
+info.radarGun.savedCoords=已保存坐标：
+info.radarGun.meters=米
+info.detonator.linked=已连接的炸弹：
+info.detonator.noLink=未连接炸弹
+info.misc.tier=炸弹等级
+info.rocketlauncher.tooltip=该火箭发射器最多可以发射 T%s 级火箭
+info.tracker.tooltip=左键点击生物（包括玩家），我就会指向它。
+
+## Config Gui
+
+defensetech.configgui.ctgy.general=常规设置
+defensetech.configgui.ctgy.explosives=炸弹设置
+
+## Config Tooltips
+
+defensetech.configgui.ctgy.general.tooltip=关于防御科技及其所有模块的常规设置
+defensetech.configgui.ctgy.explosives.tooltip=关于启用和禁用特定炸弹的设置
+
