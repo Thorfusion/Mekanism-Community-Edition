@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanismultimate:nutritional_liquifier"
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "down": {},
+      "up": {},
+      "north": {},
+      "south": {"y": 180},
+      "east": {"y": 90},
+      "west": {"y": -90}
+    },
+    "active": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}

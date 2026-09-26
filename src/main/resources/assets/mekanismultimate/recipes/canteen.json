@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "conditions": [{"type": "mekanismultimate:nutrition_enabled"}],
+  "pattern": [" I ", "I#I", " I "],
+  "key": {
+    "I": {"type": "forge:ore_dict", "ore": "ingotTin"},
+    "#": {"item": "minecraft:bowl"}
+  },
+  "result": {"item": "mekanismultimate:canteen"}
+}

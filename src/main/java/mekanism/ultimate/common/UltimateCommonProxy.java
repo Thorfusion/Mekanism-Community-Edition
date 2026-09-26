@@ -5,6 +5,9 @@ import mekanism.common.base.IGuiProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.ultimate.common.tile.TileEntityUltimateFactory;
+import mekanism.ultimate.common.tile.TileEntityNutritionalLiquifier;
+import mekanism.ultimate.common.inventory.ContainerNutritionalLiquifier;
+import mekanism.ultimate.common.config.UltimateNutritionConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -23,11 +26,14 @@ public class UltimateCommonProxy implements IGuiProvider {
 
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileEntityUltimateFactory.class, new ResourceLocation(MekanismUltimate.MODID, "ultimate_factory"));
+        GameRegistry.registerTileEntity(TileEntityNutritionalLiquifier.class,
+              new ResourceLocation(MekanismUltimate.MODID, "nutritional_liquifier"));
     }
 
     public void loadConfiguration() {
         if (MekanismConfig.local().ultimate != null) {
             MekanismConfig.local().ultimate.load(Mekanism.configurationultimate);
+            UltimateNutritionConfig.load(Mekanism.configurationultimate);
             if (Mekanism.configurationultimate.hasChanged()) {
                 Mekanism.configurationultimate.save();
             }
@@ -44,6 +50,8 @@ public class UltimateCommonProxy implements IGuiProvider {
         TileEntity tile = world.getTileEntity(pos);
         if (ID == 0 && tile instanceof TileEntityUltimateFactory) {
             return new ContainerFactory(player.inventory, (TileEntityUltimateFactory) tile);
+        } else if (ID == 1 && tile instanceof TileEntityNutritionalLiquifier) {
+            return new ContainerNutritionalLiquifier(player.inventory, (TileEntityNutritionalLiquifier) tile);
         }
         return null;
     }

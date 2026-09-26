@@ -1,0 +1,10 @@
+# Made in Blockbench 4.0.5
+newmtl 3
+map_Kd mekanismmekasuit:entity/armor/mekasuit_armor_body
+newmtl 4
+map_Kd mekanismmekasuit:blocks/models/leds
+newmtl 5
+map_Kd mekanismmekasuit:entity/armor/mekasuit_armor_exoskeleton
+newmtl 6
+map_Kd mekanismmekasuit:entity/armor/mekatool
+newmtl none

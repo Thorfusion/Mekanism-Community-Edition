@@ -66,12 +66,15 @@ public final class MekaSuitItems {
     public static final ItemMekaModule VisionEnhancementUnit = init(
           new ItemMekaModule(MekaSuitModules.VISION_ENHANCEMENT_UNIT, EnumRarity.RARE),
           "module_vision_enhancement_unit", "ModuleVisionEnhancementUnit");
+    public static final ItemMekaModule NutritionalInjectionUnit = init(
+          new ItemMekaModule(MekaSuitModules.NUTRITIONAL_INJECTION_UNIT, EnumRarity.RARE),
+          "module_nutritional_injection_unit", "ModuleNutritionalInjectionUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
           BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
-          InhalationPurificationUnit, VisionEnhancementUnit));
+          InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit));
 
     private MekaSuitItems() {
     }

@@ -20,7 +20,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-@Mod(modid = MekanismUltimate.MODID, useMetadata = true, guiFactory = "mekanism.ultimate.client.gui.UltimateGuiFactory")
+@Mod(modid = MekanismUltimate.MODID, useMetadata = true,
+      dependencies = "required-after:mekanism",
+      guiFactory = "mekanism.ultimate.client.gui.UltimateGuiFactory")
 @Mod.EventBusSubscriber
 public class MekanismUltimate implements IModule {
 
@@ -42,6 +44,7 @@ public class MekanismUltimate implements IModule {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         UltimateBlocks.registerItemBlocks(event.getRegistry());
+        UltimateItems.registerItems(event.getRegistry());
     }
 
     @SubscribeEvent
@@ -51,6 +54,7 @@ public class MekanismUltimate implements IModule {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        UltimateFluids.register();
         proxy.preInit();
         proxy.loadConfiguration();
     }

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:ore_shaped",
+  "conditions": [{"type": "mekanismultimate:nutrition_enabled"}],
+  "pattern": ["RCR", "#X#", "RCR"],
+  "key": {
+    "R": {"type": "forge:ore_dict", "ore": "dustRedstone"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitBasic"},
+    "#": {"item": "minecraft:bowl"},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismultimate:nutritional_liquifier"}
+}

@@ -1,5 +1,6 @@
 {
   "conditions": {
-    "factory_enabled": "mekanism.ultimate.common.recipe.UltimateRecipeEnabledCondition"
+    "factory_enabled": "mekanism.ultimate.common.recipe.UltimateRecipeEnabledCondition",
+    "nutrition_enabled": "mekanism.ultimate.common.recipe.NutritionRecipeEnabledCondition"
   }
 }

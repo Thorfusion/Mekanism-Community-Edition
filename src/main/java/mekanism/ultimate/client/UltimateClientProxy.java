@@ -12,6 +12,9 @@ import mekanism.ultimate.common.MekanismUltimate;
 import mekanism.ultimate.common.UltimateBlocks;
 import mekanism.ultimate.common.UltimateCommonProxy;
 import mekanism.ultimate.common.tile.TileEntityUltimateFactory;
+import mekanism.ultimate.common.tile.TileEntityNutritionalLiquifier;
+import mekanism.ultimate.client.gui.GuiNutritionalLiquifier;
+import mekanism.ultimate.common.UltimateItems;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -46,6 +49,12 @@ public class UltimateClientProxy extends UltimateCommonProxy {
             RecipeType type = ((IFactory) stack.getItem()).getRecipeTypeOrNull(stack);
             return itemModels.get(type == null ? RecipeType.SMELTING : type);
         });
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(UltimateBlocks.NutritionalLiquifier), 0,
+              new ModelResourceLocation(UltimateBlocks.NutritionalLiquifier.getRegistryName(), "inventory"));
+        for (Item ultimateItem : UltimateItems.allRegistered()) {
+            ModelLoader.setCustomModelResourceLocation(ultimateItem, 0,
+                  new ModelResourceLocation(ultimateItem.getRegistryName(), "inventory"));
+        }
     }
 
     @Override
@@ -53,6 +62,8 @@ public class UltimateClientProxy extends UltimateCommonProxy {
         TileEntity tile = world.getTileEntity(pos);
         if (ID == 0 && tile instanceof TileEntityUltimateFactory) {
             return new GuiFactory(player.inventory, (TileEntityUltimateFactory) tile);
+        } else if (ID == 1 && tile instanceof TileEntityNutritionalLiquifier) {
+            return new GuiNutritionalLiquifier(player.inventory, (TileEntityNutritionalLiquifier) tile);
         }
         return null;
     }

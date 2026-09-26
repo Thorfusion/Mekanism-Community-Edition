@@ -3,6 +3,7 @@ package mekanism.mekasuit.client;
 import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitVisionHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitNutritionalHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -35,6 +36,8 @@ public final class MekaSuitVisionHandler {
     private static final int VISION_DURATION = 220;
     private static final ResourceLocation HUD_ICON = new ResourceLocation(
           MekanismMekaSuit.MODID, "gui/hud/vision_enhancement_unit.png");
+    private static final ResourceLocation NUTRITION_ICON = new ResourceLocation(
+          MekanismMekaSuit.MODID, "gui/hud/nutritional_injection_unit.png");
 
     private boolean visionApplied;
 
@@ -130,21 +133,34 @@ public final class MekaSuitVisionHandler {
         }
         ModuleData module = MekaSuitVisionHelper.getModule(
               player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
-        if (module == null) {
+        ItemStack helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ModuleData nutrition = MekaSuitNutritionalHelper.getModule(helmet);
+        if (module == null && (nutrition == null || !nutrition.isEnabled())) {
             return;
         }
-        boolean enabled = module.isEnabled();
-        String status = I18n.format(enabled ? "gui.mekasuit.on" : "gui.mekasuit.off");
         ScaledResolution resolution = new ScaledResolution(minecraft);
         int iconX = resolution.getScaledWidth() - 26;
         int y = resolution.getScaledHeight() - 28;
-        int color = enabled ? 0x55FFBB : 0x777777;
-        minecraft.fontRenderer.drawStringWithShadow(status,
-              iconX - minecraft.fontRenderer.getStringWidth(status) - 2, y + 4, color);
-        minecraft.getTextureManager().bindTexture(HUD_ICON);
+        if (module != null) {
+            boolean enabled = module.isEnabled();
+            String status = I18n.format(enabled ? "gui.mekasuit.on" : "gui.mekasuit.off");
+            drawHudElement(minecraft, HUD_ICON, iconX, y, status, enabled ? 0x55FFBB : 0x777777,
+                  enabled ? 1F : 0.5F);
+            y -= 20;
+        }
+        if (nutrition != null && nutrition.isEnabled()) {
+            String percent = Math.round(100 * MekaSuitNutritionalHelper.getRatio(helmet)) + "%";
+            drawHudElement(minecraft, NUTRITION_ICON, iconX, y, percent, 0xEB6CA3, 1F);
+        }
+    }
+
+    private static void drawHudElement(Minecraft minecraft, ResourceLocation icon, int iconX, int y,
+          String text, int color, float brightness) {
+        minecraft.fontRenderer.drawStringWithShadow(text,
+              iconX - minecraft.fontRenderer.getStringWidth(text) - 2, y + 4, color);
+        minecraft.getTextureManager().bindTexture(icon);
         GlStateManager.enableBlend();
-        GlStateManager.color(enabled ? 1F : 0.5F, enabled ? 1F : 0.5F,
-              enabled ? 1F : 0.5F, 1F);
+        GlStateManager.color(brightness, brightness, brightness, 1F);
         Gui.drawModalRectWithCustomSizedTexture(iconX, y, 0, 0, 16, 16, 16, 16);
         GlStateManager.color(1F, 1F, 1F, 1F);
         GlStateManager.disableBlend();

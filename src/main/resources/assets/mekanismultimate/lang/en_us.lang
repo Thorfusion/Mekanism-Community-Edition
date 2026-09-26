@@ -1,2 +1,8 @@
 tile.UltimateFactory.name=Ultimate Factory
 mekanism.configgui.ctgy.ultimate=Ultimate Factories
+tile.NutritionalLiquifier.name=Nutritional Liquifier
+item.Canteen.name=Canteen
+fluid.nutritional_paste=Nutritional Paste
+tooltip.NutritionalLiquifier=A machine that processes foods into non-dangerous, easily-digestible Nutritional Paste.
+tooltip.nutritionalPaste=Nutritional Paste
+gui.NutritionalLiquifier.short=Nutritional Liquifier

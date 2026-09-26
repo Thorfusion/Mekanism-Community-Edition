@@ -16,6 +16,9 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_MAGIC_REDUCE_USAGE = 1_000L;
     public static final float DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO = 1F;
     public static final long DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE = 500L;
+    public static final long DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE = 20_000L;
+    public static final int DEFAULT_SUIT_NUTRITIONAL_STORAGE = 128_000;
+    public static final int DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE = 256;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -40,6 +43,9 @@ public final class MekaSuitConfig {
     public static long suitMagicReduceUsage = DEFAULT_SUIT_MAGIC_REDUCE_USAGE;
     public static float suitMagicDamageReductionRatio = DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO;
     public static long suitVisionEnhancementUsage = DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE;
+    public static long suitNutritionalInjectionUsage = DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE;
+    public static int suitNutritionalStorage = DEFAULT_SUIT_NUTRITIONAL_STORAGE;
+    public static int suitNutritionalTransferRate = DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -114,6 +120,15 @@ public final class MekaSuitConfig {
         suitVisionEnhancementUsage = getLong(config, "mekasuit", "visionEnhancement",
               DEFAULT_SUIT_VISION_ENHANCEMENT_USAGE, 0,
               "Energy used per tick while the Vision Enhancement Unit is active.");
+        suitNutritionalInjectionUsage = getLong(config, "mekasuit", "nutritionalInjection",
+              DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE, 0,
+              "Energy used for each half-drumstick restored by the Nutritional Injection Unit.");
+        suitNutritionalStorage = config.getInt("nutritionalMaxStorage", "mekasuit",
+              DEFAULT_SUIT_NUTRITIONAL_STORAGE, 1, Integer.MAX_VALUE,
+              "Maximum Nutritional Paste stored by a MekaSuit Helmet in millibuckets.");
+        suitNutritionalTransferRate = config.getInt("nutritionalTransferRate", "mekasuit",
+              DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE, 1, Integer.MAX_VALUE,
+              "Maximum Nutritional Paste transferred into a MekaSuit Helmet per operation.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",

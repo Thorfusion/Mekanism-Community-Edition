@@ -26,6 +26,7 @@ import mekanism.mekasuit.common.content.gear.MekaSuitBreathingHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitInhalationHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitVisionHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitNutritionalHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -143,7 +144,8 @@ public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(),
+              new MekaSuitNutritionalHelper.NutritionalFluidCapability());
     }
 
     @Override
@@ -186,6 +188,11 @@ public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem
                       + " x" + module.getInstalledCount());
             }
         }
+        if (moduleTarget == ModuleTarget.HELMET && MekaSuitNutritionalHelper.supportsStorage(stack)) {
+            tooltip.add(EnumColor.AQUA + LangUtils.localize("tooltip.nutritionalPaste") + ": " + EnumColor.GREY
+                  + MekaSuitNutritionalHelper.getStored(stack) + " / "
+                  + MekaSuitNutritionalHelper.getCapacity() + " mB");
+        }
     }
 
     @Nonnull
@@ -216,6 +223,7 @@ public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem
             if (!world.isRemote) {
                 MekaSuitBreathingHelper.tick(stack, player);
                 MekaSuitVisionHelper.tickServer(stack, player);
+                MekaSuitNutritionalHelper.tick(stack, player);
             }
             MekaSuitInhalationHelper.tick(stack, player, !world.isRemote);
         }

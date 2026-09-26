@@ -1,0 +1,36 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "inventory": {
+      "model": "mekanismmekasuit:mekatool_right.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "transform": {
+        "firstperson_righthand": {
+          "rotation": [90, 0, -10],
+          "translation": [0, -0.1875, 0]
+        },
+        "thirdperson_righthand": {
+          "rotation": [90, 0, 0],
+          "translation": [0.0625, -0.625, -0.25]
+        },
+        "gui": {
+          "rotation": [90, 40, 90],
+          "translation": [0.40625, -0.21875, 0]
+        },
+        "ground": {
+          "translation": [0.0625, 0.125, 0.4375]
+        },
+        "head": {
+          "rotation": [270, 220, 90],
+          "translation": [0, 0.125, 0]
+        },
+        "fixed": {
+          "rotation": [270, 220, 90],
+          "translation": [-0.375, -0.25, -0.0625]
+        }
+      }
+    }
+  }
+}
