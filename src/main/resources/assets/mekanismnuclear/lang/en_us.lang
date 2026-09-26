@@ -3,6 +3,7 @@ tile.AntiprotonicNucleosynthesizer.name=Antiprotonic Nucleosynthesizer
 tile.RadioactiveWasteBarrel.name=Radioactive Waste Barrel
 tile.UraniumOre.name=Uranium Ore
 tile.FluoriteOre.name=Fluorite Ore
+tile.FluoriteBlock.name=Block of Fluorite
 tile.FissionReactorCasing.name=Fission Reactor Casing
 tile.FissionReactorPort.name=Fission Reactor Port
 tile.FissionReactorLogicAdapter.name=Fission Reactor Logic Adapter

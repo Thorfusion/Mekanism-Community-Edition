@@ -73,6 +73,10 @@ public final class NuclearLegacyRecipeRegistry {
             addCrusherIfAbsent(input, new ItemStack(NuclearItems.FluoriteDust));
             addDissolutionIfAbsent(input, new GasStack(NuclearChemicals.HydrofluoricAcid, 1_000));
         }
+        for (ItemStack block : OreDictionary.getOres(NuclearOreDictionary.BLOCK_FLUORITE, false)) {
+            addDissolutionIfAbsent(sized(block, 1),
+                  new GasStack(NuclearChemicals.HydrofluoricAcid, 9_000), 9);
+        }
         for (ItemStack dust : OreDictionary.getOres(NuclearOreDictionary.DUST_FLUORITE, false)) {
             ItemStack input = sized(dust, 1);
             addEnrichmentIfAbsent(input, new ItemStack(NuclearItems.FluoriteGem));
@@ -144,9 +148,14 @@ public final class NuclearLegacyRecipeRegistry {
     }
 
     private static void addDissolutionIfAbsent(ItemStack input, GasStack output) {
+        addDissolutionIfAbsent(input, output, 1);
+    }
+
+    private static void addDissolutionIfAbsent(ItemStack input, GasStack output,
+          int baseChemicalUsage) {
         ItemStackInput recipeInput = new ItemStackInput(input);
         if (RecipeHandler.getDissolutionRecipe(recipeInput) == null) {
-            RecipeHandler.addChemicalDissolutionChamberRecipe(input, output);
+            RecipeHandler.addChemicalDissolutionChamberRecipe(input, output, baseChemicalUsage);
         }
     }
 

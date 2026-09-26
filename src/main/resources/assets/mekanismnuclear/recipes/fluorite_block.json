@@ -1,0 +1,8 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["FFF", "FFF", "FFF"],
+  "key": {
+    "F": { "type": "forge:ore_dict", "ore": "gemFluorite" }
+  },
+  "result": { "item": "mekanismnuclear:block_fluorite" }
+}

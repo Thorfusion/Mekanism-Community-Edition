@@ -28,6 +28,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -49,6 +50,7 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
     private boolean validationQueued;
     private long portEnergy;
     private SPSStatus clientStatus = SPSStatus.EMPTY;
+    private boolean presentationDirty;
 
     @Override
     public void onLoad() {
@@ -82,6 +84,7 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
         }
         TileEntitySPSPort controller = getControllerTile();
         if (controller == null || !controller.spsState.isFormed()) {
+            syncPresentationIfNeeded();
             return;
         }
         supplyCoilEnergy(controller);
@@ -92,6 +95,7 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
             }
         }
         ejectAntimatter(controller);
+        syncPresentationIfNeeded();
     }
 
     private void supplyCoilEnergy(TileEntitySPSPort controller) {
@@ -309,7 +313,7 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
         if (world != null && world.isRemote) {
             return clientStatus;
         }
-        return SPSStatus.from(getControllerState(), portEnergy, getPortEnergyCapacity());
+        return SPSStatus.from(getControllerState(), isController(), portEnergy, getPortEnergyCapacity());
     }
 
     public boolean isOutput() {
@@ -337,11 +341,21 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
         markDirty();
         if (world != null && !world.isRemote) {
             MekanismUtils.saveChunk(this);
+            if (isController()) {
+                presentationDirty = true;
+            }
             if (isController() && spsState.isFormed()) {
                 for (BlockPos port : spsState.getPorts()) {
                     world.updateComparatorOutputLevel(port, getBlockType());
                 }
             }
+        }
+    }
+
+    private void syncPresentationIfNeeded() {
+        if (presentationDirty && isController() && (ticker & 1) == 0) {
+            presentationDirty = false;
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
@@ -545,8 +559,18 @@ public class TileEntitySPSPort extends TileEntityBasicBlock implements IGasHandl
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(output);
-        SPSStatus.from(getControllerState(), portEnergy, getPortEnergyCapacity()).write(data);
+        SPSStatus.from(getControllerState(), isController(), portEnergy, getPortEnergyCapacity()).write(data);
         return data;
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        SPSStatus status = getStatus();
+        BlockPos min = status.getMin();
+        BlockPos max = status.getMax();
+        return status.isFormed() && min != null && max != null
+              ? new AxisAlignedBB(min, max.add(1, 1, 1)) : super.getRenderBoundingBox();
     }
 
     @Override

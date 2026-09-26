@@ -6,6 +6,7 @@ import mekanism.nuclear.common.block.BlockFissionReactorComponent;
 import mekanism.nuclear.common.block.BlockFissionReactorLogicAdapter;
 import mekanism.nuclear.common.block.BlockFissionReactorPort;
 import mekanism.nuclear.common.block.BlockNuclearOre;
+import mekanism.nuclear.common.block.BlockNuclearStorage;
 import mekanism.nuclear.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.nuclear.common.block.BlockSPSCasing;
 import mekanism.nuclear.common.block.BlockSPSPort;
@@ -26,6 +27,7 @@ public final class NuclearBlocks {
     public static final Block RadioactiveWasteBarrel = new BlockRadioactiveWasteBarrel();
     public static final BlockNuclearOre UraniumOre = new BlockNuclearOre(NuclearOreType.URANIUM);
     public static final BlockNuclearOre FluoriteOre = new BlockNuclearOre(NuclearOreType.FLUORITE);
+    public static final Block FluoriteBlock = new BlockNuclearStorage();
     public static final Block FissionReactorCasing = new BlockFissionReactorComponent(FissionReactorComponent.CASING);
     public static final Block FissionReactorPort = new BlockFissionReactorPort();
     public static final Block FissionReactorLogicAdapter = new BlockFissionReactorLogicAdapter();
@@ -49,6 +51,8 @@ public final class NuclearBlocks {
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "uranium_ore")));
         registry.register(FluoriteOre.setTranslationKey("FluoriteOre")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "fluorite_ore")));
+        registry.register(FluoriteBlock.setTranslationKey("FluoriteBlock")
+              .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "block_fluorite")));
         registry.register(FissionReactorCasing.setTranslationKey("FissionReactorCasing")
               .setRegistryName(new ResourceLocation(MekanismNuclear.MODID, "fission_reactor_casing")));
         registry.register(FissionReactorPort.setTranslationKey("FissionReactorPort")
@@ -78,6 +82,9 @@ public final class NuclearBlocks {
         fluoriteOre.setRegistryName(FluoriteOre.getRegistryName());
         registry.register(uraniumOre);
         registry.register(fluoriteOre);
+        ItemBlock fluoriteBlock = new ItemBlock(FluoriteBlock);
+        fluoriteBlock.setRegistryName(FluoriteBlock.getRegistryName());
+        registry.register(fluoriteBlock);
         registerItemBlock(registry, FissionReactorCasing);
         registerItemBlock(registry, FissionReactorPort);
         registerItemBlock(registry, FissionReactorLogicAdapter);
@@ -86,7 +93,7 @@ public final class NuclearBlocks {
         registerItemBlock(registry, SPSCasing);
         registerItemBlock(registry, SPSPort);
         registerItemBlock(registry, SuperchargedCoil);
-        NuclearOreDictionary.registerOreBlocks(uraniumOre, fluoriteOre);
+        NuclearOreDictionary.registerOreBlocks(uraniumOre, fluoriteOre, fluoriteBlock);
     }
 
     private static void registerItemBlock(IForgeRegistry<Item> registry, Block block) {

@@ -1,0 +1,7 @@
+{
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    { "type": "forge:ore_dict", "ore": "blockFluorite" }
+  ],
+  "result": { "item": "mekanismnuclear:fluorite_gem", "count": 9 }
+}

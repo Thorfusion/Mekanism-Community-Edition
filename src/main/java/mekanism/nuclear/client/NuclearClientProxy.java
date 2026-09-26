@@ -6,6 +6,7 @@ import mekanism.nuclear.client.gui.GuiFissionReactor;
 import mekanism.nuclear.client.gui.GuiSPS;
 import mekanism.nuclear.client.radiation.ClientRadiationData;
 import mekanism.nuclear.client.radiation.RadiationHudOverlay;
+import mekanism.nuclear.client.render.RenderSPS;
 import mekanism.nuclear.common.MekanismNuclear;
 import mekanism.nuclear.common.NuclearBlocks;
 import mekanism.nuclear.common.NuclearCommonProxy;
@@ -23,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,6 +40,7 @@ public class NuclearClientProxy extends NuclearCommonProxy {
         registerBlockItem(NuclearBlocks.RadioactiveWasteBarrel);
         registerBlockItem(NuclearBlocks.UraniumOre);
         registerBlockItem(NuclearBlocks.FluoriteOre);
+        registerBlockItem(NuclearBlocks.FluoriteBlock);
         registerBlockItem(NuclearBlocks.FissionReactorCasing);
         registerBlockItem(NuclearBlocks.FissionReactorPort);
         registerBlockItem(NuclearBlocks.FissionReactorLogicAdapter);
@@ -46,6 +49,7 @@ public class NuclearClientProxy extends NuclearCommonProxy {
         registerBlockItem(NuclearBlocks.SPSCasing);
         registerBlockItem(NuclearBlocks.SPSPort);
         registerBlockItem(NuclearBlocks.SuperchargedCoil);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySPSPort.class, new RenderSPS());
     }
 
     private static void registerBlockItem(net.minecraft.block.Block block) {

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": { "model": "mekanismnuclear:block_fluorite" },
+    "inventory": { "model": "mekanismnuclear:block_fluorite" }
+  }
+}

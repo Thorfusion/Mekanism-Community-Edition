@@ -78,7 +78,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
             TileUtils.drawGas(inventory.get(2), outputTank);
             boolean changed = false;
             DissolutionRecipe recipe = getRecipe();
-            injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
+            int machineUsage = StatUtils.inversePoisson(injectUsage);
+            injectUsageThisTick = recipe == null ? Math.max(BASE_INJECT_USAGE, machineUsage)
+                  : recipe.scaleChemicalUsage(machineUsage);
             if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
