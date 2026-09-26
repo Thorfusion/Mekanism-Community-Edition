@@ -25,6 +25,7 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
     @Override
     public void registerClientHandlers() {
         MinecraftForge.EVENT_BUS.register(MekaSuitVisionHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitJetpackClientHandler.INSTANCE);
     }
 
     @Override

@@ -55,7 +55,11 @@ public final class MekaSuitModules {
     public static final ModuleType DOSIMETER_UNIT = type("dosimeter_unit", ModuleTarget.BODYARMOR).build();
     public static final ModuleType GEIGER_UNIT = type("geiger_unit", ModuleTarget.BODYARMOR).build();
     public static final ModuleType JETPACK_UNIT = type("jetpack_unit", ModuleTarget.BODYARMOR)
-          .maxInstallCount(4).handlesModeChange().exclusive(ModuleExclusive.OVERRIDE_JUMP).build();
+          .maxInstallCount(4)
+          .modes(3, "normal", "normal", "hover", "vector", "disabled")
+          .enumConfig("jetpack_mult", 1, "normal", "half", "normal", "fast", "faster", "fastest")
+          .enumConfig("jetpack_mult.hover", 1, "normal", "half", "normal", "fast", "faster", "fastest")
+          .exclusive(ModuleExclusive.OVERRIDE_JUMP).build();
     public static final ModuleType CHARGE_DISTRIBUTION_UNIT = type("charge_distribution_unit", ModuleTarget.BODYARMOR).build();
     public static final ModuleType GRAVITATIONAL_MODULATING_UNIT = type("gravitational_modulating_unit", ModuleTarget.BODYARMOR)
           .handlesModeChange().exclusive(ModuleExclusive.OVERRIDE_JUMP).build();

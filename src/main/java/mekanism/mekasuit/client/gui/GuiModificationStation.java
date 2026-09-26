@@ -41,6 +41,7 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
 
     private int selectedIndex;
     private int booleanConfigIndex;
+    private int enumConfigIndex;
     private GuiButton previousButton;
     private GuiButton nextButton;
     private GuiButton removeButton;
@@ -95,9 +96,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         if (button.id == PREVIOUS && !modules.isEmpty()) {
             selectedIndex = (selectedIndex + modules.size() - 1) % modules.size();
             booleanConfigIndex = 0;
+            enumConfigIndex = 0;
         } else if (button.id == NEXT && !modules.isEmpty()) {
             selectedIndex = (selectedIndex + 1) % modules.size();
             booleanConfigIndex = 0;
+            enumConfigIndex = 0;
         } else {
             ModuleData selected = selected(modules);
             if (selected == null) {
@@ -119,11 +122,24 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
                     int size = selected.getType().getBooleanConfigKeys().size();
                     booleanConfigIndex = Math.floorMod(booleanConfigIndex + (isShiftKeyDown() ? -1 : 1), size);
                 }
-            } else if (button.id == BOOLEAN_CONFIG && selected.getType().hasBooleanConfigs()) {
-                String key = selectedBooleanConfig(selected);
-                MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
-                      Action.SET_BOOLEAN_CONFIG, selected.getType().getId(), key,
-                      !selected.getBooleanConfig(key)));
+            } else if (button.id == BOOLEAN_CONFIG) {
+                if (selected.getType().hasEnumConfigs()) {
+                    if (isShiftKeyDown() && selected.getType().getEnumConfigKeys().size() > 1) {
+                        enumConfigIndex = Math.floorMod(enumConfigIndex + 1,
+                              selected.getType().getEnumConfigKeys().size());
+                    } else {
+                        String key = selectedEnumConfig(selected);
+                        String value = selected.getType().cycleEnumConfig(key, selected.getEnumConfig(key),
+                              selected.getInstalledCount(), 1);
+                        MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
+                              Action.SET_ENUM_CONFIG, selected.getType().getId(), key + "=" + value, false));
+                    }
+                } else if (selected.getType().hasBooleanConfigs()) {
+                    String key = selectedBooleanConfig(selected);
+                    MekanismMekaSuit.network.sendToServer(new PacketModificationStationAction(
+                          Action.SET_BOOLEAN_CONFIG, selected.getType().getId(), key,
+                          !selected.getBooleanConfig(key)));
+                }
             }
         }
         updateButtons();
@@ -143,6 +159,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
             String key = selectedBooleanConfig(selected);
             label += " {" + LangUtils.localize("module.config." + key) + ": "
                   + LangUtils.localize(selected.getBooleanConfig(key) ? "gui.mekasuit.on" : "gui.mekasuit.off") + "}";
+        }
+        if (selected != null && selected.getType().hasEnumConfigs()) {
+            String key = selectedEnumConfig(selected);
+            label += " {" + LangUtils.localize("module.config." + key) + ": "
+                  + LangUtils.localize("module.config.value." + selected.getEnumConfig(key)) + "}";
         }
         renderScaledText(label, 8, 52, 0x404040, 154);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -169,9 +190,14 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
         modeButton.enabled = modeButton.visible;
         modeButton.displayString = selected != null && selected.getType().hasModes()
               ? LangUtils.localize("gui.mekasuit.mode") : ">";
-        booleanConfigButton.visible = selected != null && selected.getType().hasBooleanConfigs();
+        booleanConfigButton.visible = selected != null
+              && (selected.getType().hasBooleanConfigs() || selected.getType().hasEnumConfigs());
         booleanConfigButton.enabled = booleanConfigButton.visible;
-        if (selected != null && selected.getType().hasBooleanConfigs()) {
+        if (selected != null && selected.getType().hasEnumConfigs()) {
+            String key = selectedEnumConfig(selected);
+            booleanConfigButton.displayString = LangUtils.localize("module.config.short." + key) + ":"
+                  + LangUtils.localize("module.config.value.short." + selected.getEnumConfig(key));
+        } else if (selected != null && selected.getType().hasBooleanConfigs()) {
             String key = selectedBooleanConfig(selected);
             booleanConfigButton.displayString = LangUtils.localize("module.config.short." + key)
                   + (selected.getBooleanConfig(key) ? "+" : "-");
@@ -196,6 +222,11 @@ public final class GuiModificationStation extends GuiMekanismTile<TileEntityModi
     private String selectedBooleanConfig(ModuleData module) {
         List<String> keys = new ArrayList<>(module.getType().getBooleanConfigKeys());
         return keys.get(Math.floorMod(booleanConfigIndex, keys.size()));
+    }
+
+    private String selectedEnumConfig(ModuleData module) {
+        List<String> keys = new ArrayList<>(module.getType().getEnumConfigKeys());
+        return keys.get(Math.floorMod(enumConfigIndex, keys.size()));
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.mekasuit.common;
 import mekanism.common.base.IGuiProvider;
 import mekanism.mekasuit.common.inventory.ContainerModificationStation;
 import mekanism.mekasuit.common.network.PacketModificationStationAction;
+import mekanism.mekasuit.common.network.PacketMekaSuitModeChange;
 import mekanism.mekasuit.common.tile.TileEntityModificationStation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -24,6 +25,8 @@ public class MekaSuitCommonProxy implements IGuiProvider {
     public void registerPackets() {
         MekanismMekaSuit.network.registerMessage(PacketModificationStationAction.Handler.class,
               PacketModificationStationAction.class, 0, Side.SERVER);
+        MekanismMekaSuit.network.registerMessage(PacketMekaSuitModeChange.Handler.class,
+              PacketMekaSuitModeChange.class, 1, Side.SERVER);
     }
 
     public void registerClientHandlers() {

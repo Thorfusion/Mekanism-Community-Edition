@@ -61,7 +61,8 @@ public final class PacketModificationStationAction implements IMessage {
         REMOVE_ALL,
         TOGGLE_ENABLED,
         SET_MODE,
-        SET_BOOLEAN_CONFIG;
+        SET_BOOLEAN_CONFIG,
+        SET_ENUM_CONFIG;
 
         private static Action byIndex(int index) {
             Action[] values = values();
@@ -112,6 +113,13 @@ public final class PacketModificationStationAction implements IMessage {
                 case SET_BOOLEAN_CONFIG:
                     changed = ModificationStationOperations.setBooleanConfig(host, message.moduleId,
                           message.value, message.booleanValue);
+                    break;
+                case SET_ENUM_CONFIG:
+                    int separator = message.value.indexOf('=');
+                    if (separator > 0) {
+                        changed = ModificationStationOperations.setEnumConfig(host, message.moduleId,
+                              message.value.substring(0, separator), message.value.substring(separator + 1));
+                    }
                     break;
                 default:
                     return;

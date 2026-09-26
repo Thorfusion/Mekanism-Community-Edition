@@ -136,6 +136,11 @@ public final class ModuleContainer {
         return data != null && data.setBooleanConfig(key, value);
     }
 
+    public boolean setEnumConfig(ModuleType type, String key, String value) {
+        ModuleData data = get(type);
+        return data != null && data.setEnumConfig(key, value);
+    }
+
     public ModuleData get(ModuleType type) {
         return type == null ? null : modules.get(type.getId());
     }

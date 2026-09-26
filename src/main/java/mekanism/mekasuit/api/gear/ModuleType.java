@@ -25,6 +25,7 @@ public final class ModuleType {
     private final String defaultMode;
     private final int modeInstallOffset;
     private final Map<String, Boolean> booleanConfigs;
+    private final Map<String, EnumConfigDefinition> enumConfigs;
 
     private ModuleType(Builder builder) {
         id = builder.id;
@@ -40,6 +41,7 @@ public final class ModuleType {
         defaultMode = builder.defaultMode;
         modeInstallOffset = builder.modeInstallOffset;
         booleanConfigs = Collections.unmodifiableMap(new LinkedHashMap<>(builder.booleanConfigs));
+        enumConfigs = Collections.unmodifiableMap(new LinkedHashMap<>(builder.enumConfigs));
     }
 
     public static Builder builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
@@ -111,6 +113,34 @@ public final class ModuleType {
         return value;
     }
 
+    public boolean hasEnumConfigs() {
+        return !enumConfigs.isEmpty();
+    }
+
+    public Set<String> getEnumConfigKeys() {
+        return enumConfigs.keySet();
+    }
+
+    public boolean supportsEnumConfig(String key) {
+        return enumConfigs.containsKey(key);
+    }
+
+    public String getDefaultEnumConfig(String key) {
+        return enumConfig(key).getDefaultValue();
+    }
+
+    public List<String> getAvailableEnumConfigValues(String key, int installedCount) {
+        return enumConfig(key).getAvailableValues(installedCount);
+    }
+
+    public String normalizeEnumConfig(String key, String value, int installedCount) {
+        return enumConfig(key).normalize(value, installedCount);
+    }
+
+    public String cycleEnumConfig(String key, String value, int installedCount, int shift) {
+        return enumConfig(key).cycle(value, installedCount, shift);
+    }
+
     public String normalizeMode(String mode, int installedCount) {
         if (modes.isEmpty()) {
             // Preserve legacy/free-form values even for definitions that do not
@@ -165,6 +195,54 @@ public final class ModuleType {
         return getTranslationKey() + ".description";
     }
 
+    private EnumConfigDefinition enumConfig(String key) {
+        EnumConfigDefinition definition = enumConfigs.get(key);
+        if (definition == null) {
+            throw new IllegalArgumentException("Unknown enum module config: " + key);
+        }
+        return definition;
+    }
+
+    /** Ordered string enum whose available values can grow with the installed module count. */
+    public static final class EnumConfigDefinition {
+
+        private final List<String> values;
+        private final String defaultValue;
+        private final int installOffset;
+
+        private EnumConfigDefinition(int installOffset, String defaultValue, String... values) {
+            if (installOffset < 0 || defaultValue == null || values == null || values.length == 0) {
+                throw new IllegalArgumentException("An enum config requires values, a default, and a non-negative offset");
+            }
+            List<String> declared = new ArrayList<>(Arrays.asList(values));
+            if (declared.contains(null) || !declared.contains(defaultValue)) {
+                throw new IllegalArgumentException("The default enum config value must be declared");
+            }
+            this.values = Collections.unmodifiableList(declared);
+            this.defaultValue = defaultValue;
+            this.installOffset = installOffset;
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public List<String> getAvailableValues(int installedCount) {
+            int count = Math.min(values.size(), Math.max(1, installedCount) + installOffset);
+            return values.subList(0, count);
+        }
+
+        public String normalize(String value, int installedCount) {
+            return getAvailableValues(installedCount).contains(value) ? value : defaultValue;
+        }
+
+        public String cycle(String value, int installedCount, int shift) {
+            List<String> available = getAvailableValues(installedCount);
+            int current = available.indexOf(normalize(value, installedCount));
+            return available.get(Math.floorMod(current + shift, available.size()));
+        }
+    }
+
     public static final class Builder {
 
         private final ResourceLocation id;
@@ -179,6 +257,7 @@ public final class ModuleType {
         private String defaultMode = "normal";
         private int modeInstallOffset;
         private final Map<String, Boolean> booleanConfigs = new LinkedHashMap<>();
+        private final Map<String, EnumConfigDefinition> enumConfigs = new LinkedHashMap<>();
 
         private Builder(ResourceLocation id, ModuleTarget firstTarget, ModuleTarget... otherTargets) {
             if (id == null || firstTarget == null) {
@@ -248,9 +327,24 @@ public final class ModuleType {
             if (!isSafeConfigKey(key)) {
                 throw new IllegalArgumentException("Module config keys may only contain letters, numbers, '_', '.', or '-'");
             }
-            if (booleanConfigs.put(key, defaultValue) != null) {
+            if (enumConfigs.containsKey(key) || booleanConfigs.put(key, defaultValue) != null) {
                 throw new IllegalArgumentException("Duplicate module config key: " + key);
             }
+            return this;
+        }
+
+        /**
+         * Defines an ordered string enum config. At a given install count,
+         * {@code installedCount + installOffset} leading values are available.
+         */
+        public Builder enumConfig(String key, int installOffset, String defaultValue, String... values) {
+            if (!isSafeConfigKey(key)) {
+                throw new IllegalArgumentException("Module config keys may only contain letters, numbers, '_', '.', or '-'");
+            }
+            if (booleanConfigs.containsKey(key) || enumConfigs.containsKey(key)) {
+                throw new IllegalArgumentException("Duplicate module config key: " + key);
+            }
+            enumConfigs.put(key, new EnumConfigDefinition(installOffset, defaultValue, values));
             return this;
         }
 

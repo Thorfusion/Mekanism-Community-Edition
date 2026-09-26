@@ -4,6 +4,8 @@ import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitVisionHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitNutritionalHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHelper;
+import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -135,7 +137,10 @@ public final class MekaSuitVisionHandler {
               player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
         ItemStack helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         ModuleData nutrition = MekaSuitNutritionalHelper.getModule(helmet);
-        if (module == null && (nutrition == null || !nutrition.isEnabled())) {
+        ItemStack bodyarmor = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        ModuleData jetpack = MekaSuitJetpackHelper.getModule(bodyarmor);
+        if (module == null && (nutrition == null || !nutrition.isEnabled())
+              && (jetpack == null || !jetpack.isEnabled())) {
             return;
         }
         ScaledResolution resolution = new ScaledResolution(minecraft);
@@ -151,6 +156,17 @@ public final class MekaSuitVisionHandler {
         if (nutrition != null && nutrition.isEnabled()) {
             String percent = Math.round(100 * MekaSuitNutritionalHelper.getRatio(helmet)) + "%";
             drawHudElement(minecraft, NUTRITION_ICON, iconX, y, percent, 0xEB6CA3, 1F);
+            y -= 20;
+        }
+        if (jetpack != null && jetpack.isEnabled() && bodyarmor.getItem() instanceof ItemMekaSuitBodyarmor) {
+            ItemMekaSuitBodyarmor item = (ItemMekaSuitBodyarmor) bodyarmor.getItem();
+            int capacity = item.getMaxGas(bodyarmor);
+            int percent = capacity <= 0 ? 0 : Math.round(100F * item.getStoredGas(bodyarmor) / capacity);
+            String mode = jetpack.getMode();
+            String iconName = MekaSuitJetpackHelper.DISABLED.equals(mode) ? "off" : mode;
+            ResourceLocation icon = new ResourceLocation(MekanismMekaSuit.MODID,
+                  "gui/hud/jetpack_" + iconName + ".png");
+            drawHudElement(minecraft, icon, iconX, y, percent + "%", 0x86E7FF, 1F);
         }
     }
 

@@ -25,6 +25,7 @@ public final class ModuleData {
                 this.config.setBoolean(key, type.getDefaultBooleanConfig(key));
             }
         }
+        normalizeEnumConfigs();
     }
 
     public ModuleType getType() {
@@ -42,6 +43,9 @@ public final class ModuleData {
         this.installedCount = installedCount;
         if (mode != null) {
             mode = type.normalizeMode(mode, installedCount);
+        }
+        if (config != null) {
+            normalizeEnumConfigs();
         }
     }
 
@@ -81,6 +85,7 @@ public final class ModuleData {
                 this.config.setBoolean(key, type.getDefaultBooleanConfig(key));
             }
         }
+        normalizeEnumConfigs();
     }
 
     public boolean getBooleanConfig(String key) {
@@ -94,6 +99,33 @@ public final class ModuleData {
         }
         config.setBoolean(key, value);
         return true;
+    }
+
+    public String getEnumConfig(String key) {
+        if (!type.supportsEnumConfig(key)) {
+            return "";
+        }
+        String value = config.hasKey(key) ? config.getString(key) : type.getDefaultEnumConfig(key);
+        return type.normalizeEnumConfig(key, value, installedCount);
+    }
+
+    public boolean setEnumConfig(String key, String value) {
+        if (!type.supportsEnumConfig(key)) {
+            return false;
+        }
+        String normalized = type.normalizeEnumConfig(key, sanitizeMode(value), installedCount);
+        if (!normalized.equals(value)) {
+            return false;
+        }
+        config.setString(key, normalized);
+        return true;
+    }
+
+    private void normalizeEnumConfigs() {
+        for (String key : type.getEnumConfigKeys()) {
+            String value = config.hasKey(key) ? config.getString(key) : type.getDefaultEnumConfig(key);
+            config.setString(key, type.normalizeEnumConfig(key, sanitizeMode(value), installedCount));
+        }
     }
 
     private static String sanitizeMode(String mode) {

@@ -8,6 +8,7 @@ import mekanism.mekasuit.api.gear.ModuleRegistry;
 import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.MekaSuitItems;
 import mekanism.mekasuit.common.item.ItemMekaModule;
+import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -60,6 +61,9 @@ public final class ModificationStationOperations {
         }
         container.save(host);
         clampEnergy(host);
+        if (host.getItem() instanceof ItemMekaSuitBodyarmor) {
+            ((ItemMekaSuitBodyarmor) host.getItem()).clampGas(host);
+        }
         modulesChanged(host);
         return new ItemStack(moduleItem, removed);
     }
@@ -94,6 +98,20 @@ public final class ModificationStationOperations {
         ModuleData data = container == null || type == null ? null : container.get(type);
         if (data == null || !type.supportsBooleanConfig(key)
               || !container.setBooleanConfig(type, key, value)) {
+            return false;
+        }
+        container.save(host);
+        modulesChanged(host);
+        return true;
+    }
+
+    public static boolean setEnumConfig(ItemStack host, ResourceLocation moduleId, String key, String value) {
+        ModuleContainer container = getContainerForKnownType(host, moduleId);
+        ModuleType type = ModuleRegistry.getInstance().get(moduleId);
+        ModuleData data = container == null || type == null ? null : container.get(type);
+        if (data == null || !type.supportsEnumConfig(key)
+              || value == null || value.length() > 64
+              || !container.setEnumConfig(type, key, value)) {
             return false;
         }
         container.save(host);

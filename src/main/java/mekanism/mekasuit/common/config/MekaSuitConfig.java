@@ -19,6 +19,8 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE = 20_000L;
     public static final int DEFAULT_SUIT_NUTRITIONAL_STORAGE = 128_000;
     public static final int DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE = 256;
+    public static final int DEFAULT_SUIT_JETPACK_STORAGE = 24_000;
+    public static final int DEFAULT_SUIT_JETPACK_TRANSFER_RATE = 256;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -46,6 +48,8 @@ public final class MekaSuitConfig {
     public static long suitNutritionalInjectionUsage = DEFAULT_SUIT_NUTRITIONAL_INJECTION_USAGE;
     public static int suitNutritionalStorage = DEFAULT_SUIT_NUTRITIONAL_STORAGE;
     public static int suitNutritionalTransferRate = DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE;
+    public static int suitJetpackStorage = DEFAULT_SUIT_JETPACK_STORAGE;
+    public static int suitJetpackTransferRate = DEFAULT_SUIT_JETPACK_TRANSFER_RATE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -129,6 +133,12 @@ public final class MekaSuitConfig {
         suitNutritionalTransferRate = config.getInt("nutritionalTransferRate", "mekasuit",
               DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE, 1, Integer.MAX_VALUE,
               "Maximum Nutritional Paste transferred into a MekaSuit Helmet per operation.");
+        suitJetpackStorage = config.getInt("jetpackMaxStorage", "mekasuit",
+              DEFAULT_SUIT_JETPACK_STORAGE, 1, Integer.MAX_VALUE,
+              "Hydrogen storage added to MekaSuit Bodyarmor by each installed Jetpack Unit, in millibuckets.");
+        suitJetpackTransferRate = config.getInt("jetpackTransferRate", "mekasuit",
+              DEFAULT_SUIT_JETPACK_TRANSFER_RATE, 1, Integer.MAX_VALUE,
+              "Maximum Hydrogen transferred into Jetpack Unit storage per operation.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",

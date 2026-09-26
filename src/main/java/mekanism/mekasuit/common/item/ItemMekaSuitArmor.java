@@ -54,7 +54,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID),
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 })
-public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpecialElectricItem,
+public class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem, ISpecialElectricItem,
       IEnergyContainerItem, IModuleContainerItem {
 
     private static final ArmorMaterial MEKASUIT_MATERIAL = EnumHelper.addArmorMaterial(

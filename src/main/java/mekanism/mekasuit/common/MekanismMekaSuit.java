@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.content.gear.MekaSuitInhalationHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitJetpackHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -70,6 +71,7 @@ public final class MekanismMekaSuit implements IModule {
     public void init(FMLInitializationEvent event) {
         Mekanism.modulesLoaded.add(this);
         MinecraftForge.EVENT_BUS.register(MekaSuitInhalationHelper.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitJetpackHandler.INSTANCE);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new MekaSuitGuiHandler());
         proxy.registerTileEntities();
         Mekanism.logger.info("Loaded Mekanism MekaSuit beta module.");

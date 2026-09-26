@@ -7,6 +7,7 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.item.ItemMekaModule;
+import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import mekanism.mekasuit.common.item.ItemMekaSuitArmor;
 import mekanism.mekasuit.common.item.ItemMekaTool;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -21,8 +22,8 @@ public final class MekaSuitItems {
     public static final ItemMekaTool MekaTool = init(new ItemMekaTool(), "meka_tool", "MekaTool");
     public static final ItemMekaSuitArmor MekaSuitHelmet = init(
           new ItemMekaSuitArmor(EntityEquipmentSlot.HEAD), "mekasuit_helmet", "MekaSuitHelmet");
-    public static final ItemMekaSuitArmor MekaSuitBodyarmor = init(
-          new ItemMekaSuitArmor(EntityEquipmentSlot.CHEST), "mekasuit_bodyarmor", "MekaSuitBodyarmor");
+    public static final ItemMekaSuitBodyarmor MekaSuitBodyarmor = init(
+          new ItemMekaSuitBodyarmor(), "mekasuit_bodyarmor", "MekaSuitBodyarmor");
     public static final ItemMekaSuitArmor MekaSuitPants = init(
           new ItemMekaSuitArmor(EntityEquipmentSlot.LEGS), "mekasuit_pants", "MekaSuitPants");
     public static final ItemMekaSuitArmor MekaSuitBoots = init(
@@ -69,12 +70,15 @@ public final class MekaSuitItems {
     public static final ItemMekaModule NutritionalInjectionUnit = init(
           new ItemMekaModule(MekaSuitModules.NUTRITIONAL_INJECTION_UNIT, EnumRarity.RARE),
           "module_nutritional_injection_unit", "ModuleNutritionalInjectionUnit");
+    public static final ItemMekaModule JetpackUnit = init(
+          new ItemMekaModule(MekaSuitModules.JETPACK_UNIT, EnumRarity.RARE),
+          "module_jetpack_unit", "ModuleJetpackUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
           BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
-          InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit));
+          InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit, JetpackUnit));
 
     private MekaSuitItems() {
     }
