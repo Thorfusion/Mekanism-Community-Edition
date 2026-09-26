@@ -21,6 +21,7 @@ public final class MekaSuitConfig {
     public static final int DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE = 256;
     public static final int DEFAULT_SUIT_JETPACK_STORAGE = 24_000;
     public static final int DEFAULT_SUIT_JETPACK_TRANSFER_RATE = 256;
+    public static final long DEFAULT_SUIT_INVENTORY_CHARGE_RATE = 10_000L;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -50,6 +51,7 @@ public final class MekaSuitConfig {
     public static int suitNutritionalTransferRate = DEFAULT_SUIT_NUTRITIONAL_TRANSFER_RATE;
     public static int suitJetpackStorage = DEFAULT_SUIT_JETPACK_STORAGE;
     public static int suitJetpackTransferRate = DEFAULT_SUIT_JETPACK_TRANSFER_RATE;
+    public static long suitInventoryChargeRate = DEFAULT_SUIT_INVENTORY_CHARGE_RATE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -139,6 +141,9 @@ public final class MekaSuitConfig {
         suitJetpackTransferRate = config.getInt("jetpackTransferRate", "mekasuit",
               DEFAULT_SUIT_JETPACK_TRANSFER_RATE, 1, Integer.MAX_VALUE,
               "Maximum Hydrogen transferred into Jetpack Unit storage per operation.");
+        suitInventoryChargeRate = getLong(config, "mekasuit", "inventoryChargeRate",
+              DEFAULT_SUIT_INVENTORY_CHARGE_RATE, 1,
+              "Maximum energy transferred from the Charge Distribution Unit into inventory items per tick.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",
