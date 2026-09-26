@@ -39,6 +39,17 @@ case "$minecraft_version" in
         ;;
 esac
 
+has_nuclear=false
+if grep -Fq "tasks.register('nuclearJar'" "$repo_root/build.gradle"; then
+    expected+=(Nuclear:jar)
+    has_nuclear=true
+fi
+has_mekasuit=false
+if grep -Fq "tasks.register('mekasuitJar'" "$repo_root/build.gradle"; then
+    expected+=(MekaSuit:jar)
+    has_mekasuit=true
+fi
+
 listing="$(mktemp)"
 trap 'rm -f -- "$listing"' EXIT
 
@@ -95,10 +106,10 @@ for spec in "${expected[@]}"; do
     case "$classifier" in
         Core)
             require_exact_entry 'mekanism/common/Mekanism.class' "$artifact"
-            reject_matching_entry '^(mekanism/(generators|tools|ultimate)/|defense/)' 'module class' "$artifact"
+            reject_matching_entry '^(mekanism/(generators|tools|ultimate|nuclear|mekasuit)/|defense/)' 'module class' "$artifact"
 
             if [[ "$minecraft_version" == '1.12.2' ]]; then
-                reject_matching_entry '^assets/mekanism(generators|tools|ultimate)/' 'module asset' "$artifact"
+                reject_matching_entry '^assets/mekanism(generators|tools|ultimate|nuclear|mekasuit)/' 'module asset' "$artifact"
             fi
             ;;
         ALL)
@@ -106,6 +117,12 @@ for spec in "${expected[@]}"; do
             require_exact_entry 'mekanism/generators/common/MekanismGenerators.class' "$artifact"
             require_exact_entry 'mekanism/tools/common/MekanismTools.class' "$artifact"
             require_exact_entry 'mekanism/ultimate/common/MekanismUltimate.class' "$artifact"
+            if [[ "$has_nuclear" == true ]]; then
+                require_exact_entry 'mekanism/nuclear/common/MekanismNuclear.class' "$artifact"
+            fi
+            if [[ "$has_mekasuit" == true ]]; then
+                require_exact_entry 'mekanism/mekasuit/common/MekanismMekaSuit.class' "$artifact"
+            fi
 
             if [[ "$minecraft_version" == '1.7.10' ]]; then
                 require_exact_entry 'defense/common/DefenseTech.class' "$artifact"
@@ -139,6 +156,14 @@ for spec in "${expected[@]}"; do
         Ultimate)
             require_exact_entry 'mcmod.info' "$artifact"
             require_exact_entry 'mekanism/ultimate/common/MekanismUltimate.class' "$artifact"
+            ;;
+        Nuclear)
+            require_exact_entry 'mcmod.info' "$artifact"
+            require_exact_entry 'mekanism/nuclear/common/MekanismNuclear.class' "$artifact"
+            ;;
+        MekaSuit)
+            require_exact_entry 'mcmod.info' "$artifact"
+            require_exact_entry 'mekanism/mekasuit/common/MekanismMekaSuit.class' "$artifact"
             ;;
     esac
 
