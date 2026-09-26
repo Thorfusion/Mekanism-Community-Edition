@@ -1,0 +1,14 @@
+{
+  "type": "mekanismultimate:chemical_tank_upgrade",
+  "result": {"item": "mekanismultimate:elite_chemical_tank"},
+  "pattern": [
+    "AOA",
+    "OPO",
+    "AOA"
+  ],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyElite"},
+    "O": {"type": "forge:ore_dict", "ore": "ingotOsmium"},
+    "P": {"item": "mekanismultimate:advanced_chemical_tank"}
+  }
+}

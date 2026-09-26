@@ -22,7 +22,7 @@ public class LongChemicalTank implements IChemicalTankCE {
     private static final String NBT_NAME = "ChemicalName";
     private static final String NBT_AMOUNT = "Amount";
 
-    private final long capacity;
+    private long capacity;
 
     @Nullable
     private ChemicalStackCE stored;
@@ -48,6 +48,21 @@ public class LongChemicalTank implements IChemicalTankCE {
     @Override
     public long getCapacity() {
         return capacity;
+    }
+
+    /**
+     * Resizes this tank without ever exposing an amount above the new capacity.
+     * This is primarily used by tiered blocks after config reload or a tier
+     * installer upgrade.
+     */
+    public void setCapacity(long capacity) {
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("Chemical capacity must be positive: " + capacity);
+        }
+        this.capacity = capacity;
+        if (stored != null && stored.getAmount() > capacity) {
+            stored = stored.copyWithAmount(capacity);
+        }
     }
 
     @Override

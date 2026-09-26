@@ -4,6 +4,7 @@
       "recipeType": 4
     },
     "item": "mekanismultimate:ultimate_factory",
+    "data": 0,
     "type": "mekanism:item_nbt"
   },
   "pattern": [

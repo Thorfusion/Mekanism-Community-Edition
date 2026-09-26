@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.ultimate.common.capability.UltimateChemicalCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -54,6 +55,7 @@ public class MekanismUltimate implements IModule {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        UltimateChemicalCapabilities.register();
         UltimateFluids.register();
         proxy.preInit();
         proxy.loadConfiguration();

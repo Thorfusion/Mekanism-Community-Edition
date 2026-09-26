@@ -1,4 +1,7 @@
 {
+  "recipes": {
+    "chemical_tank_upgrade": "mekanism.ultimate.common.recipe.ChemicalTankUpgradeRecipe$Factory"
+  },
   "conditions": {
     "factory_enabled": "mekanism.ultimate.common.recipe.UltimateRecipeEnabledCondition",
     "nutrition_enabled": "mekanism.ultimate.common.recipe.NutritionRecipeEnabledCondition"

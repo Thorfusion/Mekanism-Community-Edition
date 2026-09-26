@@ -1,0 +1,166 @@
+{
+	"credit": "Model by CyanideX",
+	"parent": "block/cube_all",
+	"textures": {
+		"particle": "mekanismultimate:blocks/models/chemical_tank",
+		"body": "mekanismultimate:blocks/models/chemical_tank",
+		"valve": "#valve"
+	},
+	"elements": [
+		{
+			"name": "rim0",
+			"from": [6, 13, 4],
+			"to": [10, 14, 5],
+			"faces": {
+				"north": {"uv": [11, 9, 13, 9.5], "texture": "#body"},
+				"south": {"uv": [11, 9, 13, 9.5], "texture": "#body"},
+				"up": {"uv": [11, 7.5, 13, 8], "texture": "#body"}
+			}
+		},
+		{
+			"name": "rim1",
+			"from": [10, 13, 4],
+			"to": [12, 16, 5],
+			"faces": {
+				"north": {"uv": [14, 8, 13, 9.5], "texture": "#body"},
+				"east": {"uv": [14, 8, 13.5, 9.5], "texture": "#body"},
+				"south": {"uv": [13.5, 8, 13, 9.5], "texture": "#body"},
+				"west": {"uv": [11, 8, 10.5, 9.5], "texture": "#body"},
+				"up": {"uv": [13, 8, 14, 8.5], "texture": "#body", "cullface": "up"}
+			}
+		},
+		{
+			"name": "rim2",
+			"from": [11, 13, 5],
+			"to": [12, 16, 11],
+			"faces": {
+				"east": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
+				"west": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
+				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body", "cullface": "up"}
+			}
+		},
+		{
+			"name": "rim3",
+			"from": [4, 13, 11],
+			"to": [12, 16, 12],
+			"faces": {
+				"north": {"uv": [10.5, 10, 14.5, 11.5], "texture": "#body"},
+				"east": {"uv": [14.5, 10, 15, 11.5], "texture": "#body"},
+				"south": {"uv": [10.5, 10, 14.5, 11.5], "texture": "#body"},
+				"west": {"uv": [14.5, 10, 15, 11.5], "texture": "#body"},
+				"up": {"uv": [10.5, 10, 14.5, 10.5], "texture": "#body", "cullface": "up"}
+			}
+		},
+		{
+			"name": "rim4",
+			"from": [4, 13, 5],
+			"to": [5, 16, 11],
+			"faces": {
+				"east": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
+				"west": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
+				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body", "cullface": "up"}
+			}
+		},
+		{
+			"name": "rim5",
+			"from": [4, 13, 4],
+			"to": [6, 16, 5],
+			"faces": {
+				"north": {"uv": [13, 8, 14, 9.5], "texture": "#body"},
+				"east": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
+				"south": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
+				"west": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
+				"up": {"uv": [14, 8, 13, 8.5], "texture": "#body", "cullface": "up"}
+			}
+		},
+		{
+			"name": "tank",
+			"from": [3, 1, 3],
+			"to": [13, 13, 13],
+			"faces": {
+				"north": {"uv": [5, 5, 10, 11], "texture": "#body"},
+				"east": {"uv": [0, 5, 5, 11], "texture": "#body"},
+				"south": {"uv": [0, 5, 5, 11], "texture": "#body"},
+				"west": {"uv": [0, 5, 5, 11], "texture": "#body"},
+				"up": {"uv": [0, 0, 5, 5], "texture": "#body"},
+				"down": {"uv": [5, 0, 10, 5], "texture": "#body"}
+			}
+		},
+		{
+			"name": "tank_base",
+			"from": [4, 0, 4],
+			"to": [12, 1, 12],
+			"faces": {
+				"north": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
+				"east": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
+				"south": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
+				"west": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
+				"down": {"uv": [10.5, 0.5, 14.5, 4.5], "texture": "#body", "cullface": "down"}
+			}
+		},
+		{
+			"name": "valve",
+			"from": [6.5, 14, 6.5],
+			"to": [9.5, 15, 9.5],
+			"faces": {
+				"north": {"uv": [0, 6, 6, 8], "texture": "#valve"},
+				"east": {"uv": [0, 6, 6, 8], "texture": "#valve"},
+				"south": {"uv": [0, 6, 6, 8], "texture": "#valve"},
+				"west": {"uv": [0, 6, 6, 8], "texture": "#valve"},
+				"up": {"uv": [0, 0, 6, 6], "texture": "#valve"},
+				"down": {"uv": [6, 0, 12, 6], "texture": "#valve"}
+			}
+		},
+		{
+			"name": "valve_base",
+			"from": [7, 12, 7],
+			"to": [9, 14, 9],
+			"faces": {
+				"north": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},
+				"east": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},
+				"south": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},
+				"west": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"}
+			}
+		},
+		{
+			"name": "port_led",
+			"from": [5, 13, 5],
+			"to": [11, 13, 11],
+			"faces": {
+				"up": {"uv": [1, 12, 4, 15], "texture": "#body", "cullface": "up"},
+				"down": {"uv": [5, 0, 10, 5], "texture": "#body", "cullface": "up"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

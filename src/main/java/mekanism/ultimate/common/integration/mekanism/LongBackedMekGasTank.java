@@ -48,9 +48,13 @@ public final class LongBackedMekGasTank extends GasTank {
         if (amount <= 0) {
             return null;
         }
+        IChemicalStackCE stored = tank.getStack();
+        Gas gas = toGas(stored);
+        if (gas == null) {
+            return null;
+        }
         IChemicalStackCE extracted = tank.extract(amount, doDraw ? Action.EXECUTE : Action.SIMULATE);
-        Gas gas = toGas(extracted);
-        return extracted == null || gas == null ? null : new GasStack(gas, CheckedLongMath.saturatingInt(extracted.getAmount()));
+        return extracted == null ? null : new GasStack(gas, CheckedLongMath.saturatingInt(extracted.getAmount()));
     }
 
     @Override
@@ -69,6 +73,9 @@ public final class LongBackedMekGasTank extends GasTank {
 
     @Override
     public boolean canReceiveType(Gas gas) {
+        if (hasNonGasChemical()) {
+            return false;
+        }
         Gas stored = getGasType();
         return stored == null || gas == null || gas == stored;
     }
@@ -81,6 +88,9 @@ public final class LongBackedMekGasTank extends GasTank {
 
     @Override
     public int getNeeded() {
+        if (hasNonGasChemical()) {
+            return 0;
+        }
         return CheckedLongMath.saturatingInt(CheckedLongMath.subtract(tank.getCapacity(), tank.getStored()));
     }
 
@@ -104,6 +114,11 @@ public final class LongBackedMekGasTank extends GasTank {
 
     @Override
     public void setGas(GasStack stack) {
+        // A legacy gas caller must never be able to clear or replace a facade
+        // chemical it cannot represent.
+        if (hasNonGasChemical()) {
+            return;
+        }
         tank.clear();
         if (stack != null && stack.getGas() != null && stack.amount > 0) {
             tank.insert(new ChemicalStackCE(typeFactory.apply(stack.getGas()), stack.amount), Action.EXECUTE);
@@ -118,7 +133,7 @@ public final class LongBackedMekGasTank extends GasTank {
 
     @Override
     public int getStored() {
-        return CheckedLongMath.saturatingInt(tank.getStored());
+        return hasNonGasChemical() ? 0 : CheckedLongMath.saturatingInt(tank.getStored());
     }
 
     @Override
@@ -139,6 +154,11 @@ public final class LongBackedMekGasTank extends GasTank {
     private static Gas toGas(@Nullable IChemicalStackCE stack) {
         return stack != null && stack.getType() instanceof MekGasChemicalType
               ? ((MekGasChemicalType) stack.getType()).getGas() : null;
+    }
+
+    private boolean hasNonGasChemical() {
+        IChemicalStackCE stack = tank.getStack();
+        return stack != null && !(stack.getType() instanceof MekGasChemicalType);
     }
 
 }

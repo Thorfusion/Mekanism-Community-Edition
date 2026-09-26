@@ -14,6 +14,8 @@ import mekanism.ultimate.common.UltimateCommonProxy;
 import mekanism.ultimate.common.tile.TileEntityUltimateFactory;
 import mekanism.ultimate.common.tile.TileEntityNutritionalLiquifier;
 import mekanism.ultimate.client.gui.GuiNutritionalLiquifier;
+import mekanism.ultimate.client.gui.GuiChemicalTank;
+import mekanism.ultimate.client.render.RenderChemicalTank;
 import mekanism.ultimate.common.UltimateItems;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
@@ -28,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,6 +38,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class UltimateClientProxy extends UltimateCommonProxy {
 
     private final Map<RecipeType, ModelResourceLocation> itemModels = new EnumMap<>(RecipeType.class);
+
+    @Override
+    public void preInit() {
+        ClientRegistry.bindTileEntitySpecialRenderer(
+              mekanism.ultimate.common.tile.TileEntityChemicalTank.class,
+              new RenderChemicalTank());
+    }
 
     @Override
     public void registerBlockRenders() {
@@ -51,6 +61,12 @@ public class UltimateClientProxy extends UltimateCommonProxy {
         });
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(UltimateBlocks.NutritionalLiquifier), 0,
               new ModelResourceLocation(UltimateBlocks.NutritionalLiquifier.getRegistryName(), "inventory"));
+        for (mekanism.ultimate.common.tier.ChemicalTankTier tier
+              : mekanism.ultimate.common.tier.ChemicalTankTier.values()) {
+            Item tankItem = Item.getItemFromBlock(UltimateBlocks.getChemicalTank(tier));
+            ModelLoader.setCustomModelResourceLocation(tankItem, 0,
+                  new ModelResourceLocation(tankItem.getRegistryName(), "inventory"));
+        }
         for (Item ultimateItem : UltimateItems.allRegistered()) {
             ModelLoader.setCustomModelResourceLocation(ultimateItem, 0,
                   new ModelResourceLocation(ultimateItem.getRegistryName(), "inventory"));
@@ -64,6 +80,9 @@ public class UltimateClientProxy extends UltimateCommonProxy {
             return new GuiFactory(player.inventory, (TileEntityUltimateFactory) tile);
         } else if (ID == 1 && tile instanceof TileEntityNutritionalLiquifier) {
             return new GuiNutritionalLiquifier(player.inventory, (TileEntityNutritionalLiquifier) tile);
+        } else if (ID == 2 && tile instanceof mekanism.ultimate.common.tile.TileEntityChemicalTank) {
+            return new GuiChemicalTank(player.inventory,
+                  (mekanism.ultimate.common.tile.TileEntityChemicalTank) tile);
         }
         return null;
     }

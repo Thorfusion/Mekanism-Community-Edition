@@ -161,7 +161,9 @@ public final class MekGasTankAdapter implements IGasHandler, IChemicalHandlerCE 
 
         @Override
         public int getStored() {
-            return saturatingInt(tank.getStored());
+            IChemicalStackCE stack = tank.getStack();
+            return stack != null && stack.getType() instanceof MekGasChemicalType
+                  ? saturatingInt(stack.getAmount()) : 0;
         }
 
         @Override

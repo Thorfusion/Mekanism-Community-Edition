@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {"item": "mekanismultimate:basic_chemical_tank"},
+  "pattern": [
+    "AOA",
+    "O O",
+    "AOA"
+  ],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyBasic"},
+    "O": {"type": "forge:ore_dict", "ore": "ingotOsmium"}
+  }
+}
