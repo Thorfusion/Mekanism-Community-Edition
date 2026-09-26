@@ -12,6 +12,9 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_TOOL_CHARGE_RATE = 100_000L;
     public static final long DEFAULT_SUIT_CAPACITY = 16_000_000L;
     public static final long DEFAULT_SUIT_CHARGE_RATE = 100_000L;
+    public static final long DEFAULT_SUIT_POTION_TICK_USAGE = 40_000L;
+    public static final long DEFAULT_SUIT_MAGIC_REDUCE_USAGE = 1_000L;
+    public static final float DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO = 1F;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -32,6 +35,9 @@ public final class MekaSuitConfig {
     public static long toolChargeRate = DEFAULT_TOOL_CHARGE_RATE;
     public static long suitCapacity = DEFAULT_SUIT_CAPACITY;
     public static long suitChargeRate = DEFAULT_SUIT_CHARGE_RATE;
+    public static long suitPotionTickUsage = DEFAULT_SUIT_POTION_TICK_USAGE;
+    public static long suitMagicReduceUsage = DEFAULT_SUIT_MAGIC_REDUCE_USAGE;
+    public static float suitMagicDamageReductionRatio = DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -94,6 +100,15 @@ public final class MekaSuitConfig {
               "Base energy capacity of each MekaSuit piece. Each Energy Unit doubles this value.");
         suitChargeRate = getLong(config, "mekasuit", "chargeRate", DEFAULT_SUIT_CHARGE_RATE, 1,
               "Base charge rate of each MekaSuit piece. Each Energy Unit doubles this value.");
+        suitPotionTickUsage = getLong(config, "mekasuit", "energyUsagePotionTick",
+              DEFAULT_SUIT_POTION_TICK_USAGE, 0,
+              "Energy used per selected potion effect accelerated by the Inhalation Purification Unit each tick.");
+        suitMagicReduceUsage = getLong(config, "mekasuit", "magicReduce",
+              DEFAULT_SUIT_MAGIC_REDUCE_USAGE, 0,
+              "Energy cost per half-heart of magic damage reduced by the Inhalation Purification Unit.");
+        suitMagicDamageReductionRatio = config.getFloat("magicDamageReductionRatio", "mekasuit",
+              DEFAULT_SUIT_MAGIC_DAMAGE_REDUCTION_RATIO, 0F, 1F,
+              "Maximum fraction of preventable magic damage absorbed by the Inhalation Purification Unit.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",

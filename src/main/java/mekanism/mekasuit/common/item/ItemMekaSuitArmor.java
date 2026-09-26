@@ -24,6 +24,7 @@ import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
 import mekanism.mekasuit.common.content.gear.MekaSuitBreathingHelper;
 import mekanism.mekasuit.common.content.gear.MekaSuitEnergyHelper;
+import mekanism.mekasuit.common.content.gear.MekaSuitInhalationHelper;
 import mekanism.mekasuit.common.content.gear.ModuleContainer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -210,8 +211,11 @@ public final class ItemMekaSuitArmor extends ItemArmor implements IEnergizedItem
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-        if (!world.isRemote && moduleTarget == ModuleTarget.HELMET) {
-            MekaSuitBreathingHelper.tick(stack, player);
+        if (moduleTarget == ModuleTarget.HELMET) {
+            if (!world.isRemote) {
+                MekaSuitBreathingHelper.tick(stack, player);
+            }
+            MekaSuitInhalationHelper.tick(stack, player, !world.isRemote);
         }
     }
 

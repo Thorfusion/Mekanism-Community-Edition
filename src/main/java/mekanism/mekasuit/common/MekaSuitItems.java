@@ -60,11 +60,15 @@ public final class MekaSuitItems {
     public static final ItemMekaModule ElectrolyticBreathingUnit = init(
           new ItemMekaModule(MekaSuitModules.ELECTROLYTIC_BREATHING_UNIT, EnumRarity.UNCOMMON),
           "module_electrolytic_breathing_unit", "ModuleElectrolyticBreathingUnit");
+    public static final ItemMekaModule InhalationPurificationUnit = init(
+          new ItemMekaModule(MekaSuitModules.INHALATION_PURIFICATION_UNIT, EnumRarity.RARE),
+          "module_inhalation_purification_unit", "ModuleInhalationPurificationUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
           MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, EnergyUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
-          BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit));
+          BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
+          InhalationPurificationUnit));
 
     private MekaSuitItems() {
     }
