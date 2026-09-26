@@ -123,6 +123,13 @@ jobs:
               ;;
           esac
 
+          if grep -Fq "tasks.register('nuclearJar'" build.gradle; then
+            artifact_specs+=(Nuclear.jar)
+          fi
+          if grep -Fq "tasks.register('mekasuitJar'" build.gradle; then
+            artifact_specs+=(MekaSuit.jar)
+          fi
+
           echo "prefix=$artifact_prefix" >> "$GITHUB_OUTPUT"
           {
             echo 'artifact_files<<ARTIFACT_FILES'

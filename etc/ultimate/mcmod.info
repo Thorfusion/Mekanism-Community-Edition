@@ -1,7 +1,7 @@
 [
   {
     "modid": "mekanismultimate",
-    "name": "Mekanism Community Edition: Ultimate",
+    "name": "Mekanism Community Edition: Ultimate (Beta)",
     "description": "Ultimate module for Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",
