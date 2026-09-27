@@ -8,6 +8,15 @@
     "ITI",
     "III"
   ],
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "mekanismnuclear"
+      }
+    }
+  ],
   "type": "forge:ore_shaped",
   "key": {
     "C": {

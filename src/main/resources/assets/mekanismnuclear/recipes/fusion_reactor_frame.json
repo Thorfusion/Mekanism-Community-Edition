@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {"type": "forge:mod_loaded", "modid": "mekanismnuclear"}
+  ],
+  "pattern": ["APA", "PXP", "APA"],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyUltimate"},
+    "P": {"type": "forge:ore_dict", "ore": "pelletPolonium"},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismgenerators:reactor", "data": 1, "count": 4}
+}

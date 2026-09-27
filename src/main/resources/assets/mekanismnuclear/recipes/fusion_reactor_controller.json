@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {"type": "forge:mod_loaded", "modid": "mekanismnuclear"}
+  ],
+  "pattern": ["CGC", "FTF", "FFF"],
+  "key": {
+    "C": {"type": "forge:ore_dict", "ore": "circuitUltimate"},
+    "G": {"type": "forge:ore_dict", "ore": "paneGlass"},
+    "F": {"item": "mekanismgenerators:reactor", "data": 1},
+    "T": {"item": "mekanismultimate:basic_chemical_tank"}
+  },
+  "result": {"item": "mekanismgenerators:reactor", "data": 0}
+}

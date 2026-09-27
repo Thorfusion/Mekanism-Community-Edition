@@ -1,7 +1,11 @@
 {
   "type": "mekanism:ore_shaped",
   "conditions": [
-    {"type": "forge:mod_loaded", "modid": "mekanismmekasuit"}
+    {"type": "forge:mod_loaded", "modid": "mekanismmekasuit"},
+    {
+      "type": "forge:not",
+      "value": {"type": "forge:mod_loaded", "modid": "mekanismnuclear"}
+    }
   ],
   "result": {
     "item": "mekanismgenerators:module_geothermal_generator_unit"

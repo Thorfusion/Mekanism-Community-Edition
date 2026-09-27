@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {"type": "forge:mod_loaded", "modid": "mekanismmekasuit"},
+    {"type": "forge:mod_loaded", "modid": "mekanismnuclear"}
+  ],
+  "pattern": ["A#A", "APA", "HHH"],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyElite"},
+    "#": {"item": "mekanismgenerators:generator", "data": 0},
+    "P": {"item": "mekanismmekasuit:module_base"},
+    "H": {"type": "forge:ore_dict", "ore": "pelletPolonium"}
+  },
+  "result": {"item": "mekanismgenerators:module_geothermal_generator_unit"}
+}

@@ -4,12 +4,7 @@
   "key": {
     "I": { "type": "forge:ore_dict", "ore": "ingotLead" },
     "S": { "type": "forge:ore_dict", "ore": "ingotSteel" },
-    "T": {
-      "type": "mekanism:item_nbt",
-      "item": "mekanism:gastank",
-      "data": 0,
-      "nbt": { "tier": 0 }
-    }
+    "T": { "item": "mekanismultimate:basic_chemical_tank" }
   },
   "result": { "item": "mekanismnuclear:fission_fuel_assembly" }
 }
