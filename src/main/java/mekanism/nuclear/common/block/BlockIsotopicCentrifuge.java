@@ -62,6 +62,18 @@ public class BlockIsotopicCentrifuge extends BlockMekanismContainer {
         return EnumBlockRenderType.MODEL;
     }
 
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
