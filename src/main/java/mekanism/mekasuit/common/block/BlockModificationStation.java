@@ -42,8 +42,8 @@ public final class BlockModificationStation extends BlockMekanismContainer {
 
     private static final AxisAlignedBB NORTH_BOUNDS = new AxisAlignedBB(-1, 0, 0, 1, 2, 1);
     private static final AxisAlignedBB SOUTH_BOUNDS = new AxisAlignedBB(0, 0, 0, 2, 2, 1);
-    private static final AxisAlignedBB EAST_BOUNDS = new AxisAlignedBB(0, 0, 0, 1, 2, 2);
-    private static final AxisAlignedBB WEST_BOUNDS = new AxisAlignedBB(0, 0, -1, 1, 2, 1);
+    private static final AxisAlignedBB EAST_BOUNDS = new AxisAlignedBB(0, 0, -1, 1, 2, 1);
+    private static final AxisAlignedBB WEST_BOUNDS = new AxisAlignedBB(0, 0, 0, 1, 2, 2);
 
     public BlockModificationStation() {
         super(Material.IRON);
@@ -81,6 +81,10 @@ public final class BlockModificationStation extends BlockMekanismContainer {
         if (tile instanceof TileEntityModificationStation) {
             facing = ((TileEntityModificationStation) tile).facing;
         }
+        return boundsForFacing(facing);
+    }
+
+    static AxisAlignedBB boundsForFacing(EnumFacing facing) {
         switch (facing) {
             case SOUTH:
                 return SOUTH_BOUNDS;
