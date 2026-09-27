@@ -21,11 +21,14 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Rotations;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -133,6 +136,42 @@ public final class ModelMekaSuitArmor extends ModelBiped {
 
     static TRSRTransformation baseTransform() {
         return BASE_TRANSFORM;
+    }
+
+    @Override
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks,
+          float netHeadYaw, float headPitch, float scaleFactor, Entity entity) {
+        if (!(entity instanceof EntityArmorStand)) {
+            // These axes are not reset by ModelBiped but may have been populated
+            // when this shared slot model last rendered an armor stand.
+            bipedHead.rotateAngleZ = 0;
+            bipedBody.rotateAngleZ = 0;
+            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks,
+                  netHeadYaw, headPitch, scaleFactor, entity);
+            return;
+        }
+
+        EntityArmorStand stand = (EntityArmorStand) entity;
+        applyRotation(bipedHead, stand.getHeadRotation());
+        bipedHead.setRotationPoint(0, 1, 0);
+        applyRotation(bipedBody, stand.getBodyRotation());
+        bipedBody.setRotationPoint(0, 0, 0);
+        applyRotation(bipedLeftArm, stand.getLeftArmRotation());
+        bipedLeftArm.setRotationPoint(5, 2, 0);
+        applyRotation(bipedRightArm, stand.getRightArmRotation());
+        bipedRightArm.setRotationPoint(-5, 2, 0);
+        applyRotation(bipedLeftLeg, stand.getLeftLegRotation());
+        bipedLeftLeg.setRotationPoint(1.9F, 11, 0);
+        applyRotation(bipedRightLeg, stand.getRightLegRotation());
+        bipedRightLeg.setRotationPoint(-1.9F, 11, 0);
+        copyModelAngles(bipedHead, bipedHeadwear);
+    }
+
+    private static void applyRotation(ModelRenderer part, Rotations rotation) {
+        float degreesToRadians = (float) Math.PI / 180F;
+        part.rotateAngleX = degreesToRadians * rotation.getX();
+        part.rotateAngleY = degreesToRadians * rotation.getY();
+        part.rotateAngleZ = degreesToRadians * rotation.getZ();
     }
 
     private static EntityEquipmentSlot adjacentSlot(EntityEquipmentSlot slot) {
