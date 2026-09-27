@@ -4,7 +4,7 @@
   "pattern":["A#A","EPE","HHH"],
   "key":{
     "A":{"type":"forge:ore_dict","ore":"alloyElite"},
-    "#":[{"item":"mekanism:freerunners"},{"item":"mekanismmekasuit:armored_free_runners"}],
+    "#":[{"item":"mekanism:freerunners"},{"item":"mekanismultimate:armored_free_runners"}],
     "E":{"item":"mekanism:energytablet"},
     "P":{"item":"mekanismmekasuit:module_base"},
     "H":{"item":"mekanism:atomicalloy"}

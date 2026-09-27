@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": {"model": "mekanismultimate:storage/bio_fuel"},
+    "inventory": {"model": "mekanismultimate:storage/bio_fuel"}
+  }
+}

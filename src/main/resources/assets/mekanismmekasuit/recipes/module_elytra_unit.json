@@ -8,7 +8,7 @@
   ],
   "key": {
     "A": {"type": "forge:ore_dict", "ore": "alloyElite"},
-    "#": {"item": "mekanismmekasuit:hdpe_elytra"},
+    "#": {"item": "mekanismultimate:hdpe_elytra"},
     "P": {"item": "mekanismmekasuit:module_base"},
     "H": {"type": "forge:ore_dict", "ore": "pelletPolonium"},
     "N": {"type": "forge:ore_dict", "ore": "pelletAntimatter"}

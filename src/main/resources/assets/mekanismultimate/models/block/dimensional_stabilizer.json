@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "particle": "mekanismultimate:blocks/dimensional_stabilizer/side",
+    "sides": "mekanismultimate:blocks/dimensional_stabilizer/side",
+    "front": "mekanismultimate:blocks/dimensional_stabilizer/side",
+    "up": "mekanismultimate:blocks/dimensional_stabilizer/top",
+    "down": "mekanismultimate:blocks/dimensional_stabilizer/bottom"
+  }
+}

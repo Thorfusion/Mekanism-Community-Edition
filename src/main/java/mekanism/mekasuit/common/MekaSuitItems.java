@@ -7,11 +7,9 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.mekasuit.api.gear.ModuleType;
 import mekanism.mekasuit.common.content.gear.MekaSuitModules;
 import mekanism.mekasuit.common.item.ItemMekaModule;
-import mekanism.mekasuit.common.item.ItemHDPEElytra;
 import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import mekanism.mekasuit.common.item.ItemMekaSuitArmor;
 import mekanism.mekasuit.common.item.ItemMekaTool;
-import mekanism.mekasuit.common.item.ItemArmoredFreeRunners;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -31,10 +29,6 @@ public final class MekaSuitItems {
     public static final ItemMekaSuitArmor MekaSuitBoots = init(
           new ItemMekaSuitArmor(EntityEquipmentSlot.FEET), "mekasuit_boots", "MekaSuitBoots");
     public static final Item ModuleBase = init(new ItemMekanism(), "module_base", "ModuleBase");
-    public static final ItemHDPEElytra HDPEElytra = init(
-          new ItemHDPEElytra(), "hdpe_elytra", "HDPEElytra");
-    public static final ItemArmoredFreeRunners ArmoredFreeRunners = init(
-          new ItemArmoredFreeRunners(), "armored_free_runners", "ArmoredFreeRunners");
     public static final ItemMekaModule EnergyUnit = init(
           new ItemMekaModule(MekaSuitModules.ENERGY_UNIT, EnumRarity.UNCOMMON), "module_energy_unit", "ModuleEnergyUnit");
     public static final ItemMekaModule ColorModulationUnit = init(
@@ -129,8 +123,8 @@ public final class MekaSuitItems {
           "module_soul_surfer_unit", "ModuleSoulSurferUnit");
 
     private static final List<Item> ITEMS = Collections.unmodifiableList(Arrays.asList(
-          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase, HDPEElytra,
-          ArmoredFreeRunners, EnergyUnit, ColorModulationUnit, LaserDissipationUnit, RadiationShieldingUnit,
+          MekaTool, MekaSuitHelmet, MekaSuitBodyarmor, MekaSuitPants, MekaSuitBoots, ModuleBase,
+          EnergyUnit, ColorModulationUnit, LaserDissipationUnit, RadiationShieldingUnit,
           ExcavationEscalationUnit, AttackAmplificationUnit, FarmingUnit, ShearingUnit, SilkTouchUnit, FortuneUnit,
           BlastingUnit, VeinMiningUnit, TeleportationUnit, ElectrolyticBreathingUnit,
           InhalationPurificationUnit, VisionEnhancementUnit, NutritionalInjectionUnit, JetpackUnit,

@@ -13,6 +13,7 @@ item.EnergyUpgrade.name=Energy Upgrade
 item.FilterUpgrade.name=Filter Upgrade
 item.MufflingUpgrade.name=Muffling Upgrade
 item.GasUpgrade.name=Gas Upgrade
+tooltip.configurationCard.cleared=Configuration Card cleared.
 item.AnchorUpgrade.name=Anchor Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler

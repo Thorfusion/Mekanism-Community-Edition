@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["#", "#"],
+  "key": {"#": {"item": "mekanism:polyethene", "data": 1}},
+  "result": {"item": "mekanism:polyethene", "data": 3}
+}

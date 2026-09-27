@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
@@ -32,12 +33,14 @@ import mekanism.ultimate.common.tile.TileEntityChemicalTank;
 import mekanism.ultimate.common.tier.ChemicalTankTier;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -63,6 +66,24 @@ public final class ItemBlockChemicalTank extends ItemBlock implements IGasItem,
 
     public ChemicalTankTier getTier() {
         return tier;
+    }
+
+    @Override
+    public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> items) {
+        if (!isInCreativeTab(tab)) {
+            return;
+        }
+        items.add(new ItemStack(this));
+        if (!tier.isCreative() || !MekanismConfig.current().general.prefilledGasTanks.val()) {
+            return;
+        }
+        for (Gas gas : GasRegistry.getRegisteredGasses()) {
+            if (gas.isVisible()) {
+                ItemStack filled = new ItemStack(this);
+                setStoredChemical(filled, new ChemicalStackCE(new MekGasChemicalType(gas), tier.getStorage()));
+                items.add(filled);
+            }
+        }
     }
 
     @Override

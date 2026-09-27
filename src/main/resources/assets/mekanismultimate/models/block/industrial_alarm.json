@@ -1,0 +1,39 @@
+{
+  "textures": {
+    "alarm": "mekanismultimate:blocks/models/industrial_alarm",
+    "particle": "mekanismultimate:blocks/models/industrial_alarm"
+  },
+  "elements": [
+    {
+      "from": [5, 0, 5], "to": [11, 1, 11],
+      "faces": {
+        "north": {"uv": [3, 7.5, 6, 8], "texture": "#alarm"},
+        "east": {"uv": [0, 7.5, 3, 8], "texture": "#alarm"},
+        "south": {"uv": [9, 7.5, 12, 8], "texture": "#alarm"},
+        "west": {"uv": [6, 7.5, 9, 8], "texture": "#alarm"},
+        "up": {"uv": [3, 4.5, 6, 7.5], "texture": "#alarm"},
+        "down": {"uv": [6, 4.5, 9, 7.5], "texture": "#alarm"}
+      }
+    },
+    {
+      "from": [6, 1, 6], "to": [10, 5, 10],
+      "faces": {
+        "north": {"uv": [2, 2, 4, 4], "texture": "#alarm"},
+        "east": {"uv": [0, 2, 2, 4], "texture": "#alarm"},
+        "south": {"uv": [6, 2, 8, 4], "texture": "#alarm"},
+        "west": {"uv": [4, 2, 6, 4], "texture": "#alarm"},
+        "up": {"uv": [2, 0, 4, 2], "texture": "#alarm"}
+      }
+    },
+    {
+      "from": [7, 5, 7], "to": [9, 16, 9],
+      "faces": {
+        "north": {"uv": [9, 1, 10, 6.5], "texture": "#alarm"},
+        "east": {"uv": [8, 1, 9, 6.5], "texture": "#alarm"},
+        "south": {"uv": [11, 1, 12, 6.5], "texture": "#alarm"},
+        "west": {"uv": [10, 1, 11, 6.5], "texture": "#alarm"},
+        "up": {"uv": [9, 0, 10, 1], "texture": "#alarm"}
+      }
+    }
+  ]
+}

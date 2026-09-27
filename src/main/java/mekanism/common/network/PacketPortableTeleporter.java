@@ -9,11 +9,14 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.AccessMode;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.TrustedFrequencyUtils;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -44,31 +47,40 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                         Mekanism.proxy.handleTeleporterUpdate(message);
                         break;
                     case SET_FREQ:
-                        FrequencyManager manager1 = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
+                        FrequencyManager manager1 = getManager(message.frequency, player.getUniqueID(), world);
+                        if (manager1 == null) break;
                         Frequency toUse = null;
                         for (Frequency freq : manager1.getFrequencies()) {
-                            if (freq.name.equals(message.frequency.name)) {
+                            if (freq.name.equals(message.frequency.name)
+                                  && freq.getAccessMode() == message.frequency.getAccessMode()) {
                                 toUse = freq;
                                 break;
                             }
                         }
                         if (toUse == null) {
-                            toUse = new Frequency(message.frequency.name, player.getPersistentID()).setPublic(message.frequency.isPublic());
+                            if (message.frequency.ownerUUID != null
+                                  && !message.frequency.ownerUUID.equals(player.getUniqueID())) break;
+                            toUse = new Frequency(message.frequency.name, player.getPersistentID())
+                                  .setAccessMode(message.frequency.getAccessMode());
                             manager1.addFrequency(toUse);
                         }
                         item.setFrequency(itemstack, toUse);
                         sendDataResponse(toUse, world, player, item, itemstack, message.currentHand);
                         break;
                     case DEL_FREQ:
-                        FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
-                        manager.remove(message.frequency.name, player.getUniqueID());
+                        FrequencyManager manager = getManager(message.frequency, player.getUniqueID(), world);
+                        if (manager != null && player.getUniqueID().equals(message.frequency.ownerUUID)) {
+                            manager.remove(message.frequency.name, player.getUniqueID());
+                        }
                         item.setFrequency(itemstack, null);
                         break;
                     case TELEPORT:
-                        FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
+                        FrequencyManager manager2 = getManager(message.frequency, player.getUniqueID(), world);
+                        if (manager2 == null) break;
                         Frequency found = null;
                         for (Frequency freq : manager2.getFrequencies()) {
-                            if (message.frequency.name.equals(freq.name)) {
+                            if (message.frequency.name.equals(freq.name)
+                                  && message.frequency.getAccessMode() == freq.getAccessMode()) {
                                 found = freq;
                                 break;
                             }
@@ -109,13 +121,24 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
     public void sendDataResponse(Frequency given, World world, EntityPlayer player, ItemPortableTeleporter item, ItemStack itemstack, EnumHand hand) {
         List<Frequency> publicFreqs = new ArrayList<>(getManager(null, world).getFrequencies());
-        List<Frequency> privateFreqs = new ArrayList<>(getManager(player.getUniqueID(), world).getFrequencies());
+        FrequencyManager ownManager = getManager(player.getUniqueID(), world);
+        List<Frequency> privateFreqs = new ArrayList<>();
+        List<Frequency> trustedFreqs = new ArrayList<>();
+        for (Frequency frequency : ownManager.getFrequencies()) {
+            if (frequency.isPrivate()) privateFreqs.add(frequency);
+            else if (frequency.isTrusted()) trustedFreqs.add(frequency);
+        }
+        trustedFreqs.addAll(TrustedFrequencyUtils.collect(Mekanism.privateTeleporters,
+              Frequency.class, Frequency.TELEPORTER, player.getUniqueID(), world));
         byte status = 3;
         if (given != null) {
-            FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getUniqueID(), world);
+            FrequencyManager manager = getManager(given, player.getUniqueID(), world);
             boolean found = false;
-            for (Frequency iterFreq : manager.getFrequencies()) {
-                if (given.equals(iterFreq)) {
+            for (Frequency iterFreq : manager == null ? java.util.Collections.<Frequency>emptyList() : manager.getFrequencies()) {
+                // Old portable items stored only name + public/private. Resolve
+                // those identities in the already permission-checked manager.
+                if (given.name.equals(iterFreq.name)
+                      && given.getAccessMode() == iterFreq.getAccessMode()) {
                     given = iterFreq;
                     found = true;
                     break;
@@ -139,7 +162,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 }
             }
         }
-        Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(hand, given, status, publicFreqs, privateFreqs), (EntityPlayerMP) player);
+        Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(hand, given, status,
+              publicFreqs, privateFreqs, trustedFreqs), (EntityPlayerMP) player);
     }
 
     public FrequencyManager getManager(UUID owner, World world) {
@@ -151,6 +175,15 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
             manager.createOrLoad(world);
         }
         return Mekanism.privateTeleporters.get(owner);
+    }
+
+    private FrequencyManager getManager(Frequency frequency, UUID requester, World world) {
+        if (frequency == null) return null;
+        if (frequency.isPublic()) return getManager(null, world);
+        UUID owner = frequency.isTrusted() && frequency.ownerUUID != null
+              ? frequency.ownerUUID : requester;
+        if (frequency.isTrusted() && !SecurityUtils.canUseFrequency(frequency, requester)) return null;
+        return getManager(owner, world);
     }
 
     public enum PortableTeleporterPacketType {
@@ -171,6 +204,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
         public List<Frequency> publicCache = new ArrayList<>();
         public List<Frequency> privateCache = new ArrayList<>();
+        public List<Frequency> trustedCache = new ArrayList<>();
 
         public PortableTeleporterMessage() {
         }
@@ -189,7 +223,9 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
             }
         }
 
-        public PortableTeleporterMessage(EnumHand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
+        public PortableTeleporterMessage(EnumHand hand, Frequency freq, byte b,
+              List<Frequency> publicFreqs, List<Frequency> privateFreqs,
+              List<Frequency> trustedFreqs) {
             packetType = PortableTeleporterPacketType.DATA_RESPONSE;
 
             currentHand = hand;
@@ -198,6 +234,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
             publicCache = publicFreqs;
             privateCache = privateFreqs;
+            trustedCache = trustedFreqs;
         }
 
         @Override
@@ -208,8 +245,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 buffer.writeInt(currentHand.ordinal());
                 if (frequency != null) {
                     buffer.writeBoolean(true);
-                    PacketHandler.writeString(buffer, frequency.name);
-                    buffer.writeBoolean(frequency.publicFreq);
+                    writeIdentity(buffer, frequency);
                 } else {
                     buffer.writeBoolean(false);
                 }
@@ -218,8 +254,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
                 if (frequency != null) {
                     buffer.writeBoolean(true);
-                    PacketHandler.writeString(buffer, frequency.name);
-                    buffer.writeBoolean(frequency.publicFreq);
+                    writeIdentity(buffer, frequency);
                 } else {
                     buffer.writeBoolean(false);
                 }
@@ -239,19 +274,19 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                     freq.write(data);
                 }
 
+                data.add(trustedCache.size());
+                for (Frequency freq : trustedCache) freq.write(data);
+
                 PacketHandler.encode(data.toArray(), buffer);
             } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
                 buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
+                writeIdentity(buffer, frequency);
             } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
                 buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
+                writeIdentity(buffer, frequency);
             } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
                 buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
+                writeIdentity(buffer, frequency);
             }
         }
 
@@ -261,12 +296,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
             if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
                 currentHand = EnumHand.values()[buffer.readInt()];
                 if (buffer.readBoolean()) {
-                    frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
+                    frequency = readIdentity(buffer);
                 }
             } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
                 currentHand = EnumHand.values()[buffer.readInt()];
                 if (buffer.readBoolean()) {
-                    frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
+                    frequency = readIdentity(buffer);
                 }
                 status = buffer.readByte();
 
@@ -278,16 +313,37 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 for (int i = 0; i < amount; i++) {
                     privateCache.add(new Frequency(buffer));
                 }
+                amount = buffer.readInt();
+                for (int i = 0; i < amount; i++) trustedCache.add(new Frequency(buffer));
             } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
                 currentHand = EnumHand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
+                frequency = readIdentity(buffer);
             } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
                 currentHand = EnumHand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
+                frequency = readIdentity(buffer);
             } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
                 currentHand = EnumHand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
+                frequency = readIdentity(buffer);
             }
+        }
+
+        private static void writeIdentity(ByteBuf buffer, Frequency frequency) {
+            PacketHandler.writeString(buffer, frequency.name);
+            buffer.writeInt(frequency.getAccessMode().ordinal());
+            buffer.writeBoolean(frequency.ownerUUID != null);
+            if (frequency.ownerUUID != null) {
+                buffer.writeLong(frequency.ownerUUID.getMostSignificantBits());
+                buffer.writeLong(frequency.ownerUUID.getLeastSignificantBits());
+            }
+        }
+
+        private static Frequency readIdentity(ByteBuf buffer) {
+            String name = PacketHandler.readString(buffer);
+            int index = buffer.readInt();
+            AccessMode mode = index >= 0 && index < AccessMode.values().length
+                  ? AccessMode.values()[index] : AccessMode.PRIVATE;
+            UUID owner = buffer.readBoolean() ? new UUID(buffer.readLong(), buffer.readLong()) : null;
+            return new Frequency(name, owner).setAccessMode(mode);
         }
     }
 }

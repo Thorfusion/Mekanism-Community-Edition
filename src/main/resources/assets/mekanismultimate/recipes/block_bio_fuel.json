@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["###", "###", "###"],
+  "key": {"#": {"item": "mekanism:biofuel"}},
+  "result": {"item": "mekanismultimate:block_bio_fuel"}
+}

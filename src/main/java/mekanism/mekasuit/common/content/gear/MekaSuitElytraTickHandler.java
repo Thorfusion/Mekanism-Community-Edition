@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import mekanism.mekasuit.common.item.ItemHDPEElytra;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -55,10 +54,6 @@ public final class MekaSuitElytraTickHandler {
         }
 
         ItemStack proxy = new ItemStack(Items.ELYTRA);
-        if (chest.getItem() instanceof ItemHDPEElytra && chest.hasTagCompound()) {
-            // Preserve enchantments so Unbreaking affects the reinforced Elytra once, on the proxy.
-            proxy.setTagCompound(chest.getTagCompound().copy());
-        }
         proxy.setItemDamage(0);
         ItemStack cached = event.side == Side.SERVER ? armorCache(event.player).get(chestIndex()).copy() : ItemStack.EMPTY;
         SwapData data = new SwapData(chest, proxy, cached);
@@ -115,14 +110,8 @@ public final class MekaSuitElytraTickHandler {
         if (used <= 0 || player.capabilities.isCreativeMode) {
             return;
         }
-        if (data.original.getItem() instanceof ItemHDPEElytra) {
-            int maximumUsableDamage = Math.max(0, data.original.getMaxDamage() - 1);
-            data.original.setItemDamage(Math.min(maximumUsableDamage,
-                  data.original.getItemDamage() + used));
-        } else {
-            // Vanilla damages the proxy once per second; stable charges one configured use at the same cadence.
-            MekaSuitElytraHelper.useEnergy(data.original, MekaSuitElytraHelper.getEnergyUsage());
-        }
+        // Vanilla damages the proxy once per second; stable charges one configured use at the same cadence.
+        MekaSuitElytraHelper.useEnergy(data.original, MekaSuitElytraHelper.getEnergyUsage());
     }
 
     private static Map<UUID, SwapData> swaps(Side side) {

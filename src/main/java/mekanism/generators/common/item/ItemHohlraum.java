@@ -7,6 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -134,8 +135,10 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         ItemStack empty = new ItemStack(this);
         setGas(empty, null);
         list.add(empty);
-        ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
+        if (MekanismConfig.current().general.prefilledGasTanks.val()) {
+            ItemStack filled = new ItemStack(this);
+            setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+            list.add(filled);
+        }
     }
 }

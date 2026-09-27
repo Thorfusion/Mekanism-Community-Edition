@@ -6,6 +6,7 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -20,14 +21,18 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
     @Override
     public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
-            tileEntity.structure.fluidStored.amount != 0) {
+        net.minecraftforge.fluids.FluidStack renderStack = tileEntity.structure == null ? null
+              : tileEntity.structure.chemicalStored != null
+                    ? DynamicTankChemicalHooks.getRenderStack(tileEntity.structure.chemicalStored)
+                    : tileEntity.structure.fluidStored;
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && renderStack != null &&
+            tileEntity.getActiveScale() > 0) {
             RenderData data = new RenderData();
             data.location = tileEntity.structure.renderLocation;
             data.height = tileEntity.structure.volHeight - 2;
             data.length = tileEntity.structure.volLength;
             data.width = tileEntity.structure.volWidth;
-            data.fluidType = tileEntity.structure.fluidStored;
+            data.fluidType = renderStack;
 
             if (data.location != null && data.height >= 1) {
                 bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -39,7 +44,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 setLightmapDisabled(true);
                 FluidRenderer.translateToOrigin(data.location);
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
-                MekanismRenderer.color(data.fluidType, (float) data.fluidType.amount / (float) tileEntity.clientCapacity);
+                MekanismRenderer.color(data.fluidType, tileEntity.getActiveScale());
                 if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
                     FluidRenderer.getTankDisplay(data).render();
                 } else {

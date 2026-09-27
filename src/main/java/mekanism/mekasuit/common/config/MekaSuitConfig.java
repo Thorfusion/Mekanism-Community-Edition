@@ -29,9 +29,6 @@ public final class MekaSuitConfig {
     public static final long DEFAULT_SUIT_BASE_JUMP_USAGE = 1_000L;
     public static final long DEFAULT_SUIT_HYDROSTATIC_REPULSION_USAGE = 500L;
     public static final long DEFAULT_SUIT_ITEM_ATTRACTION_USAGE = 250L;
-    public static final int DEFAULT_ARMORED_FREE_RUNNER_ARMOR = 3;
-    public static final float DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS = 2F;
-    public static final float DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE = 0F;
     public static final long DEFAULT_TOOL_MINING_USAGE = 10L;
     public static final long DEFAULT_TOOL_SILK_MINING_USAGE = 100L;
     public static final long DEFAULT_TOOL_WEAPON_USAGE = 2_000L;
@@ -69,9 +66,6 @@ public final class MekaSuitConfig {
     public static long suitBaseJumpUsage = DEFAULT_SUIT_BASE_JUMP_USAGE;
     public static long suitHydrostaticRepulsionUsage = DEFAULT_SUIT_HYDROSTATIC_REPULSION_USAGE;
     public static long suitItemAttractionUsage = DEFAULT_SUIT_ITEM_ATTRACTION_USAGE;
-    public static int armoredFreeRunnerArmor = DEFAULT_ARMORED_FREE_RUNNER_ARMOR;
-    public static float armoredFreeRunnerToughness = DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS;
-    public static float armoredFreeRunnerKnockbackResistance = DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE;
     public static long toolMiningUsage = DEFAULT_TOOL_MINING_USAGE;
     public static long toolSilkMiningUsage = DEFAULT_TOOL_SILK_MINING_USAGE;
     public static long toolWeaponUsage = DEFAULT_TOOL_WEAPON_USAGE;
@@ -94,6 +88,13 @@ public final class MekaSuitConfig {
     public static void load(File file) {
         Configuration config = new Configuration(file);
         config.load();
+        load(config);
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
+
+    public static void load(Configuration config) {
         toolCapacity = getLong(config, "meka_tool", "baseEnergyCapacity", DEFAULT_TOOL_CAPACITY, 1,
               "Base Meka-Tool energy capacity in Joules. Each Energy Unit doubles this value.");
         toolChargeRate = getLong(config, "meka_tool", "chargeRate", DEFAULT_TOOL_CHARGE_RATE, 1,
@@ -185,23 +186,11 @@ public final class MekaSuitConfig {
         suitItemAttractionUsage = getLong(config, "mekasuit", "itemAttraction",
               DEFAULT_SUIT_ITEM_ATTRACTION_USAGE, 0,
               "Energy used per attracted item and range block by the Magnetic Attraction Unit.");
-        armoredFreeRunnerArmor = config.getInt("armor", "armored_free_runners",
-              DEFAULT_ARMORED_FREE_RUNNER_ARMOR, 0, 100,
-              "Armor points provided by Armored Free Runners.");
-        armoredFreeRunnerToughness = config.getFloat("toughness", "armored_free_runners",
-              DEFAULT_ARMORED_FREE_RUNNER_TOUGHNESS, 0F, 100F,
-              "Armor toughness provided by Armored Free Runners.");
-        armoredFreeRunnerKnockbackResistance = config.getFloat("knockbackResistance", "armored_free_runners",
-              DEFAULT_ARMORED_FREE_RUNNER_KNOCKBACK_RESISTANCE, 0F, 1F,
-              "Knockback resistance provided by Armored Free Runners.");
         modificationStationCapacity = getLong(config, "modification_station", "energyCapacity",
               DEFAULT_MODIFICATION_STATION_CAPACITY, 1, "Modification Station energy capacity in Joules.");
         modificationStationUsage = getLong(config, "modification_station", "energyPerTick",
               DEFAULT_MODIFICATION_STATION_USAGE, 1,
               "Modification Station energy usage while installing modules.");
-        if (config.hasChanged()) {
-            config.save();
-        }
     }
 
     private static long getLong(Configuration config, String category, String key, long fallback,

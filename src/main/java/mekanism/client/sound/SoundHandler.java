@@ -161,9 +161,11 @@ public class SoundHandler {
             return;
         }
 
-        // Ignore any sound event outside this mod namespace
+        // Ignore sounds outside the Mekanism family of modules. Add-on modules use
+        // their own namespaces (for example mekanismultimate), but their looping
+        // tile sounds still need to be tracked here so stopTileSound can stop them.
         ResourceLocation soundLoc = event.getSound().getSoundLocation();
-        if (!soundLoc.getNamespace().equals(Mekanism.MODID)) {
+        if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;
         }
 

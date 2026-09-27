@@ -1,0 +1,8 @@
+{
+  "parent": "mekanismultimate:block/dimensional_stabilizer",
+  "textures": {
+    "sides": "mekanismultimate:blocks/dimensional_stabilizer/side_active",
+    "front": "mekanismultimate:blocks/dimensional_stabilizer/side_active",
+    "up": "mekanismultimate:blocks/dimensional_stabilizer/top_active"
+  }
+}

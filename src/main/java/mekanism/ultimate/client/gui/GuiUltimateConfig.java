@@ -23,6 +23,7 @@ public class GuiUltimateConfig extends GuiConfig {
         List<IConfigElement> elements = new ArrayList<>();
         elements.addAll(new ConfigElement(Mekanism.configurationultimate.getCategory("ultimate")).getChildElements());
         elements.addAll(new ConfigElement(Mekanism.configurationultimate.getCategory("nutrition")).getChildElements());
+        elements.addAll(new ConfigElement(Mekanism.configurationultimate.getCategory("armored_free_runners")).getChildElements());
         return elements;
     }
 }

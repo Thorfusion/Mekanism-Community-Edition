@@ -9,6 +9,7 @@ import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.AccessMode;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.IOwnerItem;
@@ -56,7 +57,10 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (getFrequency(itemstack) != null) {
             list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack).name);
             list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY +
-                     LangUtils.localize("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public")));
+                     (getFrequency(itemstack).accessMode == AccessMode.TRUSTED
+                           ? LangUtils.localize("security.trusted")
+                           : LangUtils.localize("gui." + (getFrequency(itemstack).accessMode == AccessMode.PRIVATE
+                                 ? "private" : "public"))));
         }
         super.addInformation(itemstack, world, list, flag);
     }

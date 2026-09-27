@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["RCR", "FXF", "RCR"],
+  "key": {
+    "R": {"type": "forge:ore_dict", "ore": "dustRedstone"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitBasic"},
+    "F": {"item": "minecraft:flint"},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismultimate:pigment_extractor"}
+}

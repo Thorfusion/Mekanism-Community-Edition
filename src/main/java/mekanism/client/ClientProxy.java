@@ -867,6 +867,7 @@ public class ClientProxy extends CommonProxy {
             teleporter.setFrequency(message.frequency);
             teleporter.setPublicCache(message.publicCache);
             teleporter.setPrivateCache(message.privateCache);
+            teleporter.setTrustedCache(message.trustedCache);
             teleporter.updateButtons();
         }
     }

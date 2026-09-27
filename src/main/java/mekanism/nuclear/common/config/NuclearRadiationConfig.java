@@ -27,6 +27,13 @@ public final class NuclearRadiationConfig {
     public static synchronized void load(File file) {
         Configuration config = new Configuration(file);
         config.load();
+        load(config);
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
+
+    public static synchronized void load(Configuration config) {
         radiationEnabled = config.getBoolean("Enabled", CATEGORY, true,
               "Enable environmental radiation and radioactive exposure.");
         radiationChunkCheckRadius = config.getInt("ChunkCheckRadius", CATEGORY, 5, 1, 100,
@@ -44,9 +51,6 @@ public final class NuclearRadiationConfig {
               Integer.MAX_VALUE, "Ticks required for a Radioactive Waste Barrel decay operation.");
         wasteBarrelDecayAmount = NuclearConfigValues.getLong(config, CATEGORY, "WasteBarrelDecayAmount", 1L, 0,
               "Amount in mB removed by each Radioactive Waste Barrel decay operation. Set to zero to disable decay.");
-        if (config.hasChanged()) {
-            config.save();
-        }
     }
 
     public static boolean isRadiationEnabled() {

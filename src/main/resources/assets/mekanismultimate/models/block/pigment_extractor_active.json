@@ -1,0 +1,8 @@
+{
+  "parent": "mekanismultimate:block/pigment_extractor",
+  "textures": {
+    "north": "mekanismultimate:blocks/pigment_extractor/front_active",
+    "west": "mekanismultimate:blocks/pigment_extractor/left_active",
+    "east": "mekanismultimate:blocks/pigment_extractor/right_active"
+  }
+}

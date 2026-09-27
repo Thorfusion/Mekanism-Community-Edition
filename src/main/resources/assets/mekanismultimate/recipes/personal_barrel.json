@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["SGS", "PCP", "SSS"],
+  "key": {
+    "S": {"type": "forge:ore_dict", "ore": "ingotSteel"},
+    "G": {"type": "forge:ore_dict", "ore": "blockGlass"},
+    "P": {"type": "forge:ore_dict", "ore": "chestWood"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitBasic"}
+  },
+  "result": {"item": "mekanismultimate:personal_barrel"}
+}

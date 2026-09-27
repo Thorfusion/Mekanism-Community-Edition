@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [{"item": "mekanismultimate:block_bio_fuel"}],
+  "result": {"item": "mekanism:biofuel", "count": 9}
+}

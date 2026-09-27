@@ -1,0 +1,13 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "particle": "mekanismultimate:blocks/painting_machine/right",
+    "sides": "mekanismultimate:blocks/painting_machine/right",
+    "down": "mekanismultimate:blocks/painting_machine/bottom",
+    "up": "mekanismultimate:blocks/painting_machine/top",
+    "north": "mekanismultimate:blocks/painting_machine/front",
+    "south": "mekanismultimate:blocks/painting_machine/back",
+    "west": "mekanismultimate:blocks/painting_machine/left",
+    "east": "mekanismultimate:blocks/painting_machine/right"
+  }
+}

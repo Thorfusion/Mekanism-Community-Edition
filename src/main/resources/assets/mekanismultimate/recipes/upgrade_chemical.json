@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": [" G ", "AIA", " G "],
+  "key": {
+    "G": {"type": "forge:ore_dict", "ore": "blockGlass"},
+    "A": {"type": "forge:ore_dict", "ore": "alloyInfused"},
+    "I": {"type": "forge:ore_dict", "ore": "dustIron"}
+  },
+  "result": {"item": "mekanismultimate:upgrade_chemical"}
+}

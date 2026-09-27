@@ -23,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -30,6 +31,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemConfigurationCard extends ItemMekanism {
+
+    private static final int DATA_VERSION = 2;
 
     public ItemConfigurationCard() {
         super();
@@ -59,7 +62,12 @@ public class ItemConfigurationCard extends ItemMekanism {
                         }
 
                         if (data != null) {
+                            sanitizeConfigurationData(data);
+                            data.setInteger("dataVersion", DATA_VERSION);
                             data.setString("dataType", getNameFromTile(tileEntity, side));
+                            if (tileEntity.getBlockType().getRegistryName() != null) {
+                                data.setString("sourceBlock", tileEntity.getBlockType().getRegistryName().toString());
+                            }
                             setData(stack, data);
                             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                                        LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s",
@@ -70,6 +78,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                     NBTTagCompound data = getData(stack);
                     if (data != null) {
                         if (getNameFromTile(tileEntity, side).equals(getDataType(stack))) {
+                            sanitizeConfigurationData(data);
                             setBaseData(data, tileEntity);
                             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
                                 ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
@@ -91,6 +100,22 @@ public class ItemConfigurationCard extends ItemMekanism {
             }
         }
         return EnumActionResult.PASS;
+    }
+
+    /** Sneak-use in the air clears encoded data without consuming the card. */
+    @Nonnull
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (player.isSneaking()) {
+            if (!world.isRemote && getData(stack) != null) {
+                setData(stack, null);
+                player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " "
+                      + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.cleared")));
+            }
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        }
+        return new ActionResult<>(EnumActionResult.PASS, stack);
     }
 
     private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tileEntity) {
@@ -116,7 +141,10 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     private void setBaseData(NBTTagCompound nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[nbtTags.getInteger("controlType")]);
+            int control = nbtTags.getInteger("controlType");
+            if (nbtTags.hasKey("controlType") && control >= 0 && control < RedstoneControl.values().length) {
+                ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[control]);
+            }
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().read(nbtTags);
@@ -158,5 +186,15 @@ public class ItemConfigurationCard extends ItemMekanism {
             return data.getString("dataType");
         }
         return "gui.none";
+    }
+
+    private static void sanitizeConfigurationData(NBTTagCompound data) {
+        // Configuration may copy operating settings, never ownership, trust, or
+        // the security mode protecting the destination machine.
+        data.removeTag("owner");
+        data.removeTag("ownerUUID");
+        data.removeTag("trusted");
+        data.removeTag("security");
+        data.removeTag("securityMode");
     }
 }

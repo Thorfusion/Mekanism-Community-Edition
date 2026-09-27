@@ -9,10 +9,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
+import mekanism.common.content.tank.DynamicTankChemicalStack;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -46,6 +49,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
      */
     public int clientCapacity;
 
+    public long clientChemicalCapacity;
+
     public float prevScale;
 
     public TileEntityDynamicTank() {
@@ -63,7 +68,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (world.isRemote) {
             if (clientHasStructure && isRendering) {
                 if (structure != null) {
-                    float targetScale = (float) (structure.fluidStored != null ? structure.fluidStored.amount : 0) / clientCapacity;
+                    float targetScale = getActiveScale();
                     if (Math.abs(prevScale - targetScale) > 0.01) {
                         prevScale = (9 * prevScale + targetScale) / 10;
                     }
@@ -82,6 +87,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 structure.fluidStored = null;
                 markDirty();
             }
+            if (structure.chemicalStored != null && structure.chemicalStored.amount <= 0) {
+                structure.chemicalStored = null;
+                markDirty();
+            }
+            if (structure.fluidStored != null && structure.chemicalStored != null) {
+                structure.chemicalStored = null;
+                markDirty();
+            }
             if (isRendering) {
                 boolean needsValveUpdate = false;
                 for (ValveData data : structure.valves) {
@@ -97,12 +110,21 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     sendPacketToRenderer();
                 }
                 structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
+                structure.prevChemical = structure.chemicalStored != null ? structure.chemicalStored.copy() : null;
                 manageInventory();
             }
         }
     }
 
     public void manageInventory() {
+        if (structure.chemicalStored != null || !FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
+            if (DynamicTankChemicalHooks.manageInventory(this, structure)) {
+                Mekanism.packetHandler.sendUpdatePacket(this);
+            }
+            if (structure.chemicalStored != null) {
+                return;
+            }
+        }
         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - (structure.fluidStored != null ? structure.fluidStored.amount : 0);
         if (FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
             structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
@@ -113,7 +135,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            if (!BlockBasic.manageInventory(player, this, hand, stack)) {
+            if (!BlockBasic.manageInventory(player, this, hand, stack)
+                  && !DynamicTankChemicalHooks.manageHeldItem(player, this, hand, stack)) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
                 player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
             } else {
@@ -150,8 +173,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         super.getNetworkedData(data);
         if (structure != null) {
             data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
+            data.add(DynamicTankChemicalHooks.getCapacity(structure.volume));
             data.add(structure.editMode.ordinal());
             TileUtils.addFluidStack(data, structure.fluidStored);
+            data.add(structure.chemicalStored == null ? "" : structure.chemicalStored.kind);
+            data.add(structure.chemicalStored == null ? "" : structure.chemicalStored.registryName);
+            data.add(structure.chemicalStored == null ? 0L : structure.chemicalStored.amount);
 
             if (isRendering) {
                 Set<ValveData> toSend = new HashSet<>();
@@ -177,8 +204,19 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
-                structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+                clientChemicalCapacity = dataStream.readLong();
+                int mode = dataStream.readInt();
+                structure.editMode = mode >= 0 && mode < ContainerEditMode.values().length
+                      ? ContainerEditMode.values()[mode] : ContainerEditMode.BOTH;
                 structure.fluidStored = TileUtils.readFluidStack(dataStream);
+                String chemicalKind = PacketHandler.readString(dataStream);
+                String chemicalName = PacketHandler.readString(dataStream);
+                long chemicalAmount = dataStream.readLong();
+                structure.chemicalStored = structure.fluidStored == null
+                      && DynamicTankChemicalStack.isValidId(chemicalKind)
+                      && DynamicTankChemicalStack.isValidId(chemicalName) && chemicalAmount > 0
+                      ? new DynamicTankChemicalStack(chemicalKind, chemicalName,
+                            Math.min(chemicalAmount, clientChemicalCapacity)) : null;
 
                 if (isRendering) {
                     int size = dataStream.readInt();
@@ -199,10 +237,30 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     public int getScaledFluidLevel(long i) {
-        if (clientCapacity == 0 || structure.fluidStored == null) {
+        if (structure == null) {
             return 0;
         }
-        return (int) (structure.fluidStored.amount * i / clientCapacity);
+        if (structure.chemicalStored != null) {
+            return clientChemicalCapacity <= 0 ? 0
+                  : (int) (structure.chemicalStored.amount * i / clientChemicalCapacity);
+        }
+        return clientCapacity <= 0 || structure.fluidStored == null ? 0
+              : (int) (structure.fluidStored.amount * i / clientCapacity);
+    }
+
+    public float getActiveScale() {
+        if (structure == null) {
+            return 0;
+        }
+        if (structure.chemicalStored != null) {
+            long capacity = world != null && world.isRemote ? clientChemicalCapacity
+                  : DynamicTankChemicalHooks.getCapacity(structure.volume);
+            return capacity <= 0 ? 0 : (float) (structure.chemicalStored.amount / (double) capacity);
+        }
+        int capacity = world != null && world.isRemote ? clientCapacity
+              : structure.volume * TankUpdateProtocol.FLUID_PER_TANK;
+        return capacity <= 0 || structure.fluidStored == null ? 0
+              : (float) structure.fluidStored.amount / capacity;
     }
 
     @Override
@@ -244,11 +302,15 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public Object[] invoke(int method, Object[] args) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{structure != null ? structure.fluidStored != null ? structure.fluidStored.amount : 0 : 0};
+                return new Object[]{structure != null ? structure.chemicalStored != null
+                      ? structure.chemicalStored.amount
+                      : structure.fluidStored != null ? structure.fluidStored.amount : 0 : 0};
             case 1:
                 return new Object[]{structure != null ? structure.volume : 0};
             case 2:
-                return new Object[]{structure != null ? structure.fluidStored != null ? structure.fluidStored.getLocalizedName() : null : null};
+                return new Object[]{structure != null ? structure.chemicalStored != null
+                      ? DynamicTankChemicalHooks.getDisplayName(structure.chemicalStored)
+                      : structure.fluidStored != null ? structure.fluidStored.getLocalizedName() : null : null};
             default:
                 throw new NoSuchMethodException();
         }

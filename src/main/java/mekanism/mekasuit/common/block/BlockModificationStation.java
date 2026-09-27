@@ -29,6 +29,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -38,6 +39,11 @@ import net.minecraft.world.World;
 
 /** 1.12 block shell for the stable Modification Station workflow. */
 public final class BlockModificationStation extends BlockMekanismContainer {
+
+    private static final AxisAlignedBB NORTH_BOUNDS = new AxisAlignedBB(-1, 0, 0, 1, 2, 1);
+    private static final AxisAlignedBB SOUTH_BOUNDS = new AxisAlignedBB(0, 0, 0, 2, 2, 1);
+    private static final AxisAlignedBB EAST_BOUNDS = new AxisAlignedBB(0, 0, 0, 1, 2, 2);
+    private static final AxisAlignedBB WEST_BOUNDS = new AxisAlignedBB(0, 0, -1, 1, 2, 1);
 
     public BlockModificationStation() {
         super(Material.IRON);
@@ -64,6 +70,28 @@ public final class BlockModificationStation extends BlockMekanismContainer {
     @Override
     public int getMetaFromState(IBlockState state) {
         return 0;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
+        TileEntity tile = world == null ? null : world.getTileEntity(pos);
+        if (tile instanceof TileEntityModificationStation) {
+            facing = ((TileEntityModificationStation) tile).facing;
+        }
+        switch (facing) {
+            case SOUTH:
+                return SOUTH_BOUNDS;
+            case EAST:
+                return EAST_BOUNDS;
+            case WEST:
+                return WEST_BOUNDS;
+            case NORTH:
+            default:
+                return NORTH_BOUNDS;
+        }
     }
 
     @Nonnull

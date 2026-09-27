@@ -1,7 +1,7 @@
 package mekanism.mekasuit.client;
 
-import mekanism.mekasuit.common.MekanismMekaSuit;
 import mekanism.mekasuit.common.content.gear.MekaSuitElytraHelper;
+import mekanism.ultimate.common.MekanismUltimate;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class LayerMekaSuitElytra implements LayerRenderer<EntityLivingBase> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(
-          MekanismMekaSuit.MODID, "textures/entity/hdpe_elytra.png");
+          MekanismUltimate.MODID, "textures/entity/hdpe_elytra.png");
 
     private final RenderLivingBase<?> renderer;
     private final ModelElytra model = new ModelElytra();

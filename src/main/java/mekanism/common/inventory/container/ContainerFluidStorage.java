@@ -22,7 +22,7 @@ public abstract class ContainerFluidStorage<TILE extends TileEntityContainerBloc
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (FluidContainerUtils.isFluidContainer(slotStack)) {
+            if (isContainer(slotStack)) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
@@ -58,5 +58,9 @@ public abstract class ContainerFluidStorage<TILE extends TileEntityContainerBloc
             currentSlot.onTake(player, slotStack);
         }
         return stack;
+    }
+
+    protected boolean isContainer(ItemStack stack) {
+        return FluidContainerUtils.isFluidContainer(stack);
     }
 }

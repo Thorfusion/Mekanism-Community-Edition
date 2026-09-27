@@ -30,6 +30,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 
 /**
  * Entry point for the separately packaged Nuclear module.
@@ -37,7 +39,8 @@ import net.minecraftforge.common.MinecraftForge;
  * <p>The first registered vertical slice is the Isotopic Centrifuge, built on
  * the shared Ultimate chemical and recipe layer.</p>
  */
-@Mod(modid = MekanismNuclear.MODID, useMetadata = true)
+@Mod(modid = MekanismNuclear.MODID, useMetadata = true,
+      guiFactory = "mekanism.nuclear.client.gui.NuclearGuiFactory")
 @Mod.EventBusSubscriber
 public final class MekanismNuclear implements IModule {
 
@@ -51,6 +54,7 @@ public final class MekanismNuclear implements IModule {
 
     public static Version versionNumber = new Version(999, 999, 999);
     public static final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+    public static Configuration configuration;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -76,10 +80,9 @@ public final class MekanismNuclear implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         RadiationCapabilities.register();
         proxy.registerPackets();
-        NuclearFissionConfig.load(event.getSuggestedConfigurationFile());
-        NuclearWorldGenConfig.load(event.getSuggestedConfigurationFile());
-        NuclearRadiationConfig.load(event.getSuggestedConfigurationFile());
-        NuclearSPSConfig.load(event.getSuggestedConfigurationFile());
+        configuration = new Configuration(event.getSuggestedConfigurationFile());
+        configuration.load();
+        loadConfiguration();
         NuclearChemicals.register();
         NuclearRecipeRegistry.registerDefaults();
     }
@@ -92,6 +95,7 @@ public final class MekanismNuclear implements IModule {
         proxy.registerTileEntities();
         MinecraftForge.EVENT_BUS.register(FissionReactorFormationManager.INSTANCE);
         MinecraftForge.EVENT_BUS.register(SPSFormationManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(this);
         GameRegistry.registerWorldGenerator(NuclearWorldGenerator.INSTANCE, 2);
         Mekanism.logger.info("Loaded Mekanism Nuclear module.");
     }
@@ -116,5 +120,22 @@ public final class MekanismNuclear implements IModule {
 
     @Override
     public void resetClient() {
+    }
+
+    private static void loadConfiguration() {
+        NuclearFissionConfig.load(configuration);
+        NuclearWorldGenConfig.load(configuration);
+        NuclearRadiationConfig.load(configuration);
+        NuclearSPSConfig.load(configuration);
+        if (configuration.hasChanged()) {
+            configuration.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(OnConfigChangedEvent event) {
+        if (event.getModID().equals(MODID)) {
+            loadConfiguration();
+        }
     }
 }

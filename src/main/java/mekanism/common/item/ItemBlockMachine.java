@@ -208,7 +208,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemstack, "entangleporter_frequency"));
                 if (freq != null) {
                     list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + freq.name);
-                    list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (!freq.publicFreq ? "private" : "public")));
+                    list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY
+                          + (freq.accessMode == Frequency.AccessMode.TRUSTED ? LangUtils.localize("security.trusted")
+                          : LangUtils.localize("gui." + (freq.accessMode == Frequency.AccessMode.PRIVATE ? "private" : "public"))));
                 }
             }
 
@@ -367,7 +369,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             if (!world.isRemote && tileEntity instanceof TileEntityQuantumEntangloporter && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
                 Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
                 if (freq != null) {
-                    ((TileEntityQuantumEntangloporter) tileEntity).setFrequency(freq.name, freq.publicFreq);
+                    ((TileEntityQuantumEntangloporter) tileEntity).setFrequency(freq.name, freq.accessMode,
+                          freq.ownerUUID == null ? getOwnerUUID(stack) : freq.ownerUUID);
                 }
             }
             return true;

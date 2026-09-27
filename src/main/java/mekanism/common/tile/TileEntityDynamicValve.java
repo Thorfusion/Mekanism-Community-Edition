@@ -6,6 +6,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -64,7 +65,8 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+              && structure.chemicalStored == null;
     }
 
     @Override
@@ -84,6 +86,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return true;
             }
+            if (DynamicTankChemicalHooks.hasCapability(capability)) {
+                return true;
+            }
         }
         return super.hasCapability(capability, side);
     }
@@ -93,6 +98,10 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
+            }
+            T chemical = DynamicTankChemicalHooks.getCapability(this, capability, side);
+            if (chemical != null) {
+                return chemical;
             }
         }
         return super.getCapability(capability, side);
@@ -115,11 +124,16 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         //can be filled/emptied
-        return slot == 0 && FluidContainerUtils.isFluidContainer(stack);
+        return slot == 0 && (FluidContainerUtils.isFluidContainer(stack)
+              || DynamicTankChemicalHooks.isChemicalContainer(stack));
     }
 
     @Override
     public int getRedstoneLevel() {
+        if (structure != null && structure.chemicalStored != null) {
+            return MekanismUtils.redstoneLevelFromContents(structure.chemicalStored.amount,
+                  DynamicTankChemicalHooks.getCapacity(structure.volume));
+        }
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

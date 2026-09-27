@@ -122,6 +122,9 @@ public abstract class BlockBasic extends BlockTileDrops {
 
         ItemStack copyStack = StackUtils.size(itemStack, 1);
         if (FluidContainerUtils.isFluidContainer(itemStack)) {
+            if (tileEntity.structure.chemicalStored != null) {
+                return false;
+            }
             IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
             if (FluidUtil.getFluidContained(copyStack) == null) {
                 if (tileEntity.structure.fluidStored != null) {

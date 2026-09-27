@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "bottom": "mekanismultimate:blocks/personal_barrel/bottom",
+    "side": "mekanismultimate:blocks/personal_barrel/side",
+    "top": "mekanismultimate:blocks/personal_barrel/top"
+  }
+}

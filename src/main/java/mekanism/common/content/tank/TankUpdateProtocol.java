@@ -51,9 +51,19 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
         TankCache tankCache = (TankCache) cache;
         TankCache mergeCache = (TankCache) merge;
         if (tankCache.fluid == null) {
-            tankCache.fluid = mergeCache.fluid == null ? null : mergeCache.fluid.copy();
+            if (tankCache.chemical == null) {
+                tankCache.fluid = mergeCache.fluid == null ? null : mergeCache.fluid.copy();
+            }
         } else if (mergeCache.fluid != null && tankCache.fluid.isFluidEqual(mergeCache.fluid)) {
             tankCache.fluid.amount += mergeCache.fluid.amount;
+        }
+        if (tankCache.fluid == null) {
+            if (tankCache.chemical == null) {
+                tankCache.chemical = mergeCache.chemical == null ? null : mergeCache.chemical.copy();
+            } else if (mergeCache.chemical != null && tankCache.chemical.isSameType(mergeCache.chemical)) {
+                long room = Long.MAX_VALUE - tankCache.chemical.amount;
+                tankCache.chemical.amount += Math.min(room, mergeCache.chemical.amount);
+            }
         }
         tankCache.editMode = mergeCache.editMode;
         List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.inventory, mergeCache.inventory);
@@ -68,6 +78,10 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
         super.onFormed();
         if (structureFound.fluidStored != null) {
             structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume * FLUID_PER_TANK);
+            structureFound.chemicalStored = null;
+        } else if (structureFound.chemicalStored != null) {
+            structureFound.chemicalStored.amount = Math.min(structureFound.chemicalStored.amount,
+                  DynamicTankChemicalHooks.getCapacity(structureFound.volume));
         }
     }
 

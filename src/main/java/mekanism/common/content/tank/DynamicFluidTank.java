@@ -14,6 +14,12 @@ public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank>
     }
 
     @Override
+    public int fill(@Nullable FluidStack resource, boolean doFill) {
+        return multiblock.structure != null && multiblock.structure.chemicalStored != null
+              ? 0 : super.fill(resource, doFill);
+    }
+
+    @Override
     @Nullable
     public FluidStack getFluid() {
         return multiblock.structure != null ? multiblock.structure.fluidStored : null;

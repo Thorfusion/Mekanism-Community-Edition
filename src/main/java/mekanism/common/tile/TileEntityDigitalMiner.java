@@ -16,6 +16,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.IStoneGeneratorUpgradeTile;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -84,7 +85,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock, IStoneGeneratorUpgradeTile {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
@@ -121,6 +122,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public boolean silkTouch;
 
     public boolean running;
+
+    /** Additive flag; deliberately not represented by the ordinal-backed Upgrade enum. */
+    private boolean stoneGeneratorUpgrade;
 
     public double prevEnergy;
 
@@ -386,6 +390,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             }
         }
 
+        if (stoneGeneratorUpgrade && isGeneratedReplacement(filter.replaceStack)) {
+            return StackUtils.size(filter.replaceStack, 1);
+        }
+
         if (doPull && getPullInv() != null) {
             InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
             if (stack != null) {
@@ -394,6 +402,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    private static boolean isGeneratedReplacement(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        Block block = Block.getBlockFromItem(stack.getItem());
+        return block == net.minecraft.init.Blocks.STONE || block == net.minecraft.init.Blocks.COBBLESTONE;
+    }
+
+    @Override
+    public boolean hasStoneGeneratorUpgrade() {
+        return stoneGeneratorUpgrade;
+    }
+
+    @Override
+    public boolean installStoneGeneratorUpgrade() {
+        if (stoneGeneratorUpgrade) return false;
+        stoneGeneratorUpgrade = true;
+        markDirty();
+        return true;
     }
 
     public NonNullList<ItemStack> copy(NonNullList<ItemStack> stacks) {
@@ -542,6 +569,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         numPowering = nbtTags.getInteger("numPowering");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        stoneGeneratorUpgrade = nbtTags.getBoolean("stoneGeneratorUpgrade");
         setConfigurationData(nbtTags);
     }
 
@@ -558,6 +586,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setInteger("numPowering", numPowering);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
+        nbtTags.setBoolean("stoneGeneratorUpgrade", stoneGeneratorUpgrade);
         return getConfigurationData(nbtTags);
     }
 
@@ -1046,6 +1075,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         doPull = nbtTags.getBoolean("doPull");
         silkTouch = nbtTags.getBoolean("silkTouch");
         inverse = nbtTags.getBoolean("inverse");
+        filters.clear();
         if (nbtTags.hasKey("filters")) {
             NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {

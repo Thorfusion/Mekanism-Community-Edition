@@ -27,6 +27,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -34,6 +35,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockIsotopicCentrifuge extends BlockMekanismContainer {
+
+    private static final AxisAlignedBB MODEL_BOUNDS = new AxisAlignedBB(0, 0, 0, 1, 2, 1);
 
     public BlockIsotopicCentrifuge() {
         super(Material.IRON);
@@ -75,6 +78,13 @@ public class BlockIsotopicCentrifuge extends BlockMekanismContainer {
     @Override
     public int getMetaFromState(IBlockState state) {
         return 0;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return MODEL_BOUNDS;
     }
 
     @Nonnull

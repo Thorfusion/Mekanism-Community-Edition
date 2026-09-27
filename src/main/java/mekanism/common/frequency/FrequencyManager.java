@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -124,7 +125,7 @@ public class FrequencyManager {
             return iterFreq;
         }
 
-        if (uuid.equals(freq.ownerUUID)) {
+        if (SecurityUtils.canUseFrequency(freq, uuid)) {
             freq.activeCoords.add(coord);
             freq.valid = true;
             frequencies.put(freq.hashCode(), freq);

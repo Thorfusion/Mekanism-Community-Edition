@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ICI", "ADA", "ICI"],
+  "key": {
+    "I": {"type": "forge:ore_dict", "ore": "ingotRefinedObsidian"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitUltimate"},
+    "A": {"type": "forge:ore_dict", "ore": "alloyAtomic"},
+    "D": {"type": "forge:ore_dict", "ore": "blockDiamond"}
+  },
+  "result": {"item": "mekanismultimate:dimensional_stabilizer"}
+}

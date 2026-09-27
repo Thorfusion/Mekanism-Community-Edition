@@ -14,10 +14,14 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     public FluidStack fluidStored;
 
+    /** Long-backed chemical contents; mutually exclusive with fluidStored. */
+    public DynamicTankChemicalStack chemicalStored;
+
     /**
      * For use by rendering segment
      */
     public FluidStack prevFluid;
+    public DynamicTankChemicalStack prevChemical;
     public int prevFluidStage = 0;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -27,6 +31,16 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public Set<ValveData> valves = new HashSet<>();
 
     public boolean needsRenderUpdate() {
+        if ((chemicalStored == null && prevChemical != null) || (chemicalStored != null && prevChemical == null)) {
+            return true;
+        }
+        if (chemicalStored != null) {
+            int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
+            int currentStage = (int) ((chemicalStored.amount / (double) DynamicTankChemicalHooks.getCapacity(volume)) * totalStage);
+            boolean stageChanged = currentStage != prevFluidStage;
+            prevFluidStage = currentStage;
+            return prevChemical == null || !chemicalStored.isSameType(prevChemical) || stageChanged;
+        }
         if ((fluidStored == null && prevFluid != null) || (fluidStored != null && prevFluid == null)) {
             return true;
         }

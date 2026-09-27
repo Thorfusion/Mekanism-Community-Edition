@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": {"model": "mekanismultimate:personal_barrel"},
+    "inventory": {"model": "mekanismultimate:personal_barrel"}
+  }
+}

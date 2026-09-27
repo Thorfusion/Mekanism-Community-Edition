@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "result": {"item": "mekanismultimate:armored_free_runners"},
+  "pattern": [" S ", "#P#", "I I"],
+  "key": {
+    "S": {"type": "forge:ore_dict", "ore": "blockSteel"},
+    "#": {"type": "forge:ore_dict", "ore": "dustDiamond"},
+    "P": {"item": "mekanism:freerunners"},
+    "I": {"type": "forge:ore_dict", "ore": "ingotBronze"}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "tile.industrial_alarm": {
+    "category": "block",
+    "sounds": [
+      {"name": "mekanismultimate:tile/industrial_alarm", "stream": false}
+    ]
+  }
+}

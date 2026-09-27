@@ -19,6 +19,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -32,7 +34,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 /** Entry point for the separately packaged beta MekaSuit module. */
 @Mod(modid = MekanismMekaSuit.MODID, useMetadata = true,
-      dependencies = "required-after:mekanism;required-after:mekanismultimate")
+      dependencies = "required-after:mekanism;required-after:mekanismultimate",
+      guiFactory = "mekanism.mekasuit.client.gui.MekaSuitGuiFactory")
 @Mod.EventBusSubscriber
 public final class MekanismMekaSuit implements IModule {
 
@@ -47,6 +50,7 @@ public final class MekanismMekaSuit implements IModule {
 
     public static Version versionNumber = new Version(999, 999, 999);
     public static final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+    public static Configuration configuration;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -68,7 +72,9 @@ public final class MekanismMekaSuit implements IModule {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MekaSuitModules.bootstrap();
-        MekaSuitConfig.load(event.getSuggestedConfigurationFile());
+        configuration = new Configuration(event.getSuggestedConfigurationFile());
+        configuration.load();
+        loadConfiguration();
         proxy.registerPackets();
         proxy.registerClientHandlers();
     }
@@ -84,6 +90,7 @@ public final class MekanismMekaSuit implements IModule {
         MinecraftForge.EVENT_BUS.register(MekaSuitElytraTickHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitMobilityHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitModuleDropHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(this);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new MekaSuitGuiHandler());
         proxy.registerTileEntities();
         proxy.registerItemColors();
@@ -110,5 +117,19 @@ public final class MekanismMekaSuit implements IModule {
 
     @Override
     public void resetClient() {
+    }
+
+    private static void loadConfiguration() {
+        MekaSuitConfig.load(configuration);
+        if (configuration.hasChanged()) {
+            configuration.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(OnConfigChangedEvent event) {
+        if (event.getModID().equals(MODID)) {
+            loadConfiguration();
+        }
     }
 }

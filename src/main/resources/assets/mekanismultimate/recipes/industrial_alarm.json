@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["III", "C#C", "III"],
+  "key": {
+    "I": {"type": "forge:ore_dict", "ore": "ingotLead"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitBasic"},
+    "#": {"item": "minecraft:redstone_lamp"}
+  },
+  "result": {"item": "mekanismultimate:industrial_alarm"}
+}

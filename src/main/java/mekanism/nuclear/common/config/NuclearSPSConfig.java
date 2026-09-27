@@ -23,6 +23,13 @@ public final class NuclearSPSConfig {
     public static synchronized void load(File file) {
         Configuration config = new Configuration(file);
         config.load();
+        load(config);
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
+
+    public static synchronized void load(Configuration config) {
         inputPerAntimatter = config.getInt("InputPerAntimatter", CATEGORY, 1_000,
               1, Integer.MAX_VALUE, "Polonium in mB required to produce one mB of Antimatter.");
         outputTankCapacity = positiveLong(config, "OutputTankCapacity", 1_000L,
@@ -31,9 +38,6 @@ public final class NuclearSPSConfig {
               "Energy in joules required to process one mB of Polonium.");
         portEnergyCapacity = positiveLong(config, "PortEnergyCapacity", 1_000_000_000L,
               "Energy in joules stored by each SPS Port.");
-        if (config.hasChanged()) {
-            config.save();
-        }
     }
 
     private static long positiveLong(Configuration config, String key, long fallback, String comment) {

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ACA", "RXR", "ACA"],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyReinforced"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitElite"},
+    "R": {"item": "mekanism:polyethene", "data": 1},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismultimate:pigment_mixer"}
+}

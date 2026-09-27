@@ -10,6 +10,9 @@ import mekanism.ultimate.common.recipe.type.ChemicalToChemicalRecipeCE;
 import mekanism.ultimate.common.recipe.type.ItemChemicalToItemRecipeCE;
 import mekanism.ultimate.common.recipe.type.ItemToChemicalRecipeCE;
 import mekanism.ultimate.api.recipe.input.ItemChemicalInputCE;
+import mekanism.ultimate.api.recipe.input.ChemicalChemicalInputCE;
+import mekanism.ultimate.common.recipe.index.ChemicalChemicalRecipeIndexCE;
+import mekanism.ultimate.common.recipe.type.ChemicalChemicalToChemicalRecipeCE;
 import net.minecraft.item.ItemStack;
 
 /** Typed factories for the first Ultimate recipe families. */
@@ -28,5 +31,10 @@ public final class RecipeManagersCE {
 
     public static CachedRecipeManagerCE<ItemChemicalInputCE, ItemIdentityKeyCE, ItemChemicalToItemRecipeCE> itemChemicalToItem() {
         return new CachedRecipeManagerCE<>(new ItemChemicalRecipeIndexCE<>());
+    }
+
+    public static CachedRecipeManagerCE<ChemicalChemicalInputCE, ChemicalIdentityKeyCE,
+          ChemicalChemicalToChemicalRecipeCE> chemicalChemicalToChemical() {
+        return new CachedRecipeManagerCE<>(new ChemicalChemicalRecipeIndexCE());
     }
 }

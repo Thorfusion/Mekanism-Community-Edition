@@ -6,6 +6,7 @@ import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.AccessMode;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -82,6 +83,26 @@ public final class SecurityUtils {
             }
         }
         return null;
+    }
+
+    public static boolean isTrusted(UUID owner, UUID requester) {
+        if (owner == null || requester == null) return false;
+        if (owner.equals(requester)) return true;
+        SecurityFrequency security = getFrequency(owner);
+        if (security == null) return false;
+        String username = MekanismUtils.getLastKnownUsername(requester);
+        for (String trusted : security.trusted) {
+            if (trusted.equalsIgnoreCase(username)) return true;
+        }
+        return false;
+    }
+
+    public static boolean canUseFrequency(Frequency frequency, UUID requester) {
+        if (frequency == null) return false;
+        AccessMode mode = frequency.getAccessMode();
+        return mode == AccessMode.PUBLIC || frequency.ownerUUID != null
+              && (frequency.ownerUUID.equals(requester)
+                    || mode == AccessMode.TRUSTED && isTrusted(frequency.ownerUUID, requester));
     }
 
     public static String getOwnerDisplay(EntityPlayer player, String ownerName) {

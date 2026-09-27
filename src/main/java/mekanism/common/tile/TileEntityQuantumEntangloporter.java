@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -30,8 +32,10 @@ import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.AccessMode;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.frequency.TrustedFrequencyUtils;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -47,6 +51,7 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -62,7 +67,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
-      IGasHandler, IHeatTransfer, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
+      IGasHandler, IHeatTransfer, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile, ISpecialConfigData {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
     private static final String[] methods = new String[]{"setFrequency"};
@@ -72,6 +77,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     public double lastEnvironmentLoss;
     public List<Frequency> publicCache = new ArrayList<>();
     public List<Frequency> privateCache = new ArrayList<>();
+    public List<Frequency> trustedCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
@@ -180,32 +186,78 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         }
         if (freq.isPublic()) {
             return Mekanism.publicEntangloporters;
-        } else if (!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID())) {
-            FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
-            Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
+        }
+        UUID owner = freq.isTrusted() && freq.ownerUUID != null
+              ? freq.ownerUUID : getSecurity().getOwnerUUID();
+        if (freq.isTrusted() && !SecurityUtils.canUseFrequency(freq, getSecurity().getOwnerUUID())) {
+            return null;
+        }
+        if (!Mekanism.privateEntangloporters.containsKey(owner)) {
+            FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, owner);
+            Mekanism.privateEntangloporters.put(owner, manager);
             manager.createOrLoad(world);
         }
-        return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
+        return Mekanism.privateEntangloporters.get(owner);
     }
 
     public void setFrequency(String name, boolean publicFreq) {
-        FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
+        setFrequency(name, publicFreq ? AccessMode.PUBLIC : AccessMode.PRIVATE,
+              getSecurity().getOwnerUUID());
+    }
+
+    public boolean setFrequency(String name, AccessMode mode, UUID frequencyOwner) {
+        UUID requester = getSecurity().getOwnerUUID();
+        if (requester == null || name == null || name.isEmpty()) return false;
+        UUID owner = mode == AccessMode.PUBLIC ? requester
+              : frequencyOwner == null ? requester : frequencyOwner;
+        InventoryFrequency requested = (InventoryFrequency) new InventoryFrequency(name, owner).setAccessMode(mode);
+        if (!SecurityUtils.canUseFrequency(requested, requester)) return false;
+        FrequencyManager manager = getManager(requested);
+        if (manager == null) return false;
         manager.deactivate(Coord4D.get(this));
         for (Frequency freq : manager.getFrequencies()) {
-            if (freq.name.equals(name)) {
+            if (freq.name.equals(name) && freq.getAccessMode() == mode) {
                 frequency = (InventoryFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
                 markDirty();
-                return;
+                return true;
             }
         }
-
-        Frequency freq = new InventoryFrequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
+        if (!owner.equals(requester)) return false;
+        Frequency freq = new InventoryFrequency(name, requester).setAccessMode(mode);
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
         MekanismUtils.saveChunk(this);
         markDirty();
+        return true;
+    }
+
+    @Override
+    public NBTTagCompound getConfigurationData(NBTTagCompound data) {
+        if (frequency != null) {
+            data.setString("frequencyName", frequency.name);
+            data.setBoolean("frequencyPublic", frequency.isPublic());
+            data.setInteger("frequencyAccess", frequency.getAccessMode().ordinal());
+        }
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(NBTTagCompound data) {
+        if (data.hasKey("frequencyName") && getSecurity().getOwnerUUID() != null) {
+            int mode = data.hasKey("frequencyAccess") ? data.getInteger("frequencyAccess")
+                  : data.getBoolean("frequencyPublic") ? AccessMode.PUBLIC.ordinal() : AccessMode.PRIVATE.ordinal();
+            if (mode >= 0 && mode < AccessMode.values().length) {
+                setFrequency(data.getString("frequencyName"), AccessMode.values()[mode],
+                      getSecurity().getOwnerUUID());
+            }
+        }
+    }
+
+    @Override
+    public String getDataType() {
+        return getBlockType().getTranslationKey() + "." + fullName + ".name";
     }
 
     @Override
@@ -268,6 +320,23 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
                 if (manager != null) {
                     manager.remove(freq, getSecurity().getOwnerUUID());
                 }
+            } else if (type == 2) {
+                String name = PacketHandler.readString(dataStream);
+                int modeIndex = dataStream.readInt();
+                UUID owner = new UUID(dataStream.readLong(), dataStream.readLong());
+                if (modeIndex >= 0 && modeIndex < AccessMode.values().length) {
+                    setFrequency(name, AccessMode.values()[modeIndex], owner);
+                }
+            } else if (type == 3) {
+                String name = PacketHandler.readString(dataStream);
+                int modeIndex = dataStream.readInt();
+                UUID owner = new UUID(dataStream.readLong(), dataStream.readLong());
+                if (owner.equals(getSecurity().getOwnerUUID()) && modeIndex >= 0
+                      && modeIndex < AccessMode.values().length) {
+                    Frequency probe = new InventoryFrequency(name, owner).setAccessMode(AccessMode.values()[modeIndex]);
+                    FrequencyManager manager = getManager(probe);
+                    if (manager != null) manager.remove(name, owner);
+                }
             }
             return;
         }
@@ -285,6 +354,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
             publicCache.clear();
             privateCache.clear();
+            trustedCache.clear();
 
             int amount = dataStream.readInt();
             for (int i = 0; i < amount; i++) {
@@ -294,6 +364,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
             for (int i = 0; i < amount; i++) {
                 privateCache.add(new InventoryFrequency(dataStream));
             }
+            amount = dataStream.readInt();
+            for (int i = 0; i < amount; i++) trustedCache.add(new InventoryFrequency(dataStream));
         }
     }
 
@@ -317,13 +389,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
         FrequencyManager manager = getManager(new InventoryFrequency(null, null).setPublic(false));
         if (manager != null) {
-            data.add(manager.getFrequencies().size());
+            int privateCount = 0;
+            for (Frequency freq : manager.getFrequencies()) if (freq.isPrivate()) privateCount++;
+            data.add(privateCount);
             for (Frequency freq : manager.getFrequencies()) {
-                freq.write(data);
+                if (freq.isPrivate()) freq.write(data);
             }
         } else {
             data.add(0);
         }
+        List<Frequency> trusted = new ArrayList<>();
+        if (manager != null) {
+            for (Frequency freq : manager.getFrequencies()) if (freq.isTrusted()) trusted.add(freq);
+        }
+        trusted.addAll(TrustedFrequencyUtils.collect(Mekanism.privateEntangloporters,
+              InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER,
+              getSecurity().getOwnerUUID(), world));
+        data.add(trusted.size());
+        for (Frequency freq : trusted) freq.write(data);
         return data;
     }
 
@@ -551,12 +634,18 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
+        return capability == Capabilities.CONFIG_CARD_CAPABILITY
+               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
+               || capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
                || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.CONFIG_CARD_CAPABILITY
+              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+            return (T) this;
+        }
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }

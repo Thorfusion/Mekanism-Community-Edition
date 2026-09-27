@@ -3,10 +3,8 @@ package mekanism.mekasuit.common.content.gear;
 import mekanism.mekasuit.api.gear.ModuleData;
 import mekanism.mekasuit.api.gear.ModuleTarget;
 import mekanism.mekasuit.common.config.MekaSuitConfig;
-import mekanism.mekasuit.common.item.ItemHDPEElytra;
 import mekanism.mekasuit.common.item.ItemMekaSuitBodyarmor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 
 /** Elytra Unit eligibility and energy rules shared by the tick adapter and input validation. */
@@ -31,11 +29,6 @@ public final class MekaSuitElytraHelper {
         if (stack == null || stack.isEmpty() || player == null) {
             return false;
         }
-        if (stack.getItem() instanceof ItemHDPEElytra) {
-            // Match vanilla Elytra behavior. Sneaking is only the stable MekaSuit
-            // unit's deliberate early-exit control, not a restriction on this item.
-            return ItemElytra.isUsable(stack);
-        }
         return !player.isSneaking() && hasUsableModule(stack, player.capabilities.isCreativeMode);
     }
 
@@ -45,8 +38,7 @@ public final class MekaSuitElytraHelper {
     }
 
     public static boolean shouldRenderWings(ItemStack stack) {
-        return stack != null && !stack.isEmpty()
-              && (stack.getItem() instanceof ItemHDPEElytra || hasEnabledModule(stack));
+        return stack != null && !stack.isEmpty() && hasEnabledModule(stack);
     }
 
     public static long getEnergyUsage() {

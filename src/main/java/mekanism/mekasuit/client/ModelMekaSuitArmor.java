@@ -39,6 +39,10 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public final class ModelMekaSuitArmor extends ModelBiped {
 
+    // The stable OBJ's base plates sit exactly on the vanilla skin dimensions.
+    // Give the worn model the same kind of clearance as ordinary armor so the
+    // player skin cannot z-fight through it while limbs move.
+    private static final float WORN_SCALE = 1.035F;
     private static final ResourceLocation MODEL = new ResourceLocation(
           MekanismMekaSuit.MODID, "models/entity/mekasuit.obj");
     private static final Map<EntityEquipmentSlot, ModelMekaSuitArmor> MODELS =
@@ -198,6 +202,7 @@ public final class ModelMekaSuitArmor extends ModelBiped {
             Minecraft minecraft = Minecraft.getMinecraft();
             minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.pushMatrix();
+            GlStateManager.scale(WORN_SCALE, WORN_SCALE, WORN_SCALE);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);

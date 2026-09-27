@@ -22,6 +22,13 @@ public final class NuclearWorldGenConfig {
     public static synchronized void load(File file) {
         Configuration config = new Configuration(file);
         config.load();
+        load(config);
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
+
+    public static synchronized void load(Configuration config) {
         for (NuclearOreType type : NuclearOreType.values()) {
             String prefix = capitalize(type.getName());
             boolean enabled = config.getBoolean("Enable" + prefix, CATEGORY, true,
@@ -33,9 +40,6 @@ public final class NuclearWorldGenConfig {
             int maxHeight = config.getInt(prefix + "MaxHeight", CATEGORY, type.getMaxHeight(), 1, 256,
                   "Exclusive maximum Y level for " + type.getName() + " ore generation.");
             SETTINGS.put(type, new OreSettings(enabled, veinsPerChunk, maxVeinSize, maxHeight));
-        }
-        if (config.hasChanged()) {
-            config.save();
         }
     }
 

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:ore_shaped",
+  "pattern": ["ACA", "DXD", "ACA"],
+  "key": {
+    "A": {"type": "forge:ore_dict", "ore": "alloyInfused"},
+    "C": {"type": "forge:ore_dict", "ore": "circuitAdvanced"},
+    "D": {"item": "minecraft:dye", "data": 32767},
+    "X": {"item": "mekanism:basicblock", "data": 8}
+  },
+  "result": {"item": "mekanismultimate:painting_machine"}
+}

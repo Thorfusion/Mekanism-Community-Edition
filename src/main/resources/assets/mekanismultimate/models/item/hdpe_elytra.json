@@ -1,0 +1,12 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mekanismultimate:items/hdpe_elytra"
+  },
+  "overrides": [
+    {
+      "predicate": {"broken": 1},
+      "model": "mekanismultimate:item/hdpe_broken_elytra"
+    }
+  ]
+}

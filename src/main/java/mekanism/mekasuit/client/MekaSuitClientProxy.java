@@ -32,11 +32,11 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
         MinecraftForge.EVENT_BUS.register(MekaSuitVisionHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitJetpackClientHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitElytraRenderHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MekaSuitSkinLayerHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitMobilityClientHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitMobilityHudHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaToolModelHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekaSuitArmorTextureHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(ArmoredFreeRunnersModelHandler.INSTANCE);
     }
 
     @Override
@@ -57,7 +57,6 @@ public final class MekaSuitClientProxy extends MekaSuitCommonProxy {
     @Override
     public void registerItemRenders() {
         OBJLoader.INSTANCE.addDomain(MekanismMekaSuit.MODID);
-        MekaSuitItems.ArmoredFreeRunners.setTileEntityItemStackRenderer(new RenderArmoredFreeRunners());
         ModelBakery.registerItemVariants(MekaSuitItems.MekaTool, MekaToolModelHandler.LEFT_MODEL);
         for (Item item : MekaSuitItems.allRegistered()) {
             ModelLoader.setCustomModelResourceLocation(item, 0,
