@@ -6,10 +6,11 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import mekanism.mekasuit.common.item.ItemMekaSuitArmor;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,8 +28,11 @@ public final class MekaSuitSkinLayerHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
-        EntityPlayer player = event.getEntityPlayer();
+    public void onRenderLivingPre(RenderLivingEvent.Pre event) {
+        if (!(event.getEntity() instanceof EntityPlayer) || !(event.getRenderer() instanceof RenderPlayer)) {
+            return;
+        }
+        EntityPlayer player = (EntityPlayer) event.getEntity();
         boolean hideHeadwear = isMekaSuit(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
         boolean hideUpperOuter = isMekaSuit(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
         boolean hideLegOuter = isMekaSuit(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS))
@@ -37,7 +41,10 @@ public final class MekaSuitSkinLayerHandler {
             return;
         }
 
-        ModelPlayer model = event.getRenderer().getMainModel();
+        // RenderPlayer fires its player pre-event before setModelVisibilities, so
+        // hiding these parts there is immediately undone. RenderLivingEvent.Pre
+        // runs from the subsequent super call, after vanilla has reset them.
+        ModelPlayer model = ((RenderPlayer) event.getRenderer()).getMainModel();
         states.computeIfAbsent(player, ignored -> new ArrayDeque<>()).push(new VisibilityState(model));
         if (hideHeadwear) {
             model.bipedHeadwear.showModel = false;
@@ -54,14 +61,18 @@ public final class MekaSuitSkinLayerHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onRenderPlayerPost(RenderPlayerEvent.Post event) {
-        Deque<VisibilityState> playerStates = states.get(event.getEntityPlayer());
+    public void onRenderLivingPost(RenderLivingEvent.Post event) {
+        if (!(event.getEntity() instanceof EntityPlayer) || !(event.getRenderer() instanceof RenderPlayer)) {
+            return;
+        }
+        EntityPlayer player = (EntityPlayer) event.getEntity();
+        Deque<VisibilityState> playerStates = states.get(player);
         if (playerStates == null || playerStates.isEmpty()) {
             return;
         }
         playerStates.pop().restore();
         if (playerStates.isEmpty()) {
-            states.remove(event.getEntityPlayer());
+            states.remove(player);
         }
     }
 
