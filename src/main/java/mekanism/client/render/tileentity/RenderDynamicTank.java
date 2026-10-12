@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -16,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -35,7 +37,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
+		FluidStack renderStack = tileEntity.structure == null ? null : tileEntity.structure.chemicalStored != null ? DynamicTankChemicalHooks.getRenderStack(tileEntity.structure.chemicalStored) : tileEntity.structure.fluidStored;
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && renderStack != null && tileEntity.getActiveScale() > 0)
 		{
 			RenderData data = new RenderData();
 
@@ -46,21 +49,22 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 
-			if(data.location != null && data.height >= 3 && tileEntity.structure.fluidStored.getFluid() != null)
+			if(data.location != null && data.height >= 3 && renderStack.getFluid() != null)
 			{
 				push();
 				try {
 					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
-					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+					MekanismRenderer.glowOn(renderStack.getFluid().getLuminosity());
 					try {
-						MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+						MekanismRenderer.colorFluid(renderStack);
 
-						DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
+						DisplayInteger[] displayList = getListAndRender(data, renderStack.getFluid(), tileEntity.getWorldObj());
 
-						if(tileEntity.structure.fluidStored.getFluid().isGaseous())
+						if(renderStack.getFluid().isGaseous())
 						{
-							GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+MekanismRenderer.GAS_RENDER_BASE));
+							int color = renderStack.getFluid().getColor(renderStack);
+							GL11.glColor4f((color >> 16 & 0xFF)/255.0F, (color >> 8 & 0xFF)/255.0F, (color & 0xFF)/255.0F, Math.min(1, tileEntity.getActiveScale()+MekanismRenderer.GAS_RENDER_BASE));
 							displayList[getStages(data.height)-1].render();
 						}
 						else {
@@ -80,9 +84,10 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					try {
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
-						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+						MekanismRenderer.glowOn(renderStack.getFluid().getLuminosity());
 						try {
-							getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
+							MekanismRenderer.colorFluid(renderStack);
+							getValveDisplay(ValveRenderData.get(data, valveData), renderStack.getFluid(), tileEntity.getWorldObj()).render();
 						} finally {
 							MekanismRenderer.glowOff();
 							MekanismRenderer.resetColor();

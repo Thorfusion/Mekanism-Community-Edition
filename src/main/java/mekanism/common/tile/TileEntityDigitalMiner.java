@@ -15,6 +15,7 @@ import java.util.Set;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig;
+import mekanism.api.IStoneGeneratorUpgradeTile;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
@@ -62,7 +63,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock, IStoneGeneratorUpgradeTile
 {
 	public static int[] EJECT_INV;
 
@@ -103,6 +104,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean silkTouch;
 
 	public boolean running;
+
+	/** Kept separate from the ordinal-backed legacy Upgrade enum. */
+	private boolean stoneGeneratorUpgrade;
 
 	public double prevEnergy;
 
@@ -423,6 +427,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 
+		if(stoneGeneratorUpgrade && isGeneratedReplacement(filter.replaceStack))
+		{
+			return MekanismUtils.size(filter.replaceStack, 1);
+		}
+
 		if(doPull && getPullInv() instanceof IInventory)
 		{
 			InvStack stack = InventoryUtils.takeDefinedItem((IInventory)getPullInv(), 1, filter.replaceStack.copy(), 1, 1);
@@ -435,6 +444,35 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 
 		return null;
+	}
+
+	private static boolean isGeneratedReplacement(ItemStack stack)
+	{
+		if(stack == null)
+		{
+			return false;
+		}
+		Block block = Block.getBlockFromItem(stack.getItem());
+		return block == net.minecraft.init.Blocks.stone
+				|| block == net.minecraft.init.Blocks.cobblestone;
+	}
+
+	@Override
+	public boolean hasStoneGeneratorUpgrade()
+	{
+		return stoneGeneratorUpgrade;
+	}
+
+	@Override
+	public boolean installStoneGeneratorUpgrade()
+	{
+		if(stoneGeneratorUpgrade)
+		{
+			return false;
+		}
+		stoneGeneratorUpgrade = true;
+		markDirty();
+		return true;
 	}
 
 	public ItemStack[] copy(ItemStack[] stacks)
@@ -663,6 +701,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		searcher.state = State.values()[nbtTags.getInteger("state")];
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		inverse = nbtTags.getBoolean("inverse");
+		stoneGeneratorUpgrade = nbtTags.getBoolean(
+				"stoneGeneratorUpgrade");
+		filters.clear();
 
 		if(nbtTags.hasKey("filters"))
 		{
@@ -698,6 +739,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		nbtTags.setInteger("state", searcher.state.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("inverse", inverse);
+		nbtTags.setBoolean("stoneGeneratorUpgrade",
+				stoneGeneratorUpgrade);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -1419,6 +1462,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		doPull = nbtTags.getBoolean("doPull");
 		silkTouch = nbtTags.getBoolean("silkTouch");
 		inverse = nbtTags.getBoolean("inverse");
+		filters.clear();
 
 		if(nbtTags.hasKey("filters"))
 		{

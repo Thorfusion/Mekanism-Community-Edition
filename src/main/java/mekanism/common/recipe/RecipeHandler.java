@@ -208,6 +208,15 @@ public final class RecipeHandler
 	}
 
 	/**
+	 * Add a Chemical Dissolution Chamber recipe with a recipe-local base
+	 * chemical usage multiplier. Existing recipes use a multiplier of one.
+	 */
+	public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output, int baseChemicalUsage)
+	{
+		addRecipe(Recipe.CHEMICAL_DISSOLUTION_CHAMBER, new DissolutionRecipe(input, output, baseChemicalUsage));
+	}
+
+	/**
 	 * Add a Chemical Washer recipe.
 	 * @param input - input GasStack
 	 * @param output - output GasStack

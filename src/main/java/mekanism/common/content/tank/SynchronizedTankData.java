@@ -13,9 +13,13 @@ import net.minecraftforge.fluids.FluidStack;
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 {
 	public FluidStack fluidStored;
+
+	/** Long-backed chemical contents; mutually exclusive with fluidStored. */
+	public DynamicTankChemicalStack chemicalStored;
 	
 	/** For use by rendering segment */
 	public FluidStack prevFluid;
+	public DynamicTankChemicalStack prevChemical;
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
@@ -25,6 +29,16 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	
 	public boolean needsRenderUpdate()
 	{
+		if((chemicalStored == null && prevChemical != null) || (chemicalStored != null && prevChemical == null))
+		{
+			return true;
+		}
+
+		if(chemicalStored != null && prevChemical != null)
+		{
+			return !chemicalStored.isSameType(prevChemical) || chemicalStored.amount != prevChemical.amount;
+		}
+
 		if((fluidStored == null && prevFluid != null) || (fluidStored != null && prevFluid == null))
 		{
 			return true;

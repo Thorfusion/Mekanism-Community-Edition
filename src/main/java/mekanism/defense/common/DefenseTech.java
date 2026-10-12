@@ -72,6 +72,7 @@ import defense.common.entity.EntityLightBeam;
 import defense.common.entity.EntityMissile;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.ExplosiveRegistry;
+import defense.common.integration.FlansModIntegration;
 import defense.common.network.PacketItem;
 import defense.common.network.PacketItem.ItemMessage;
 import defense.common.potion.ContagiousPoison;
@@ -80,7 +81,7 @@ import defense.common.potion.PoisonFrostBite;
 import defense.common.potion.PoisonToxin;
 import defense.common.potion.PotionUtility;
 
-@Mod(modid = Reference.NAME, name = Reference.NAME, version = "GRADLE_MODVERSION", guiFactory = "defense.client.gui.ConfigGuiFactory", dependencies = "required-after:Mekanism")
+@Mod(modid = Reference.NAME, name = Reference.NAME, version = "GRADLE_MODVERSION", guiFactory = "defense.client.gui.ConfigGuiFactory", dependencies = "required-after:Mekanism;after:flansmod")
 public final class DefenseTech
 {
     @Instance(Reference.NAME)
@@ -118,6 +119,7 @@ public final class DefenseTech
         
         DefenseTechItems.register();
         DefenseTechBlocks.register();
+        FlansModIntegration.preInit();
         
         PotionUtility.resizePotionArray();
 
@@ -257,6 +259,8 @@ public final class DefenseTech
         EntityRegistry.registerModEntity(EntityLightBeam.class, Reference.ENTITY_PREFIX + "LightBeam", 5, this, 80, 5, true);
         EntityRegistry.registerModEntity(EntityGrenade.class, Reference.ENTITY_PREFIX + "Grenade", 6, this, 50, 5, true);
         EntityRegistry.registerModEntity(EntityBombCart.class, Reference.ENTITY_PREFIX + "BombCart", 7, this, 50, 4, true);
+
+        FlansModIntegration.init();
         
         netHandler.registerMessage(PacketItem.class, ItemMessage.class, 0, Side.SERVER);
 
@@ -346,9 +350,11 @@ public final class DefenseTech
             if(explosive.getTier() < 3)
             {
                 // Minecart
-            	CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(DefenseTechItems.itemBombCart, 1, explosive.getID()), new Object[] { "?", "@", '?', new ItemStack(DefenseTechBlocks.blockExplosive, 1, explosive.getID()), '@', Items.minecart }));
+                CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(DefenseTechItems.itemBombCart, 1, explosive.getID()), new Object[] { "?", "@", '?', new ItemStack(DefenseTechBlocks.blockExplosive, 1, explosive.getID()), '@', Items.minecart }));
             }
         }
+
+        FlansModIntegration.postInit();
     }
 
     @EventHandler

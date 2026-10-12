@@ -13,6 +13,8 @@ public class TankCache extends MultiblockCache<SynchronizedTankData>
 	public ItemStack[] inventory = new ItemStack[2];
 	
 	public FluidStack fluid;
+
+	public DynamicTankChemicalStack chemical;
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 	
@@ -20,7 +22,8 @@ public class TankCache extends MultiblockCache<SynchronizedTankData>
 	public void apply(SynchronizedTankData data)
 	{
 		data.inventory = inventory;
-		data.fluidStored = fluid;
+		data.fluidStored = fluid == null ? null : fluid.copy();
+		data.chemicalStored = data.fluidStored == null && chemical != null ? chemical.copy() : null;
 		data.editMode = editMode;
 	}
 	
@@ -28,14 +31,18 @@ public class TankCache extends MultiblockCache<SynchronizedTankData>
 	public void sync(SynchronizedTankData data)
 	{
 		inventory = data.inventory;
-		fluid = data.fluidStored;
+		fluid = data.fluidStored == null ? null : data.fluidStored.copy();
+		chemical = data.fluidStored == null && data.chemicalStored != null ? data.chemicalStored.copy() : null;
 		editMode = data.editMode;
 	}
 	
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
+		fluid = null;
+		chemical = null;
+		int mode = nbtTags.getInteger("editMode");
+		editMode = mode >= 0 && mode < ContainerEditMode.values().length ? ContainerEditMode.values()[mode] : ContainerEditMode.BOTH;
 		
 		NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
 		inventory = new ItemStack[2];
@@ -54,6 +61,11 @@ public class TankCache extends MultiblockCache<SynchronizedTankData>
 		if(nbtTags.hasKey("cachedFluid"))
 		{
 			fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
+		}
+
+		if(fluid == null && nbtTags.hasKey("cachedChemical", NBT.TAG_COMPOUND))
+		{
+			chemical = DynamicTankChemicalStack.read(nbtTags.getCompoundTag("cachedChemical"));
 		}
 	}
 	
@@ -76,10 +88,16 @@ public class TankCache extends MultiblockCache<SynchronizedTankData>
 		}
 
 		nbtTags.setTag("Items", tagList);
+		nbtTags.removeTag("cachedFluid");
+		nbtTags.removeTag("cachedChemical");
 		
 		if(fluid != null)
 		{
 			nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
+		}
+		else if(chemical != null)
+		{
+			nbtTags.setTag("cachedChemical", chemical.write(new NBTTagCompound()));
 		}
 	}
 }

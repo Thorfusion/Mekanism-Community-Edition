@@ -5,11 +5,17 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileNetwork;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +25,8 @@ import net.minecraft.world.World;
 
 public class ItemConfigurationCard extends ItemMekanism
 {
+	private static final int DATA_VERSION = 2;
+
 	public ItemConfigurationCard()
 	{
 		super();
@@ -43,6 +51,12 @@ public class ItemConfigurationCard extends ItemMekanism
 			
 			if(tileEntity instanceof IConfigCardAccess)
 			{
+				if(!SecurityUtils.canAccess(player, tileEntity))
+				{
+					SecurityUtils.displayNoAccess(player);
+					return true;
+				}
+
 				if(player.isSneaking())
 				{
 					NBTTagCompound data = getBaseData(tileEntity);
@@ -54,7 +68,11 @@ public class ItemConfigurationCard extends ItemMekanism
 					
 					if(data != null)
 					{
+						sanitizeConfigurationData(data);
+						data.setInteger("dataVersion", DATA_VERSION);
 						data.setString("dataType", getNameFromTile(tileEntity));
+						data.setString("sourceBlock",
+								tileEntity.getBlockType().getUnlocalizedName());
 						setData(stack, data);
 						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
 					}
@@ -65,15 +83,18 @@ public class ItemConfigurationCard extends ItemMekanism
 				{
 					if(getNameFromTile(tileEntity).equals(getDataType(stack)))
 					{
-						setBaseData(getData(stack), tileEntity);
+						NBTTagCompound data = getData(stack);
+						sanitizeConfigurationData(data);
+						setBaseData(data, tileEntity);
 						
 						if(tileEntity instanceof ISpecialConfigData)
 						{
-							((ISpecialConfigData)tileEntity).setConfigurationData(getData(stack));
+							((ISpecialConfigData)tileEntity).setConfigurationData(data);
 						}
+						tileEntity.markDirty();
+						updateTile(tileEntity);
 						
 						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
-						setData(stack, null);
 					}
 					else {
 						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.configurationCard.unequal") + "."));
@@ -85,6 +106,35 @@ public class ItemConfigurationCard extends ItemMekanism
 		}
 		
 		return false;
+	}
+
+	/** Sneak-use in the air clears encoded data without consuming the card. */
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world,
+			EntityPlayer player)
+	{
+		if(player.isSneaking() && getData(stack) != null && !world.isRemote)
+		{
+			setData(stack, null);
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE
+					+ "[Mekanism] " + EnumColor.GREY
+					+ LangUtils.localize(
+							"tooltip.configurationCard.cleared")));
+		}
+		return stack;
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private void updateTile(TileEntity tile)
+	{
+		if(tile instanceof ITileNetwork)
+		{
+			ITileNetwork network = (ITileNetwork)tile;
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(
+					Coord4D.get(tile), network.getNetworkedData(
+							new java.util.ArrayList())),
+					new Range4D(Coord4D.get(tile)));
+		}
 	}
 	
 	private NBTTagCompound getBaseData(TileEntity tile)
@@ -109,7 +159,13 @@ public class ItemConfigurationCard extends ItemMekanism
 	{
 		if(tile instanceof IRedstoneControl)
 		{
-			((IRedstoneControl)tile).setControlType(RedstoneControl.values()[nbtTags.getInteger("controlType")]);
+			int control = nbtTags.getInteger("controlType");
+			if(nbtTags.hasKey("controlType") && control >= 0
+					&& control < RedstoneControl.values().length)
+			{
+				((IRedstoneControl)tile).setControlType(
+						RedstoneControl.values()[control]);
+			}
 		}
 		
 		if(tile instanceof ISideConfiguration)
@@ -180,5 +236,14 @@ public class ItemConfigurationCard extends ItemMekanism
 		}
 		
 		return "gui.none";
+	}
+
+	private static void sanitizeConfigurationData(NBTTagCompound data)
+	{
+		data.removeTag("owner");
+		data.removeTag("ownerUUID");
+		data.removeTag("trusted");
+		data.removeTag("security");
+		data.removeTag("securityMode");
 	}
 }

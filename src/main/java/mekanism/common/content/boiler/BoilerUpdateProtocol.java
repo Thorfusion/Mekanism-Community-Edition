@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBasic.BasicType;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -215,6 +216,13 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 		{
 			((BoilerCache)cache).steam.amount += ((BoilerCache)merge).steam.amount;
 		}
+
+		((BoilerCache)cache).superheatedCoolant = mergeGas(
+				((BoilerCache)cache).superheatedCoolant,
+				((BoilerCache)merge).superheatedCoolant);
+		((BoilerCache)cache).cooledCoolant = mergeGas(
+				((BoilerCache)cache).cooledCoolant,
+				((BoilerCache)merge).cooledCoolant);
 		
 		((BoilerCache)cache).temperature = Math.max(((BoilerCache)cache).temperature, ((BoilerCache)merge).temperature);
 	}
@@ -233,6 +241,19 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 		{
 			(structureFound).steamStored.amount = Math.min((structureFound).steamStored.amount, structureFound.steamVolume*STEAM_PER_TANK);
 		}
+
+		structureFound.superheatedCoolantTank.setMaxGas(
+				BoilerCoolantSimulation.capacityForVolume(
+						structureFound.waterVolume,
+						BoilerCoolantSimulation.getHeatedCapacityPerTank()));
+		structureFound.superheatedCoolantTank.setGas(
+				structureFound.superheatedCoolantTank.getGas());
+		structureFound.cooledCoolantTank.setMaxGas(
+				BoilerCoolantSimulation.capacityForVolume(
+						structureFound.steamVolume,
+						BoilerCoolantSimulation.getCooledCapacityPerTank()));
+		structureFound.cooledCoolantTank.setGas(
+				structureFound.cooledCoolantTank.getGas());
 	}
 
 	@Override
@@ -249,5 +270,19 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				structure.valves.add(data);
 			}
 		}
+	}
+
+	private static GasStack mergeGas(GasStack primary, GasStack additional)
+	{
+		if(primary == null)
+		{
+			return additional == null ? null : additional.copy();
+		}
+		if(additional != null && primary.isGasEqual(additional))
+		{
+			primary.amount = (int)Math.min((long)primary.amount
+					+ additional.amount, Integer.MAX_VALUE);
+		}
+		return primary;
 	}
 }

@@ -20,3 +20,6 @@
 !gradlew.bat
 
 docs/DefenseTechTextureConversion.md
+
+# Development-only regression tests are intentionally not distributed.
+/src/test/

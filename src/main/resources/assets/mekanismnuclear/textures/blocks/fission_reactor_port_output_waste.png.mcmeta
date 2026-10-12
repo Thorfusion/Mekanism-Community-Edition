@@ -1,0 +1,17 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanismnuclear:ctm/fission_reactor_port_output_waste"
+    ],
+    "extra": {
+      "connect_to": [
+        { "block": "mekanismnuclear:fission_reactor_casing" },
+        { "block": "mekanismnuclear:fission_reactor_port" },
+        { "block": "mekanismnuclear:fission_reactor_logic_adapter" }
+      ]
+    }
+  }
+}

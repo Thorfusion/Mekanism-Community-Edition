@@ -772,6 +772,21 @@ public class MekanismRenderer
 	    GL11.glColor3f(cR, cG, cB);
 	}
 
+	public static void colorFluid(net.minecraftforge.fluids.FluidStack stack)
+	{
+		if(stack == null || stack.getFluid() == null)
+		{
+			resetColor();
+			return;
+		}
+
+		int color = stack.getFluid().getColor(stack);
+		float cR = (color >> 16 & 0xFF) / 255.0F;
+		float cG = (color >> 8 & 0xFF) / 255.0F;
+		float cB = (color & 0xFF) / 255.0F;
+		GL11.glColor3f(cR, cG, cB);
+	}
+
 	public static void deleteDisplayLists(Object displays)
 	{
 		if(displays instanceof DisplayInteger)

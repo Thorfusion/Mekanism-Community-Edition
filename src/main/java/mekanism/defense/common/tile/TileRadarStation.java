@@ -202,6 +202,11 @@ public class TileRadarStation extends TileEntityElectricBlock implements IChunkL
 
         for(Entity entity : entities)
         {
+            if(entity.worldObj != worldObj)
+            {
+                continue;
+            }
+
             if(entity instanceof EntityMissile)
             {
                 if(((EntityMissile) entity).airborneTicks > -1)
@@ -475,6 +480,11 @@ public class TileRadarStation extends TileEntityElectricBlock implements IChunkL
 
                 for(Entity entity : entities)
                 {
+                    if(entity.worldObj != worldObj)
+                    {
+                        continue;
+                    }
+
                     returnArray.put("x_" + count, entity.posX);
                     returnArray.put("y_" + count, entity.posY);
                     returnArray.put("z_" + count, entity.posZ);

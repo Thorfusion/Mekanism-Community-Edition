@@ -31,7 +31,11 @@ public class ExNuclear extends Explosion
     {
         if (this.getTier() == 3)
         {
-            if (OreDictionary.getOres("ingotUranium").size() > 0)
+            if (!OreDictionary.getOres("pelletPlutonium").isEmpty())
+            {
+                GameRegistry.addRecipe(new ShapedMekanismRecipe(this.getItemStack(), new Object[] { "PPP", "PEP", "PPP", 'E', thermobaric.getItemStack(), 'P', "pelletPlutonium" }));
+            }
+            else if (!OreDictionary.getOres("ingotUranium").isEmpty())
             {
                 GameRegistry.addRecipe(new ShapedMekanismRecipe(this.getItemStack(), new Object[] { "UUU", "UEU", "UUU", 'E', thermobaric.getItemStack(), 'U', "ingotUranium" }));
             }

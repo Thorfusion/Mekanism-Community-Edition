@@ -68,6 +68,7 @@ explosive.antimatter.name=Antimatter Explosives
 explosive.redMatter.name=Red Matter Explosives
 
 explosive.sMine.name=S-Mine
+item.defenseTechAircraftBomb.name=%s Aircraft Bomb
 
 ## Missile Form
 missile.condensed.name=Conventional Missile

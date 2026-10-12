@@ -17,7 +17,8 @@ public class GuiUltimateConfig extends GuiConfig
 {
     public GuiUltimateConfig(GuiScreen parent)
     {
-        super(parent, getConfigElements(), MekanismUltimate.MODID, false, true, "Mekanism Community Edition: Ultimate (Beta)");
+        super(parent, getConfigElements(), MekanismUltimate.MODID, false,
+              false, "Mekanism Community Edition: Ultimate (Beta)");
     }
 
     private static List<IConfigElement> getConfigElements()
@@ -26,6 +27,9 @@ public class GuiUltimateConfig extends GuiConfig
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.machines"), "mekanism.configgui.ctgy.ultimate.machines", MachinesEntry.class));
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.usage"), "mekanism.configgui.ctgy.ultimate.usage", UsageEntry.class));
         list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.recipes"), "mekanism.configgui.ctgy.ultimate.recipes", RecipesEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.nutrition"), "mekanism.configgui.ctgy.ultimate.nutrition", NutritionEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.chemical_tanks"), "mekanism.configgui.ctgy.ultimate.chemical_tanks", ChemicalTanksEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.ultimate.armored_free_runners"), "mekanism.configgui.ctgy.ultimate.armored_free_runners", ArmoredFreeRunnersEntry.class));
         return list;
     }
 
@@ -77,6 +81,54 @@ public class GuiUltimateConfig extends GuiConfig
         protected GuiScreen buildChildScreen()
         {
             return GuiUltimateConfig.buildChildScreen(owningScreen, configElement, "recipes");
+        }
+    }
+
+    public static class NutritionEntry extends CategoryEntry
+    {
+        public NutritionEntry(GuiConfig owningScreen,
+              GuiConfigEntries owningEntryList, IConfigElement prop)
+        {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen()
+        {
+            return GuiUltimateConfig.buildChildScreen(owningScreen,
+                  configElement, "nutrition");
+        }
+    }
+
+    public static class ChemicalTanksEntry extends CategoryEntry
+    {
+        public ChemicalTanksEntry(GuiConfig owningScreen,
+              GuiConfigEntries owningEntryList, IConfigElement prop)
+        {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen()
+        {
+            return GuiUltimateConfig.buildChildScreen(owningScreen,
+                  configElement, "chemical_tanks");
+        }
+    }
+
+    public static class ArmoredFreeRunnersEntry extends CategoryEntry
+    {
+        public ArmoredFreeRunnersEntry(GuiConfig owningScreen,
+              GuiConfigEntries owningEntryList, IConfigElement prop)
+        {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen()
+        {
+            return GuiUltimateConfig.buildChildScreen(owningScreen,
+                  configElement, "armored_free_runners");
         }
     }
 }

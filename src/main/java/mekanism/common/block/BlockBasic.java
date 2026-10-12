@@ -688,7 +688,7 @@ public class BlockBasic extends Block implements IBlockCTM, IBlockOcclusion, ICu
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(itemStack))
+			else if(FluidContainerRegistry.isFilledContainer(itemStack) && tileEntity.structure.chemicalStored == null)
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
 				int max = tileEntity.structure.volume*TankUpdateProtocol.FLUID_PER_TANK;

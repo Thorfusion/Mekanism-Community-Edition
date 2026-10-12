@@ -21,8 +21,10 @@ public class CTMTextureData
 
 	public void registerIcons(IIconRegister register)
 	{
-		icon = register.registerIcon("mekanism:" + texture);
-		submap = new TextureSubmap(register.registerIcon("mekanism:" + texture + "-ctm"), 4, 4);
+		String location = texture.indexOf(':') >= 0
+				? texture : "mekanism:" + texture;
+		icon = register.registerIcon(location);
+		submap = new TextureSubmap(register.registerIcon(location + "-ctm"), 4, 4);
 		submapSmall = new TextureSubmap(icon, 2, 2);
 	}
 

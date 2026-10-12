@@ -8,14 +8,42 @@ import net.minecraft.item.ItemStack;
 
 public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, DissolutionRecipe>
 {
+	private final int baseChemicalUsage;
+
 	public DissolutionRecipe(ItemStackInput input, GasOutput output)
 	{
+		this(input, output, 1);
+	}
+
+	public DissolutionRecipe(ItemStackInput input, GasOutput output, int baseChemicalUsage)
+	{
 		super(input, output);
+		if(baseChemicalUsage < 1)
+		{
+			throw new IllegalArgumentException("Dissolution chemical usage must be positive");
+		}
+		this.baseChemicalUsage = baseChemicalUsage;
 	}
 
 	public DissolutionRecipe(ItemStack input, GasStack output)
 	{
-		this(new ItemStackInput(input), new GasOutput(output));
+		this(input, output, 1);
+	}
+
+	public DissolutionRecipe(ItemStack input, GasStack output, int baseChemicalUsage)
+	{
+		this(new ItemStackInput(input), new GasOutput(output), baseChemicalUsage);
+	}
+
+	public int getBaseChemicalUsage()
+	{
+		return baseChemicalUsage;
+	}
+
+	public int scaleChemicalUsage(int machineUsage)
+	{
+		long scaled = (long)Math.max(1, machineUsage) * baseChemicalUsage;
+		return scaled > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)scaled;
 	}
 
 	public boolean canOperate(ItemStack[] inventory, GasTank outputTank)
@@ -34,6 +62,6 @@ public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, 
 	@Override
 	public DissolutionRecipe copy()
 	{
-		return new DissolutionRecipe(getInput().copy(), getOutput().copy());
+		return new DissolutionRecipe(getInput().copy(), getOutput().copy(), baseChemicalUsage);
 	}
 }

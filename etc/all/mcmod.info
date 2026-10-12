@@ -53,7 +53,7 @@
 {
   "modid": "MekanismUltimate",
   "name": "Mekanism Community Edition: Ultimate (Beta)",
-  "description": "Mekanism Ultimate module of Mekanism CE.",
+  "description": "Mekanism Ultimate module of Mekanism CE, with optional Et Futurum Requiem Elytra integration.",
   "version": "${version}",
   "mcversion": "${mc_version}",
   "updateUrl": "",
@@ -61,6 +61,34 @@
   "credits": "Thanks to everyone who has contributed to this ongoing project.",
   "logoFile": "logo.png",
   "dependencies": ["Mekanism"],
+  "screenshots": []
+},
+{
+  "modid": "mekanismnuclear",
+  "name": "Mekanism Community Edition: Nuclear (Beta)",
+  "description": "Modern Nuclear systems backported for Mekanism Community Edition.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["maggi373", "DrParadox7", "Spoilers"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "useDependencyInformation": true,
+  "dependencies": ["Mekanism@[${version}]", "MekanismUltimate@[${version}]", "MekanismGenerators@[${version}]"],
+  "requiredMods": ["Mekanism@[${version}]", "MekanismUltimate@[${version}]", "MekanismGenerators@[${version}]"],
+  "screenshots": []
+},
+{
+  "modid": "mekanismmekasuit",
+  "name": "Mekanism Community Edition: MekaSuit (Beta)",
+  "description": "Beta modular equipment expansion for Mekanism Community Edition, including optional Et Futurum Requiem Elytra Unit support.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["maggi373", "DrParadox7", "Spoilers"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "useDependencyInformation": true,
+  "dependencies": ["Mekanism@[${version}]", "MekanismUltimate@[${version}]", "MekanismGenerators@[${version}]", "MekanismTools@[${version}]"],
+  "requiredMods": ["Mekanism@[${version}]", "MekanismUltimate@[${version}]", "MekanismGenerators@[${version}]", "MekanismTools@[${version}]"],
   "screenshots": []
 }
 ]

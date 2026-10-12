@@ -76,6 +76,11 @@ repositories {
             artifact()
         }
     }
+    maven {
+        name = 'CurseMaven'
+        url = uri('https://www.cursemaven.com')
+        content { includeGroup 'curse.maven' }
+    }
     // These repositories replace the old Thorfusion proxy named "central".
     // Keep them last so normal dependencies are resolved from their upstream homes.
     maven {
@@ -91,6 +96,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'junit:junit:4.13.2'
+
     if (codeChickenVariant == 'gtnh') {
         // Current GTNH CodeChickenCore contains the codechicken.lib API. Adding
         // GTNH CodeChickenLib separately would put duplicate classes on the
@@ -106,7 +113,6 @@ dependencies {
         implementation "codechicken:ForgeMultipart:${minecraft_version}-${FMP_version}:dev"
         implementation "codechicken:CodeChickenCore:${minecraft_version}-${CCC_version}:dev"
     }
-
     implementation "codechicken:NotEnoughItems:${minecraft_version}-${NEI_version}:dev"
     implementation "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
     implementation "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
@@ -114,6 +120,12 @@ dependencies {
 
     // Optional compile-time API only. Angelica is never bundled or required at runtime.
     compileOnly("com.github.GTNewHorizons:Angelica:${angelica_version}:api") {
+        transitive = false
+    }
+
+    // Optional at runtime. RFG deobfuscates the public CurseForge jar so the
+    // integration can compile against the same FMUSE build players install.
+    compileOnly(rfg.deobf('curse.maven:flans-mod-ultimate-stability-edition-344089:5644968')) {
         transitive = false
     }
 
@@ -130,7 +142,7 @@ minecraft {
     injectedTags.put('GRADLE_VERSIONMOD', alt_version)
     // RFG 2.0.4 serializes only one replacement-file pattern, so use one
     // brace glob for every module entry point.
-    tagReplacementFiles.add('{Mekanism.java,MekanismGenerators.java,MekanismTools.java,DefenseTech.java,MekanismUltimate.java}')
+    tagReplacementFiles.add('{Mekanism.java,MekanismGenerators.java,MekanismTools.java,DefenseTech.java,MekanismUltimate.java,MekanismNuclear.java,MekanismMekaSuit.java}')
 }
 
 tasks.named('processResources') {
@@ -167,7 +179,11 @@ tasks.register('coreJar', Jar) {
     }
     from(reobfuscatedContents) {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mekanism/defense/**',
-                'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**'
+                'defense/**', 'assets/defense/**', 'mcmod.info', 'mekanism/ultimate/**',
+                'assets/mekanismultimate/**',
+                'mekanism/nuclear/**', 'assets/mekanismnuclear/**',
+                'mekanism/mekasuit/**', 'assets/mekanismmekasuit/**',
+                'assets/mekanismgenerators/**'
     }
 }
 
@@ -212,7 +228,7 @@ tasks.register('generatorsJar', Jar) {
         expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
     }
     from(reobfuscatedContents) {
-        include 'mekanism/generators/**'
+        include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
         exclude 'mcmod.info'
     }
 }
@@ -243,7 +259,35 @@ tasks.register('ultimateJar', Jar) {
         include 'logo.png'
     }
     from(reobfuscatedContents) {
-        include 'mekanism/ultimate/**'
+        include 'mekanism/ultimate/**', 'assets/mekanismultimate/**'
+        exclude 'mcmod.info'
+    }
+}
+
+tasks.register('nuclearJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('Nuclear')
+    destinationDirectory.set(artifactOutputDir)
+    from('etc/nuclear') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
+    }
+    from(reobfuscatedContents) {
+        include 'mekanism/nuclear/**', 'assets/mekanismnuclear/**'
+        exclude 'mcmod.info'
+    }
+}
+
+tasks.register('mekasuitJar', Jar) {
+    dependsOn reobfuscatedJar
+    archiveClassifier.set('MekaSuit')
+    destinationDirectory.set(artifactOutputDir)
+    from('etc/mekasuit') {
+        include '*.info'
+        expand 'version': mod_version, 'mc_version': minecraft_version, 'fmp_version': FMP_version
+    }
+    from(reobfuscatedContents) {
+        include 'mekanism/mekasuit/**', 'assets/mekanismmekasuit/**'
         exclude 'mcmod.info'
     }
 }
@@ -292,7 +336,9 @@ def distributionArtifacts = [
         tasks.named('apiJar'),
         tasks.named('devJar'),
         tasks.named('defensetechJar'),
-        tasks.named('ultimateJar')
+        tasks.named('ultimateJar'),
+        tasks.named('nuclearJar'),
+        tasks.named('mekasuitJar')
 ]
 
 tasks.register('fullBuild') {

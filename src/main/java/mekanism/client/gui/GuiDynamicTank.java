@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
+import mekanism.common.content.tank.DynamicTankChemicalStack;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tile.TileEntityDynamicTank;
@@ -35,16 +37,19 @@ public class GuiDynamicTank extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
-		renderScaledText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ":" : LangUtils.localize("gui.noFluid"), 53, 44, 0x00CD00, 74);
+		FluidStack fluid = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
+		DynamicTankChemicalStack chemical = tileEntity.structure != null ? tileEntity.structure.chemicalStored : null;
+		String contentsName = chemical != null ? DynamicTankChemicalHooks.getDisplayName(chemical) : fluid != null ? LangUtils.localizeFluidStack(fluid) : LangUtils.localize("gui.noFluid");
+		renderScaledText(contentsName + (chemical != null || fluid != null ? ":" : ""), 53, 44, 0x00CD00, 74);
 
-		if(tileEntity.structure.fluidStored != null)
+		if(chemical != null || fluid != null)
 		{
-			fontRendererObj.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
+			fontRendererObj.drawString((chemical != null ? chemical.amount : fluid.amount) + "mB", 53, 53, 0x00CD00);
 		}
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(chemical != null ? DynamicTankChemicalHooks.getDisplayName(chemical) + ": " + chemical.amount + "mB" : fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + fluid.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -61,10 +66,11 @@ public class GuiDynamicTank extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 		
-		if(tileEntity.getScaledFluidLevel(58) > 0)
+		FluidStack renderStack = tileEntity.structure == null ? null : tileEntity.structure.chemicalStored == null ? tileEntity.structure.fluidStored : DynamicTankChemicalHooks.getRenderStack(tileEntity.structure.chemicalStored);
+		if(tileEntity.getScaledFluidLevel(58) > 0 && renderStack != null)
 		{
-			displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);
-			displayGauge(23, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 1);
+			displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), renderStack, 0);
+			displayGauge(23, 14, tileEntity.getScaledFluidLevel(58), renderStack, 1);
 		}
 	}
 
@@ -79,6 +85,7 @@ public class GuiDynamicTank extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		int start = 0;
+		MekanismRenderer.colorFluid(fluid);
 
 		while(true)
 		{
@@ -103,6 +110,7 @@ public class GuiDynamicTank extends GuiMekanism
 				break;
 			}
 		}
+		MekanismRenderer.resetColor();
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);

@@ -41,7 +41,7 @@ public class GuiBoilerStats extends GuiMekanism
 			public List<String> getInfo()
 			{
 				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss()*unit.intervalSize, false, unit);
 				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
@@ -59,7 +59,7 @@ public class GuiBoilerStats extends GuiMekanism
 				return LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t";
 			}
 		}));
-		maxGraph.enableFixedScale((int)((tentity.structure.superheatingElements*general.superheatingHeatTransfer)/SynchronizedBoilerData.getHeatEnthalpy()));
+		maxGraph.enableFixedScale((int)((tentity.getSuperheatingElements()*general.superheatingHeatTransfer)/SynchronizedBoilerData.getHeatEnthalpy()));
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class GuiBoilerStats extends GuiMekanism
 		fontRendererObj.drawString(LangUtils.localize("gui.heatTransfer"), 8, 49, 0x797979);
 		fontRendererObj.drawString(LangUtils.localize("gui.superheaters") + ": " + tileEntity.structure.superheatingElements, 14, 58, 0x404040);
 		
-		int boilCapacity = (int)((tileEntity.structure.superheatingElements*general.superheatingHeatTransfer)/SynchronizedBoilerData.getHeatEnthalpy());
+		int boilCapacity = (int)((tileEntity.getSuperheatingElements()*general.superheatingHeatTransfer)/SynchronizedBoilerData.getHeatEnthalpy());
 		fontRendererObj.drawString(LangUtils.localize("gui.boilCapacity") + ": " + boilCapacity + " mB/t", 8, 72, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -89,8 +89,8 @@ public class GuiBoilerStats extends GuiMekanism
 	{
 		super.updateScreen();
 		
-		boilGraph.addData(tileEntity.structure.lastBoilRate);
-		maxGraph.addData(tileEntity.structure.lastMaxBoil);
+		boilGraph.addData(tileEntity.getLastBoilRate());
+		maxGraph.addData(tileEntity.getLastMaxBoil());
 	}
 	
 	@Override

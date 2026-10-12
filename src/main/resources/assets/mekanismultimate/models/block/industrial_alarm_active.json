@@ -1,0 +1,7 @@
+{
+  "parent": "mekanismultimate:block/industrial_alarm",
+  "textures": {
+    "alarm": "mekanismultimate:blocks/models/industrial_alarm_active",
+    "particle": "mekanismultimate:blocks/models/industrial_alarm_active"
+  }
+}

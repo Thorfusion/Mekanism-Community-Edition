@@ -5,9 +5,11 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
+import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -56,19 +58,64 @@ public class LaserManager
 		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to)))
 		{
 			foundEntity = true;
+			double receivedEnergy = getReceivedEnergy(e, energy);
+
+			if(receivedEnergy <= 0)
+			{
+				continue;
+			}
 			
 			if(!e.isImmuneToFire()) 
 			{
-				e.setFire((int)(energy / 1000));
+				e.setFire((int)(receivedEnergy / 1000));
 			}
 			
-			if(energy > 256)
+			if(receivedEnergy > 256)
 			{
-				e.attackEntityFrom(DamageSource.generic, (float)energy/1000F);
+				e.attackEntityFrom(DamageSource.generic, (float)receivedEnergy/1000F);
 			}
 		}
 		
 		return new LaserInfo(mop, foundEntity);
+	}
+
+	static double getReceivedEnergy(Entity entity, double energy)
+	{
+		if(!(entity instanceof EntityLivingBase) || energy <= 0)
+		{
+			return Math.max(0, energy);
+		}
+
+		double dissipation = 0;
+		double refraction = 0;
+		EntityLivingBase living = (EntityLivingBase)entity;
+		for(int slot = 1; slot <= 4; slot++)
+		{
+			ItemStack armor = living.getEquipmentInSlot(slot);
+			if(armor != null && armor.getItem() instanceof ILaserDissipation)
+			{
+				ILaserDissipation protection =
+						(ILaserDissipation)armor.getItem();
+				dissipation += Math.max(0,
+						protection.getDissipationPercent(armor));
+				refraction += Math.max(0,
+						protection.getRefractionPercent(armor));
+			}
+		}
+		return calculateReceivedEnergy(energy, dissipation, refraction);
+	}
+
+	static double calculateReceivedEnergy(double energy, double dissipation,
+			double refraction)
+	{
+		if(energy <= 0)
+		{
+			return 0;
+		}
+		double afterDissipation = energy * (1D - Math.min(1D,
+				Math.max(0D, dissipation)));
+		return afterDissipation * (1D - Math.min(1D,
+				Math.max(0D, refraction)));
 	}
 
 	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)

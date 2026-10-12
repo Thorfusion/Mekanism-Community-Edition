@@ -1,0 +1,7 @@
+{
+  "parent": "mekanismultimate:block/chemical_tank/base",
+  "textures": {
+    "valve": "mekanismultimate:blocks/models/chemical_tank_ultimate_valve"
+  }
+}
+

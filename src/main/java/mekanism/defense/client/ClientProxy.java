@@ -73,6 +73,7 @@ import defense.common.entity.EntityMissile;
 import defense.common.entity.RenderEntityBlock;
 import defense.common.entity.RenderShrapnel;
 import defense.common.explosion.missile.MissileMovingSound;
+import defense.common.integration.FlansModIntegration;
 import defense.common.potion.PoisonFrostBite;
 import defense.common.tile.TileCruiseLauncher;
 import defense.common.tile.TileEMPTower;
@@ -124,6 +125,8 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileRadarStation.class, new RenderRadarStation());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEMPTower.class, new RenderEmpTower());
         ClientRegistry.bindTileEntitySpecialRenderer(TileExplosive.class, new RenderBombBlock());
+
+        FlansModIntegration.clientInit();
     }
 
     @Override

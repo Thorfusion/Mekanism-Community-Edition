@@ -50,23 +50,42 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	@Override
 	protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge)
 	{
-		if(((TankCache)cache).fluid == null)
+		TankCache tankCache = (TankCache)cache;
+		TankCache mergeCache = (TankCache)merge;
+
+		if(tankCache.fluid == null)
 		{
-			((TankCache)cache).fluid = ((TankCache)merge).fluid;
+			if(tankCache.chemical == null)
+			{
+				tankCache.fluid = mergeCache.fluid == null ? null : mergeCache.fluid.copy();
+			}
 		}
-		else if(((TankCache)merge).fluid != null && ((TankCache)cache).fluid.isFluidEqual(((TankCache)merge).fluid))
+		else if(mergeCache.fluid != null && tankCache.fluid.isFluidEqual(mergeCache.fluid))
 		{
-			((TankCache)cache).fluid.amount += ((TankCache)merge).fluid.amount;
+			tankCache.fluid.amount += mergeCache.fluid.amount;
+		}
+
+		if(tankCache.fluid == null)
+		{
+			if(tankCache.chemical == null)
+			{
+				tankCache.chemical = mergeCache.chemical == null ? null : mergeCache.chemical.copy();
+			}
+			else if(mergeCache.chemical != null && tankCache.chemical.isSameType(mergeCache.chemical))
+			{
+				long room = Long.MAX_VALUE - tankCache.chemical.amount;
+				tankCache.chemical.amount += Math.min(room, mergeCache.chemical.amount);
+			}
 		}
 		
-		List<ItemStack> rejects = StackUtils.getMergeRejects(((TankCache)cache).inventory, ((TankCache)merge).inventory);
+		List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.inventory, mergeCache.inventory);
 		
 		if(!rejects.isEmpty())
 		{
 			rejectedItems.addAll(rejects);
 		}
 		
-		StackUtils.merge(((TankCache)cache).inventory, ((TankCache)merge).inventory);
+		StackUtils.merge(tankCache.inventory, mergeCache.inventory);
 	}
 	
 	@Override
@@ -77,6 +96,11 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 		if(structureFound.fluidStored != null)
 		{
 			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
+			structureFound.chemicalStored = null;
+		}
+		else if(structureFound.chemicalStored != null)
+		{
+			structureFound.chemicalStored.amount = Math.min(structureFound.chemicalStored.amount, DynamicTankChemicalHooks.getCapacity(structureFound.volume));
 		}
 	}
 	

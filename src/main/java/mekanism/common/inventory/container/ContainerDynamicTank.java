@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
+import mekanism.common.content.tank.DynamicTankChemicalHooks;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -64,7 +65,7 @@ public class ContainerDynamicTank extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+			if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack) || DynamicTankChemicalHooks.isChemicalContainer(slotStack))
 			{
 				if(slotID != 0 && slotID != 1)
 				{

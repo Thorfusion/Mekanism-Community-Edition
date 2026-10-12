@@ -2,7 +2,7 @@
   {
     "modid": "MekanismUltimate",
     "name": "Mekanism Community Edition: Ultimate (Beta)",
-    "description": "Mekanism Ultimate module of Mekanism CE.",
+    "description": "Mekanism Ultimate module of Mekanism CE, with optional Et Futurum Requiem Elytra integration.",
     "version": "${version}",
     "mcversion": "${mc_version}",
     "updateUrl": "",

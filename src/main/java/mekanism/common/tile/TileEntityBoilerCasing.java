@@ -8,9 +8,17 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasCoolantRegistry;
+import mekanism.api.gas.GasCoolantRegistry.Coolant;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.common.content.boiler.BoilerCache;
+import mekanism.common.content.boiler.BoilerCoolantSimulation;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -32,6 +40,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	/** The capacity this tank has on the client-side. */
 	public int clientWaterCapacity;
 	public int clientSteamCapacity;
+
+	private final GasTank emptyCoolantTank = new GasTank(0);
 
 	public float prevWaterScale;
 
@@ -126,6 +136,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					double[] d = structure.simulateHeat();
 					structure.applyTemperatureChange();
 					structure.lastEnvironmentLoss = d[1];
+					structure.lastCoolantRate = coolHeatedCoolant();
 					
 					if(structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && structure.waterStored != null)
 					{
@@ -241,6 +252,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				data.add(0);
 			}
 
+			data.add(structure.superheatedCoolantTank.getMaxGas());
+			data.add(structure.cooledCoolantTank.getMaxGas());
+			data.add(structure.lastCoolantRate);
+			addGasTankData(data, structure.superheatedCoolantTank);
+			addGasTankData(data, structure.cooledCoolantTank);
+
 			structure.upperRenderLocation.write(data);
 			
 			if(isRendering)
@@ -302,6 +319,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 				else {
 					structure.steamStored = null;
 				}
+
+				structure.superheatedCoolantTank.setMaxGas(dataStream.readInt());
+				structure.cooledCoolantTank.setMaxGas(dataStream.readInt());
+				structure.lastCoolantRate = dataStream.readInt();
+				readGasTankData(dataStream, structure.superheatedCoolantTank);
+				readGasTankData(dataStream, structure.cooledCoolantTank);
 				
 				structure.upperRenderLocation = Coord4D.read(dataStream);
 		
@@ -352,6 +375,100 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 		}
 
 		return structure.steamStored.amount*i / clientSteamCapacity;
+	}
+
+	public double getLastEnvironmentLoss()
+	{
+		return structure != null ? structure.lastEnvironmentLoss : 0;
+	}
+
+	public double getTemperature()
+	{
+		return structure != null ? structure.temperature : 0;
+	}
+
+	public int getLastBoilRate()
+	{
+		return structure != null ? structure.lastBoilRate : 0;
+	}
+
+	public int getLastMaxBoil()
+	{
+		return structure != null ? structure.lastMaxBoil : 0;
+	}
+
+	public int getSuperheatingElements()
+	{
+		return structure != null ? structure.superheatingElements : 0;
+	}
+
+	public int getLastCoolantRate()
+	{
+		return structure != null ? structure.lastCoolantRate : 0;
+	}
+
+	public GasTank getSuperheatedCoolantTank()
+	{
+		return structure != null
+				? structure.superheatedCoolantTank : emptyCoolantTank;
+	}
+
+	public GasTank getCooledCoolantTank()
+	{
+		return structure != null
+				? structure.cooledCoolantTank : emptyCoolantTank;
+	}
+
+	private int coolHeatedCoolant()
+	{
+		GasStack heated = structure.superheatedCoolantTank.getGas();
+		Coolant coolant = heated == null ? null
+				: GasCoolantRegistry.getByHeatedGas(heated.getGas());
+		int amount = BoilerCoolantSimulation.getAmountToCool(coolant,
+				structure.superheatedCoolantTank,
+				structure.cooledCoolantTank, structure.temperature);
+		if(amount <= 0)
+		{
+			return 0;
+		}
+		int accepted = structure.cooledCoolantTank.receive(
+				new GasStack(coolant.getCooledGas(), amount), true);
+		if(accepted > 0)
+		{
+			structure.superheatedCoolantTank.draw(accepted, true);
+			structure.temperature +=
+					BoilerCoolantSimulation.getTemperatureIncrease(coolant,
+							accepted, general.energyPerHeat,
+							structure.locations.size());
+		}
+		return accepted;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void addGasTankData(ArrayList data, GasTank tank)
+	{
+		GasStack gas = tank.getGas();
+		if(gas == null || gas.getGas() == null || gas.amount <= 0)
+		{
+			data.add(0);
+			return;
+		}
+		data.add(1);
+		data.add(gas.getGas().getID());
+		data.add(gas.amount);
+	}
+
+	private static void readGasTankData(ByteBuf data, GasTank tank)
+	{
+		if(data.readInt() == 0)
+		{
+			tank.setGas(null);
+			return;
+		}
+		Gas gas = GasRegistry.getGas(data.readInt());
+		int amount = data.readInt();
+		tank.setGas(gas == null || amount <= 0
+				? null : new GasStack(gas, amount));
 	}
 
 	@Override
