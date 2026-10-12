@@ -842,6 +842,16 @@ public class CommonProxy implements IGuiProvider
 		return -1;
 	}
 
+	public int getGuiId(TileEntity tileEntity)
+	{
+		if(tileEntity instanceof TileEntityFactory)
+		{
+			return MachineType.BASIC_FACTORY.guiId;
+		}
+
+		return getGuiId(tileEntity.getBlockType(), tileEntity.getBlockMetadata());
+	}
+
 	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
 	
 	public Object getFontRenderer()
