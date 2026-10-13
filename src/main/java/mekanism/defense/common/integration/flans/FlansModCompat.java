@@ -36,6 +36,7 @@ import defense.common.entity.EntityMissile;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.ExplosiveRegistry;
 import defense.common.integration.IFlansModIntegration;
+import defense.common.integration.FlansModIntegration;
 
 /** Implementation loaded only after the optional {@code flansmod} mod is found. */
 public class FlansModCompat implements IFlansModIntegration
@@ -207,7 +208,7 @@ public class FlansModCompat implements IFlansModIntegration
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
-        if(event.entity instanceof EntityPlane)
+        if(FlansModIntegration.isEnabled() && event.entity instanceof EntityPlane)
         {
             RadarRegistry.register(event.entity);
         }

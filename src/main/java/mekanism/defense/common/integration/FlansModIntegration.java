@@ -8,6 +8,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.Loader;
 import defense.common.DefenseTech;
+import defense.common.Settings;
 import defense.common.entity.EntityMissile;
 
 /** Optional loader that never resolves a Flan class unless Flan is installed. */
@@ -30,6 +31,12 @@ public final class FlansModIntegration
 
         attempted = true;
 
+        if(!Settings.ENABLE_FLANS_MOD_INTEGRATION)
+        {
+            DefenseTech.LOGGER.info("Optional Flan's Mod integration is disabled by configuration.");
+            return;
+        }
+
         if(!Loader.isModLoaded("flansmod"))
         {
             return;
@@ -50,7 +57,7 @@ public final class FlansModIntegration
 
     public static void init()
     {
-        if(bridge != null)
+        if(isEnabled())
         {
             bridge.init();
         }
@@ -58,7 +65,7 @@ public final class FlansModIntegration
 
     public static void postInit()
     {
-        if(bridge != null)
+        if(isEnabled())
         {
             bridge.postInit();
         }
@@ -66,7 +73,7 @@ public final class FlansModIntegration
 
     public static void clientInit()
     {
-        if(bridge == null)
+        if(!isEnabled())
         {
             return;
         }
@@ -85,19 +92,24 @@ public final class FlansModIntegration
 
     public static Entity findNearestAircraft(World world, AxisAlignedBB bounds, Entity excluded)
     {
-        return bridge == null ? null : bridge.findNearestAircraft(world, bounds, excluded);
+        return isEnabled() ? bridge.findNearestAircraft(world, bounds, excluded) : null;
     }
 
     public static boolean isAircraft(Entity entity)
     {
-        return bridge != null && bridge.isAircraft(entity);
+        return isEnabled() && bridge.isAircraft(entity);
     }
 
     public static void interceptAircraft(Entity aircraft, EntityMissile interceptor)
     {
-        if(bridge != null)
+        if(isEnabled())
         {
             bridge.interceptAircraft(aircraft, interceptor);
         }
+    }
+
+    public static boolean isEnabled()
+    {
+        return Settings.ENABLE_FLANS_MOD_INTEGRATION && bridge != null;
     }
 }

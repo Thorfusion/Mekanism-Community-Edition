@@ -28,6 +28,7 @@ public class Settings
     public static boolean POLLUTIVE_NUCLEAR = true;
     public static boolean CREATE_NETHERRACK = true;
     public static double REDUCE_OBSIDIAN_RESISTANCE = 45F;
+    public static boolean ENABLE_FLANS_MOD_INTEGRATION = true;
 
     public static void initiate()
     {
@@ -47,5 +48,9 @@ public class Settings
         POLLUTIVE_NUCLEAR = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Pollutive Nuclear", true).getBoolean(true);
         CREATE_NETHERRACK = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Exothermic Create Netherrack", true).getBoolean(true);
         REDUCE_OBSIDIAN_RESISTANCE = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Reduce Obsidian Resistance", 45F).getDouble(45F);
+        ENABLE_FLANS_MOD_INTEGRATION = Settings.CONFIGURATION.get(Configuration.CATEGORY_GENERAL,
+            "Enable Flan's Mod Integration", true,
+            "Registers DefenseTech aircraft bombs with Flan's Mod and allows radar and anti-ballistic missiles to detect Flan aircraft. This setting must match on the client and server.")
+            .setRequiresMcRestart(true).getBoolean(true);
     }
 }

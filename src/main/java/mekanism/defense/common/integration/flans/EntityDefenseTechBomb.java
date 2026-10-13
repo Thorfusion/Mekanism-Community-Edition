@@ -14,6 +14,7 @@ import defense.api.ExplosionEvent.ExplosivePreDetonationEvent;
 import defense.api.ExplosiveType;
 import defense.common.explosive.Explosive;
 import defense.common.explosive.ExplosiveRegistry;
+import defense.common.integration.FlansModIntegration;
 
 /** Flan projectile physics with DefenseTech detonation behavior. */
 public class EntityDefenseTechBomb extends EntityBullet
@@ -52,7 +53,8 @@ public class EntityDefenseTechBomb extends EntityBullet
         double x = posX;
         double y = posY;
         double z = posZ;
-        boolean dispatch = !payloadDispatched && world != null && !world.isRemote && explosiveId >= 0;
+        boolean dispatch = FlansModIntegration.isEnabled() && !payloadDispatched
+              && world != null && !world.isRemote && explosiveId >= 0;
         Explosive explosive = dispatch ? ExplosiveRegistry.get(explosiveId) : null;
 
         if(explosive == null || !explosive.hasBlockForm())
