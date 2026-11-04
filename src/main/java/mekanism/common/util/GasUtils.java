@@ -1,21 +1,23 @@
 package mekanism.common.util;
 
-import mekanism.api.gas.*;
-import mekanism.common.base.GasAcceptor;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -117,13 +119,7 @@ public final class GasUtils {
             CapabilityUtils.runIfCap(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide,
                   (handler) -> {
                       if (handler.canReceiveGas(accessSide, stack.getGas())) {
-                          if(from instanceof TileEntityPressurizedTube)
-                          {
-                              TileEntityPressurizedTube tube = (TileEntityPressurizedTube) from;
-                              target.addHandler(accessSide, new GasAcceptor(handler,tube.getCapacity()));
-                          }else {
-                              target.addHandler(accessSide, new GasAcceptor(handler,Integer.MAX_VALUE));
-                          }
+                          target.addHandler(accessSide, handler);
                       }
                   });
         });

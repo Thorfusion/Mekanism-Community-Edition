@@ -1,9 +1,10 @@
 package mekanism.common.util;
 
-import mekanism.common.base.FluidAcceptor;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -13,10 +14,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 public final class PipeUtils {
 
@@ -81,13 +78,7 @@ public final class PipeUtils {
             CapabilityUtils.runIfCap(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide,
                   (handler) -> {
                       if (canFill(handler, stack)) {
-                          if(from instanceof TileEntityMechanicalPipe)
-                          {
-                              TileEntityMechanicalPipe pipe = (TileEntityMechanicalPipe) from;
-                              target.addHandler(accessSide, new FluidAcceptor(handler,pipe.getCapacity()));
-                          }else {
-                              target.addHandler(accessSide, new FluidAcceptor(handler,Integer.MAX_VALUE));
-                          }
+                          target.addHandler(accessSide, handler);
                       }
                   });
         });
@@ -109,15 +100,6 @@ public final class PipeUtils {
 
     public static boolean canFill(IFluidHandler handler, FluidStack stack) {
         for (IFluidTankProperties props : handler.getTankProperties()) {
-            if (props.canFillFluidType(stack)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean canFill(FluidAcceptor acceptor, FluidStack stack) {
-        for (IFluidTankProperties props : acceptor.fluidHandler.getTankProperties()) {
             if (props.canFillFluidType(stack)) {
                 return true;
             }

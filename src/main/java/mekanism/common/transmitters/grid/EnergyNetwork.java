@@ -11,7 +11,6 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.target.EnergyAcceptorTarget;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -101,13 +100,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             for (EnumFacing side : sides) {
-                double limit = -1;
-                if(world.getTileEntity(coord.offset(side).getPos()) instanceof TileEntityUniversalCable)
-                {
-                    TileEntityUniversalCable cable = (TileEntityUniversalCable) world.getTileEntity(coord.offset(side).getPos());
-                    limit = cable.getCapacity();
-                }
-                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side,limit);
+                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
                 if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
                     target.addHandler(side, acceptor);
                 }

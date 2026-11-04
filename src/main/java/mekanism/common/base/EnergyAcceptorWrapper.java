@@ -28,9 +28,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     private static final Logger LOGGER = LogManager.getLogger("Mekanism EnergyAcceptorWrapper");
     public Coord4D coord;
 
-    public double limit;
-
-    public static EnergyAcceptorWrapper get(TileEntity tileEntity, EnumFacing side, double limit) {
+    public static EnergyAcceptorWrapper get(TileEntity tileEntity, EnumFacing side) {
         if (tileEntity == null || tileEntity.getWorld() == null) {
             return null;
         }
@@ -51,11 +49,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
         if (wrapper != null) {
             wrapper.coord = Coord4D.get(tileEntity);
-            if (limit < 0)
-            {
-                limit = Double.MAX_VALUE;
-            }
-            wrapper.limit = limit;
         }
         return wrapper;
     }
@@ -85,7 +78,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return acceptor.acceptEnergy(side, Math.min(amount,limit), simulate);
+            return acceptor.acceptEnergy(side, amount, simulate);
         }
 
         @Override
@@ -95,7 +88,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public boolean needsEnergy(EnumFacing side) {
-            return acceptor.acceptEnergy(side, 1,true) > 0;
+            return acceptor.acceptEnergy(side, 1, true) > 0;
         }
     }
 
@@ -109,7 +102,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return RFIntegration.fromRF(acceptor.receiveEnergy(side, RFIntegration.toRF(Math.min(amount,limit)), simulate));
+            return RFIntegration.fromRF(acceptor.receiveEnergy(side, RFIntegration.toRF(amount), simulate));
         }
 
         @Override
@@ -133,7 +126,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            double toTransfer = Math.min(acceptor.getDemandedEnergy(), IC2Integration.toEU(Math.min(amount,limit)));
+            double toTransfer = Math.min(acceptor.getDemandedEnergy(), IC2Integration.toEU(amount));
             if (simulate) {
                 //IC2 has no built in way to simulate, so we have to calculate it ourselves
                 return IC2Integration.fromEU(toTransfer);
@@ -163,7 +156,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return TeslaIntegration.fromTesla(acceptor.givePower(TeslaIntegration.toTesla(Math.min(amount,limit)), simulate));
+            return TeslaIntegration.fromTesla(acceptor.givePower(TeslaIntegration.toTesla(amount), simulate));
         }
 
         @Override
@@ -187,7 +180,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return ForgeEnergyIntegration.fromForge(acceptor.receiveEnergy(ForgeEnergyIntegration.toForge(Math.min(amount,limit)), simulate));
+            return ForgeEnergyIntegration.fromForge(acceptor.receiveEnergy(ForgeEnergyIntegration.toForge(amount), simulate));
         }
 
         @Override

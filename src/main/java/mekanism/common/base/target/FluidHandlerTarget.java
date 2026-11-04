@@ -1,13 +1,12 @@
 package mekanism.common.base.target;
 
-import mekanism.common.base.FluidAcceptor;
 import mekanism.common.base.SplitInfo;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class FluidHandlerTarget extends Target<FluidAcceptor, Integer, FluidStack> {
+public class FluidHandlerTarget extends Target<IFluidHandler, Integer, FluidStack> {
 
     public FluidHandlerTarget(FluidStack type) {
         this.extra = type;
@@ -19,7 +18,7 @@ public class FluidHandlerTarget extends Target<FluidAcceptor, Integer, FluidStac
     }
 
     @Override
-    protected Integer simulate(FluidAcceptor handler, EnumFacing side, FluidStack fluidStack) {
+    protected Integer simulate(IFluidHandler handler, EnumFacing side, FluidStack fluidStack) {
         return handler.fill(fluidStack, false);
     }
 }
