@@ -184,6 +184,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 		boolean formed = tag.getBoolean("formed");
 
+		//Read the fluid tanks before applying the injection rate, as setInjectionRate clamps the stored fluid to the new capacity
+		waterTank.readFromNBT(tag.getCompoundTag("waterTank"));
+		steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
+
 		if(formed)
 		{
 			setReactor(new FusionReactor(this));
@@ -197,8 +201,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		fuelTank.read(tag.getCompoundTag("fuelTank"));
 		deuteriumTank.read(tag.getCompoundTag("deuteriumTank"));
 		tritiumTank.read(tag.getCompoundTag("tritiumTank"));
-		waterTank.readFromNBT(tag.getCompoundTag("waterTank"));
-		steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
 	}
 
 	@Override

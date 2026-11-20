@@ -225,7 +225,7 @@ public class FusionReactor implements IFusionReactor
 		{
 			double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
 			int waterToVaporize = (int)(steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-			waterToVaporize = min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
+			waterToVaporize = max(0, min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount())));
 			
 			if(waterToVaporize > 0)
 			{
